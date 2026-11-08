@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Особистий Кабінет — Генерал Гачок</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Налаштування фірмової теми Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'hachok-dark': '#343E19',
+            'hachok-dark-hover': '#1E251B',
+            'hachok-gold': '#D9B868',
+            'hachok-gold-hover': '#C5A352',
+            'parchment-bg': '#FAF4E8',
+            'parchment-card': '#F2E8D5',
+            'hachok-muted': '#6E6658',
+            'hachok-text': '#1A1A1A',
+          },
+          fontFamily: {
+            heading: ['Cormorant Garamond', 'serif'],
+            body: ['Noto Serif', 'serif'],
+            sans: ['Noto Serif', 'serif'],
+            serifText: ['Noto Serif', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Користувацькі стилі -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-parchment-bg text-hachok-text font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Швидке посилання для клавіатурної навігації (WCAG 2.4.1) -->
+  <a href="#main-content" class="skip-link">
+    Перейти до основного вмісту
+  </a>
+
+ 
+  <!-- ШАПКА САЙТУ -->
+  <header class="bg-hachok-dark border-b border-hachok-gold/40 sticky top-0 z-50 shadow-md">
+    <div class="max-w-full mx-auto px-2 sm:px-4 h-16 flex items-center justify-between">
+      
+      <!-- Логотип -->
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/icons/logo.svg" alt="Логотип Генерал Гачок" class="h-10 w-auto">
+      </a>
+      
+      <!-- Десктопна навігація -->
+      <nav class="hidden md:flex items-center gap-6 lg:gap-10" aria-label="Основна навігація">
+        <a href="catalog.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Схеми</a>
+        <a href="lessons.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Відеоуроки</a>
+        <a href="stand.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Нитковимірювач</a>
+        <a href="index.html#about" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Про нас</a>
+        <a href="dovidnyk.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Довідник</a>
+      </nav>
+      
+      <!-- Профіль та гамбургер-меню -->
+      <div class="flex items-center gap-3">
+        <a href="profile.html" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-hachok-gold/20 transition-all" aria-label="Перейти до профілю користувача">
+          <img src="assets/icons/profile.svg" alt="" aria-hidden="true" class="w-10 h-10">
+        </a>
+
+        <button type="button" class="md:hidden p-2 text-hachok-gold hover:text-white focus:outline-none" aria-label="Відкрити меню" onclick="toggleMobileMenu()">
+          <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Мобільне випадаюче меню -->
+    <div id="mobile-menu" class="hidden md:hidden bg-hachok-dark border-b border-hachok-gold/30 px-4 pt-3 pb-5 space-y-3">
+      <a href="catalog.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Схеми</a>
+      <a href="lessons.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Відеоуроки</a>
+      <a href="stand.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Нитковимірювач</a>
+      <a href="index.html#about" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Про нас</a>
+      <a href="dovidnyk.html" class="block font-heading font-bold text-xl uppercase text-hachok-gold py-2 border-b border-hachok-gold/20">Довідник</a>
+      <a href="profile.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2">Профіль</a>
+    </div>
+  </header>
+
+
+  <!-- ОСНОВНИЙ КОНТЕНТ ПРОФІЛЮ -->
+  <main id="main-content" class="flex-grow max-w-full lg:max-w-[1500px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- ВЕРХНІЙ БЛОК КОРИСТУВАЧА ТА СТАТИСТИКИ -->
+    <section class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-md flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-8">
+      
+      <!-- Інформація про користувача -->
+      <div class="flex items-center gap-5">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-hachok-dark text-parchment-bg rounded-full flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0 border-2 border-hachok-gold shadow-sm">
+          <i class="fas fa-user" aria-hidden="true"></i>
+        </div>
+        <div>
+          <h1 class="font-heading font-bold text-2xl sm:text-4xl text-hachok-dark">Майстриня Олена</h1>
+          <p class="text-sm sm:text-base text-hachok-muted flex items-center gap-2 mt-1">
+            <i class="far fa-calendar-alt" aria-hidden="true"></i> У спільноті з вересня 2024
+          </p>
+        </div>
+      </div>
+
+      <!-- Картки статистики -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full lg:w-auto">
+        
+        <div class="bg-white border border-hachok-dark p-4 flex flex-col justify-between min-w-[160px] shadow-sm">
+          <div class="flex items-center justify-between text-[11px] sm:text-xs font-bold text-hachok-dark tracking-wider uppercase mb-2">
+            <span>АКТИВНІ ПРОЄКТИ</span>
+            <i class="fas fa-scroll text-hachok-muted" aria-hidden="true"></i>
+          </div>
+          <div class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">3</div>
+        </div>
+
+        <div class="bg-white border border-hachok-dark p-4 flex flex-col justify-between min-w-[160px] shadow-sm">
+          <div class="flex items-center justify-between text-[11px] sm:text-xs font-bold text-hachok-dark tracking-wider uppercase mb-2">
+            <span>ПРЯЖІ В ЗАПАСІ</span>
+            <i class="fas fa-cubes text-hachok-muted" aria-hidden="true"></i>
+          </div>
+          <div class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">1,250 м</div>
+        </div>
+
+        <div class="bg-white border border-hachok-dark p-4 flex flex-col justify-between min-w-[160px] shadow-sm">
+          <div class="flex items-center justify-between text-[11px] sm:text-xs font-bold text-hachok-dark tracking-wider uppercase mb-2">
+            <span>ЗБЕРЕЖЕНІ КАЛІБРУВАННЯ</span>
+            <i class="fas fa-sliders-h text-hachok-muted" aria-hidden="true"></i>
+          </div>
+          <div class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">4</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ТАБИ ПРОФІЛЮ -->
+    <nav class="border-b-2 border-hachok-dark/30 overflow-x-auto" aria-label="Вкладки кабінету">
+      <ul class="flex gap-6 sm:gap-10 min-w-max pb-1">
+        <li><a href="#projects" class="font-heading font-bold text-lg sm:text-xl text-hachok-dark pb-3 border-b-2 border-hachok-dark block">Мої проєкти</a></li>
+        <li><a href="#yarn" class="font-heading font-bold text-lg sm:text-xl text-hachok-muted hover:text-hachok-dark pb-3 border-b-2 border-transparent block transition-colors">Моя пряжа</a></li>
+        <li><a href="#calibrations" class="font-heading font-bold text-lg sm:text-xl text-hachok-muted hover:text-hachok-dark pb-3 border-b-2 border-transparent block transition-colors">Мої калібрування</a></li>
+        <li><a href="#settings" class="font-heading font-bold text-lg sm:text-xl text-hachok-muted hover:text-hachok-dark pb-3 border-b-2 border-transparent block transition-colors">Налаштування</a></li>
+      </ul>
+    </nav>
+
+    <!-- СЕКЦІЯ ПРОЄКТІВ -->
+    <section class="space-y-6" id="projects">
+      
+      <!-- Панель дій та пошуку -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+        
+        <div class="relative flex-grow max-w-md">
+          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-hachok-muted text-sm" aria-hidden="true"></i>
+          <input type="search" placeholder="Пошук проєктів..." aria-label="Пошук проєктів" class="w-full pl-11 pr-4 py-2.5 bg-white border border-hachok-dark text-hachok-dark placeholder-hachok-muted focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <select aria-label="Фільтр проєктів" class="bg-white border border-hachok-dark px-4 py-2.5 text-hachok-dark text-sm focus:outline-none focus:border-hachok-gold cursor-pointer min-w-[140px]">
+            <option value="all">Всі проєкти</option>
+            <option value="clothing">Одяг</option>
+            <option value="accessories">Аксесуари</option>
+          </select>
+
+          <button type="button" class="px-5 py-2.5 bg-hachok-dark text-hachok-gold font-heading font-bold text-sm border border-hachok-gold hover:bg-hachok-dark-hover transition-all uppercase tracking-wider flex items-center justify-center gap-2 whitespace-nowrap shadow-sm">
+            <i class="fas fa-plus text-xs" aria-hidden="true"></i> Новий проєкт
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ГРІД АКТИВНИХ ПРОЄКТІВ -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        
+        <!-- Картка проєкту 1 -->
+        <article class="bg-white border-2 border-hachok-dark p-5 sm:p-6 flex flex-col sm:flex-row gap-5 shadow-md hover:border-hachok-gold transition-all duration-300">
+          <div class="w-full sm:w-44 h-48 sm:h-auto border border-hachok-dark/20 overflow-hidden flex-shrink-0">
+            <img src="assets/images/sweater.jpg" alt="Прев'ю проєкту Светр Оверсайз" class="w-full h-full object-cover">
+          </div>
+
+          <div class="flex flex-col justify-between flex-grow space-y-4">
+            <div>
+              <span class="text-xs font-bold text-hachok-muted tracking-wider uppercase block mb-1">ОДЯГ</span>
+              <h3 class="font-heading font-bold text-2xl text-hachok-dark">Светр Оверсайз</h3>
+            </div>
+
+            <!-- Прогрес -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-xs text-hachok-dark font-medium">
+                <span>Рядок 18 з 50</span>
+                <span>36%</span>
+              </div>
+              <div class="w-full h-3 bg-parchment-card border border-hachok-dark/30 rounded-full overflow-hidden">
+                <div class="h-full bg-hachok-dark" style="width: 36%;"></div>
+              </div>
+            </div>
+
+            <!-- Деталі -->
+            <ul class="text-xs text-hachok-muted space-y-1">
+              <li class="flex items-center gap-2"><i class="far fa-clock" aria-hidden="true"></i> Оновлено: 12 Квітня, 2026</li>
+              <li class="flex items-center gap-2"><i class="fas fa-fill-drip" aria-hidden="true"></i> Пряжа: Wool Cotton (200m left)</li>
+            </ul>
+
+            <!-- Кнопки дій -->
+            <div class="flex items-center gap-3 pt-2">
+              <a href="workspace.html" class="flex-grow py-2.5 px-4 bg-hachok-gold text-hachok-dark font-heading font-bold text-center text-xs sm:text-sm uppercase tracking-wider border border-hachok-gold hover:bg-hachok-gold-hover transition-colors shadow-sm">
+                Продовжити в'язати
+              </a>
+              <a href="pattern.html" class="py-2.5 px-4 bg-white text-hachok-dark font-heading font-bold text-center text-xs sm:text-sm uppercase tracking-wider border border-hachok-dark hover:bg-parchment-bg transition-colors">
+                Деталі
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Картка проєкту 2 -->
+        <article class="bg-white border-2 border-hachok-dark p-5 sm:p-6 flex flex-col sm:flex-row gap-5 shadow-md hover:border-hachok-gold transition-all duration-300">
+          <div class="w-full sm:w-44 h-48 sm:h-auto border border-hachok-dark/20 overflow-hidden flex-shrink-0">
+            <img src="assets/images/shwl.jpg" alt="Прев'ю проєкту Весняна Хустина" class="w-full h-full object-cover">
+          </div>
+
+          <div class="flex flex-col justify-between flex-grow space-y-4">
+            <div>
+              <span class="text-xs font-bold text-hachok-muted tracking-wider uppercase block mb-1">АКСЕСУАРИ</span>
+              <h3 class="font-heading font-bold text-2xl text-hachok-dark">Весняна Хустина</h3>
+            </div>
+
+            <!-- Прогрес -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-xs text-hachok-dark font-medium">
+                <span>Рядок 45 з 60</span>
+                <span>75%</span>
+              </div>
+              <div class="w-full h-3 bg-parchment-card border border-hachok-dark/30 rounded-full overflow-hidden">
+                <div class="h-full bg-hachok-dark" style="width: 75%;"></div>
+              </div>
+            </div>
+
+            <!-- Деталі -->
+            <ul class="text-xs text-hachok-muted space-y-1">
+              <li class="flex items-center gap-2"><i class="far fa-clock" aria-hidden="true"></i> Оновлено: 10 Квітня, 2026</li>
+              <li class="flex items-center gap-2"><i class="fas fa-fill-drip" aria-hidden="true"></i> Пряжа: Alpaca Soft (50m left)</li>
+            </ul>
+
+            <!-- Кнопки дій -->
+            <div class="flex items-center gap-3 pt-2">
+              <a href="workspace.html" class="flex-grow py-2.5 px-4 bg-hachok-gold text-hachok-dark font-heading font-bold text-center text-xs sm:text-sm uppercase tracking-wider border border-hachok-gold hover:bg-hachok-gold-hover transition-colors shadow-sm">
+                Продовжити в'язати
+              </a>
+              <a href="pattern.html" class="py-2.5 px-4 bg-white text-hachok-dark font-heading font-bold text-center text-xs sm:text-sm uppercase tracking-wider border border-hachok-dark hover:bg-parchment-bg transition-colors">
+                Деталі
+              </a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Кнопка розгортання завершених проєктів -->
+      <div class="pt-2">
+        <button type="button" class="text-hachok-dark font-bold text-sm hover:text-hachok-gold transition-colors flex items-center gap-2">
+          <i class="fas fa-chevron-right text-xs" aria-hidden="true"></i> Завершені проєкти (12)
+        </button>
+      </div>
+
+    </section>
+
+    <!-- НИЖНІЙ БЛОК: ЗАПАСИ ПРЯЖІ ТА КАЛІБРУВАННЯ -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start pt-4">
+      
+      <!-- Ліва колонка: Запаси Пряжі -->
+      <section class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-md space-y-6" id="yarn">
+        <div class="flex items-center justify-between border-b border-hachok-dark/20 pb-4">
+          <h2 class="font-heading font-bold text-2xl text-hachok-dark">Запаси Пряжі</h2>
+          <a href="#edit-yarn" class="text-xs font-bold text-hachok-dark underline hover:text-hachok-gold transition-colors uppercase tracking-wider">Редагувати запаси</a>
+        </div>
+
+        <div class="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+          
+          <div class="bg-white border border-hachok-dark p-4 flex items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-parchment-bg border border-hachok-dark/40 flex items-center justify-center text-hachok-dark flex-shrink-0">
+                <i class="fas fa-boxes-stacked text-sm" aria-hidden="true"></i>
+              </div>
+              <div>
+                <h4 class="font-heading font-bold text-lg text-hachok-dark">Merino Gold</h4>
+                <p class="text-xs text-hachok-muted">Fine Weight • 450м залишилось</p>
+              </div>
+            </div>
+            <button type="button" class="text-hachok-muted hover:text-hachok-dark p-1.5 transition-colors" aria-label="Редагувати Merino Gold">
+              <i class="fas fa-pencil text-xs" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="bg-white border border-hachok-dark p-4 flex items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-parchment-bg border border-hachok-dark/40 flex items-center justify-center text-hachok-dark flex-shrink-0">
+                <i class="fas fa-boxes-stacked text-sm" aria-hidden="true"></i>
+              </div>
+              <div>
+                <h4 class="font-heading font-bold text-lg text-hachok-dark">Cotton Dream Зелений</h4>
+                <p class="text-xs text-hachok-muted">Sport Weight • 800м залишилось</p>
+              </div>
+            </div>
+            <button type="button" class="text-hachok-muted hover:text-hachok-dark p-1.5 transition-colors" aria-label="Редагувати Cotton Dream">
+              <i class="fas fa-pencil text-xs" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="bg-white border border-hachok-dark p-4 flex items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-parchment-bg border border-hachok-dark/40 flex items-center justify-center text-hachok-dark flex-shrink-0">
+                <i class="fas fa-boxes-stacked text-sm" aria-hidden="true"></i>
+              </div>
+              <div>
+                <h4 class="font-heading font-bold text-lg text-hachok-dark">Cotton Dream Жовтий</h4>
+                <p class="text-xs text-hachok-muted">Sport Weight • 800м залишилось</p>
+              </div>
+            </div>
+            <button type="button" class="text-hachok-muted hover:text-hachok-dark p-1.5 transition-colors" aria-label="Редагувати Cotton Dream">
+              <i class="fas fa-pencil text-xs" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="bg-white border border-hachok-dark p-4 flex items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-parchment-bg border border-hachok-dark/40 flex items-center justify-center text-hachok-dark flex-shrink-0">
+                <i class="fas fa-boxes-stacked text-sm" aria-hidden="true"></i>
+              </div>
+              <div>
+                <h4 class="font-heading font-bold text-lg text-hachok-dark">Cotton Dream Червоний</h4>
+                <p class="text-xs text-hachok-muted">Sport Weight • 800м залишилось</p>
+              </div>
+            </div>
+            <button type="button" class="text-hachok-muted hover:text-hachok-dark p-1.5 transition-colors" aria-label="Редагувати Cotton Dream">
+              <i class="fas fa-pencil text-xs" aria-hidden="true"></i>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Права колонка: Мої Калібрування -->
+      <section class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-md space-y-6" id="calibrations">
+        <div class="flex items-center justify-between border-b border-hachok-dark/20 pb-4">
+          <h2 class="font-heading font-bold text-2xl text-hachok-dark">Мої Калібрування</h2>
+          <a href="#all-calibrations" class="text-xs font-bold text-hachok-dark underline hover:text-hachok-gold transition-colors uppercase tracking-wider">Всі калібрування</a>
+        </div>
+
+        <div class="overflow-x-auto max-h-[360px] overflow-y-auto">
+          <table class="w-full text-left text-sm text-hachok-dark border-collapse">
+            <thead>
+              <tr class="border-b border-hachok-dark/30 text-xs font-bold text-hachok-muted uppercase tracking-wider bg-parchment-bg/60">
+                <th scope="col" class="py-3 px-3">ТИП ПРЯЖІ</th>
+                <th scope="col" class="py-3 px-3">ГАЧОК</th>
+                <th scope="col" class="py-3 px-3">СТІБОК</th>
+                <th scope="col" class="py-3 px-3">ДАТА</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hachok-dark/10 bg-white">
+              <tr class="hover:bg-parchment-bg/40 transition-colors">
+                <td class="py-3 px-3 font-bold">Merino Bulky</td>
+                <td class="py-3 px-3">6.0 mm</td>
+                <td class="py-3 px-3">Пов.Пет</td>
+                <td class="py-3 px-3 text-hachok-muted text-xs">01.04.2026</td>
+              </tr>
+              <tr class="hover:bg-parchment-bg/40 transition-colors">
+                <td class="py-3 px-3 font-bold">Summer Silk</td>
+                <td class="py-3 px-3">3.5 mm</td>
+                <td class="py-3 px-3">СБН</td>
+                <td class="py-3 px-3 text-hachok-muted text-xs">22.03.2026</td>
+              </tr>
+              <tr class="hover:bg-parchment-bg/40 transition-colors">
+                <td class="py-3 px-3 font-bold">Lace Cotton</td>
+                <td class="py-3 px-3">5.0 mm</td>
+                <td class="py-3 px-3">ССН</td>
+                <td class="py-3 px-3 text-hachok-muted text-xs">15.03.2026</td>
+              </tr>
+              <tr class="hover:bg-parchment-bg/40 transition-colors">
+                <td class="py-3 px-3 font-bold">Lace Cotton</td>
+                <td class="py-3 px-3">2.0 mm</td>
+                <td class="py-3 px-3">Пов.Пет</td>
+                <td class="py-3 px-3 text-hachok-muted text-xs">15.03.2026</td>
+              </tr>
+              <tr class="hover:bg-parchment-bg/40 transition-colors">
+                <td class="py-3 px-3 font-bold">Lace Cotton</td>
+                <td class="py-3 px-3">2.0 mm</td>
+                <td class="py-3 px-3">ССН</td>
+                <td class="py-3 px-3 text-hachok-muted text-xs">15.07.2026</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ПІДВАЛ САЙТУ -->
+  <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
+    <div class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-stone-300" aria-label="Навігація у підвалі">
+        <a href="stand.html" class="hover:text-hachok-gold transition-colors">Завантажити 3D / PDF Стенд</a>
+        <a href="index.html#faq" class="hover:text-hachok-gold transition-colors">Зворотний зв'язок та FAQ</a>
+        <a href="index.html#privacy" class="hover:text-hachok-gold transition-colors">Політика конфіденційності</a>
+        <a href="index.html#terms" class="hover:text-hachok-gold transition-colors">Умови користування</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Instagram">
+          <img src="assets/icons/Instagram.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Twitter">
+          <img src="assets/icons/Twitter.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипт мобільного меню -->
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+  </script>
+
+</body>
+</html>

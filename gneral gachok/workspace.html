@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Інтерактивний робочий простір для в'язання проєкту 'Дитячий пледик' від Генерал Гачок. Лічильник рядків, live нитковимірювач, нотатки та фонові плейлисти.">
+  <title>Робочий простір: Дитячий пледик — Генерал Гачок</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Налаштування фірмової теми Tailwind (з покращеним контрастом hachok-muted для WCAG AA) -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'hachok-dark': '#343E19',
+            'hachok-dark-hover': '#1E251B',
+            'hachok-gold': '#D9B868',
+            'hachok-gold-hover': '#C5A352',
+            'parchment-bg': '#FAF4E8',
+            'parchment-card': '#F2E8D5',
+            'hachok-muted': '#524C41',
+            'hachok-text': '#1A1A1A',
+          },
+          fontFamily: {
+            heading: ['Cormorant Garamond', 'serif'],
+            body: ['Noto Serif', 'serif'],
+            sans: ['Noto Serif', 'serif'],
+            serifText: ['Noto Serif', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Користувацькі стилі -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-parchment-bg text-hachok-text font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Швидке посилання для клавіатурної навігації (WCAG 2.4.1) -->
+  <a href="#main-content" class="skip-link">
+    Перейти до основного вмісту
+  </a>
+
+  <!-- ШАПКА САЙТУ -->
+  <header class="bg-hachok-dark border-b border-hachok-gold/40 sticky top-0 z-50 shadow-md">
+    <div class="max-w-full mx-auto px-2 sm:px-4 h-16 flex items-center justify-between">
+      
+      <!-- Логотип -->
+      <a href="index.html" class="flex items-center gap-3" aria-label="Головна сторінка Генерал Гачок">
+        <img src="assets/icons/logo.svg" alt="Логотип Генерал Гачок" width="160" height="40" class="h-10 w-auto">
+      </a>
+      
+      <!-- Десктопна навігація -->
+      <nav class="hidden md:flex items-center gap-6 lg:gap-10" aria-label="Основна навігація">
+        <a href="catalog.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Схеми</a>
+        <a href="lessons.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Відеоуроки</a>
+        <a href="stand.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Нитковимірювач</a>
+        <a href="index.html#about" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Про нас</a>
+        <a href="dovidnyk.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Довідник</a>
+      </nav>
+      
+      <!-- Профіль та гамбургер-меню -->
+      <div class="flex items-center gap-3">
+        <a href="profile.html" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-hachok-gold/20 transition-all" aria-label="Перейти до профілю користувача">
+          <img src="assets/icons/profile.svg" alt="" aria-hidden="true" width="40" height="40" class="w-10 h-10">
+        </a>
+
+        <button type="button" class="md:hidden p-2 text-hachok-gold hover:text-white focus:outline-none" aria-label="Відкрити головне меню навігації" aria-expanded="false" aria-controls="mobile-menu" onclick="toggleMobileMenu()">
+          <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Мобільне випадаюче меню -->
+    <div id="mobile-menu" class="hidden md:hidden bg-hachok-dark border-b border-hachok-gold/30 px-4 pt-3 pb-5 space-y-3">
+      <a href="catalog.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Схеми</a>
+      <a href="lessons.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Відеоуроки</a>
+      <a href="stand.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Нитковимірювач</a>
+      <a href="index.html#about" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Про нас</a>
+      <a href="dovidnyk.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Довідник</a>
+      <a href="profile.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2">Профіль</a>
+    </div>
+  </header>
+
+  <!-- ОСНОВНИЙ КОНТЕНТ РОБОЧОГО ПРОСТОРУ -->
+  <main id="main-content" class="flex-grow max-w-full lg:max-w-[1500px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- 1. ВЕРХНІЙ ОГЛЯДОВИЙ БЛОК ПРОЄКТУ -->
+    <section class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-md flex flex-col lg:flex-row gap-6 lg:gap-8 items-stretch lg:items-center justify-between">
+      
+      <!-- Ліворуч: Прев'ю зображення та інформація про проєкт -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 flex-grow">
+        
+        <!-- Зображення проєкту -->
+        <div class="w-full sm:w-44 h-44 border-2 border-hachok-dark overflow-hidden bg-white flex-shrink-0 shadow-sm">
+          <img src="assets/images/blan.jpg" alt="Прев'ю проєкту Дитячий пледик" width="176" height="176" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="hidden w-full h-full flex-col items-center justify-center p-2 text-hachok-muted bg-stone-200 text-center">
+            <i class="fas fa-layer-group text-3xl mb-1" aria-hidden="true"></i>
+            <span class="text-[10px] font-bold uppercase tracking-wider">PROJECT THUMBNAIL</span>
+          </div>
+        </div>
+
+        <!-- Деталі проєкту -->
+        <div class="space-y-4 flex-grow">
+          <div class="flex flex-wrap items-center gap-3">
+            <h1 class="font-heading font-bold text-2xl sm:text-3xl lg:text-4xl text-hachok-dark">
+              Проєкт: Дитячий пледик
+            </h1>
+            <div class="flex items-center gap-2">
+              <span class="bg-parchment-bg border border-hachok-gold text-hachok-dark text-[11px] font-bold px-2.5 py-0.5 tracking-wider uppercase">СЕРЕДНЯ</span>
+              <span class="bg-[#EFE4CF] border border-hachok-gold text-hachok-dark text-[11px] font-bold px-2.5 py-0.5 tracking-wider uppercase">В ПРОЦЕСІ</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+            
+            <!-- Основні стібки -->
+            <div class="space-y-1.5">
+              <h3 class="text-xs font-bold text-hachok-muted tracking-wider uppercase">ОСНОВНІ СТІБКИ</h3>
+              <ul class="text-xs sm:text-sm text-hachok-dark space-y-1 font-medium">
+                <li class="flex items-center gap-2"><i class="fas fa-check text-hachok-dark text-xs" aria-hidden="true"></i> Стовпчик без накиду (СБН)</li>
+                <li class="flex items-center gap-2"><i class="fas fa-check text-hachok-dark text-xs" aria-hidden="true"></i> Повітряна петля (ПП)</li>
+              </ul>
+            </div>
+
+            <!-- Інструменти й матеріали -->
+            <div class="space-y-1.5">
+              <h3 class="text-xs font-bold text-hachok-muted tracking-wider uppercase">ІНСТРУМЕНТИ Й МАТЕРІАЛИ</h3>
+              <ul class="text-xs sm:text-sm text-hachok-dark space-y-1 font-medium">
+                <li>Пряжа: <strong class="font-bold">Merino Soft (Grey)</strong></li>
+                <li>Гачок: <strong class="font-bold">4.5 mm</strong></li>
+                <li>Метраж: <strong class="font-bold">200 m (Total)</strong></li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Праворуч: Віджет стану HACHOK METRIC V1.0 -->
+      <div class="border-2 border-hachok-dark bg-parchment-bg p-4 sm:p-5 flex flex-col items-center justify-center text-center min-w-[200px] shadow-sm flex-shrink-0">
+        <div class="text-[11px] font-bold tracking-widest uppercase text-hachok-dark">HACHOK METRIC V1.0</div>
+        <hr class="w-12 border-t border-hachok-dark my-2">
+        <div class="text-[10px] font-bold text-hachok-muted tracking-wider uppercase mb-1">ПОТОЧНИЙ СТАН</div>
+        <div class="font-heading font-bold text-4xl text-hachok-dark leading-tight">14/45</div>
+        <div class="text-xs text-hachok-muted font-medium mt-1">120.00m used</div>
+      </div>
+
+    </section>
+
+    <!-- 2. ПАНЕЛЬ УПРАВЛІННЯ ТА КНОПКИ ДІЙ -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Панель управління трекінгом">
+      
+      <button type="button" class="py-3.5 px-4 bg-white text-hachok-dark font-heading font-bold text-sm border-2 border-hachok-dark hover:bg-parchment-bg transition-colors flex items-center justify-center gap-2 uppercase tracking-wider shadow-sm">
+        <i class="fas fa-pause text-xs" aria-hidden="true"></i> ПАУЗА / ПОЧАТИ ТРЕКІНГ
+      </button>
+
+      <button type="button" class="py-3.5 px-4 bg-hachok-dark text-hachok-gold font-heading font-bold text-sm border-2 border-hachok-gold hover:bg-hachok-dark-hover transition-colors flex items-center justify-center gap-2 uppercase tracking-wider shadow-md">
+        <i class="fas fa-plus text-xs" aria-hidden="true"></i> НАСТУПНИЙ РЯДОК (ПРОБІЛ)
+      </button>
+
+      <button type="button" class="py-3.5 px-4 bg-white text-hachok-dark font-heading font-bold text-sm border-2 border-hachok-dark hover:bg-parchment-bg transition-colors flex items-center justify-center gap-2 uppercase tracking-wider shadow-sm">
+        <i class="fas fa-save text-xs" aria-hidden="true"></i> ЗБЕРЕГТИ ПРОГРЕС
+      </button>
+
+      <button type="button" class="py-3.5 px-4 bg-white text-hachok-dark font-heading font-bold text-sm border-2 border-hachok-dark hover:bg-parchment-bg transition-colors flex items-center justify-center gap-2 uppercase tracking-wider shadow-sm">
+        <i class="fas fa-plug text-xs" aria-hidden="true"></i> ПІДКТЮЧИТИ НИТКОВИМІРЮВАЧ
+      </button>
+
+    </section>
+
+    <!-- 3. ДВОКОЛОНКОВА ОСНОВНА СІТКА -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+      
+      <!-- Ліва колонка: Інструкція, активний рядок та підказка/музичний віджет -->
+      <section class="bg-white border-2 border-hachok-dark shadow-md flex flex-col justify-between">
+        
+        <div class="bg-parchment-card border-b border-hachok-dark/30 p-4 sm:p-5 flex items-center justify-between">
+          <h2 class="font-heading font-bold text-lg sm:text-xl text-hachok-dark uppercase tracking-wider">
+            ІНСТРУКЦІЯ ТА АКТИВНИЙ РЯДОК
+          </h2>
+          <button type="button" class="text-hachok-muted hover:text-hachok-dark transition-colors p-1" aria-label="Згорнути панель">
+            <i class="fas fa-arrow-left text-sm" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="p-6 space-y-6 flex-grow flex flex-col justify-between">
+          
+          <div class="space-y-3">
+            <span class="text-xs font-bold text-hachok-muted tracking-wider uppercase block">СЕКЦІЯ 1</span>
+            <h3 class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">РЯДОК 14 з 45</h3>
+            
+            <div class="space-y-1.5 pt-1">
+              <div class="w-full h-3 bg-parchment-card border border-hachok-dark/30 rounded-full overflow-hidden">
+                <div class="h-full bg-hachok-dark" style="width: 31%;"></div>
+              </div>
+              <span class="text-xs font-bold text-hachok-muted tracking-wider uppercase block">31% ВИКОНАНО</span>
+            </div>
+          </div>
+
+          <!-- Цитата з інструкцією -->
+          <div class="border-l-4 border-hachok-dark bg-parchment-card p-4 my-2">
+            <p class="font-serifText italic text-base sm:text-lg text-hachok-dark leading-relaxed">
+              "Рядок 14: 1 ПВ для підйому, 30 СБН за задню стінку петлі, поверніть роботу."
+            </p>
+          </div>
+
+          <!-- Кнопка відео -->
+          <button type="button" class="w-full py-3 px-4 bg-white text-hachok-dark font-heading font-bold text-sm border border-hachok-dark hover:bg-parchment-bg transition-colors flex items-center justify-center gap-2 uppercase tracking-wider">
+            <i class="fas fa-play-circle text-base" aria-hidden="true"></i> ЯК В'ЯЗАТИ ЦЕЙ СТІБОК (ВІДЕО)
+          </button>
+
+          <!-- СЕКЦІЯ СХЕМИ ТА АТМОСФЕРНОЇ МУЗИКИ (VISUAL AID + SPOTIFY WIDGET) -->
+          <div class="border-2 border-hachok-dark bg-parchment-card shadow-sm overflow-hidden">
+            
+            <!-- Перемикач вкладок -->
+            <div class="flex border-b border-hachok-dark/30 bg-parchment-bg">
+              <button type="button" id="tab-btn-diagram" onclick="switchVisualTab('diagram')" class="flex-1 py-2.5 px-3 font-heading font-bold text-xs sm:text-sm uppercase tracking-wider text-hachok-gold bg-hachok-dark border-r border-hachok-dark/30 transition-colors flex items-center justify-center gap-2">
+                <i class="fas fa-project-diagram text-xs" aria-hidden="true"></i> Схема / Visual Aid
+              </button>
+              <button type="button" id="tab-btn-opera" onclick="switchVisualTab('opera')" class="flex-1 py-2.5 px-3 font-heading font-bold text-xs sm:text-sm uppercase tracking-wider text-hachok-dark hover:bg-parchment-card transition-colors flex items-center justify-center gap-2">
+                <i class="fas fa-music text-xs" aria-hidden="true"></i> Опери для атмосфери
+              </button>
+            </div>
+
+            <!-- Вміст вкладок -->
+            <div class="p-4 sm:p-5">
+              
+              <!-- Вкладка 1: Схема стібка -->
+              <div id="tab-content-diagram" class="block">
+                <div class="border-2 border-dashed border-hachok-gold bg-parchment-bg/60 p-6 flex flex-col items-center justify-center text-center text-hachok-muted min-h-[160px] gap-2">
+                  <i class="fas fa-project-diagram text-2xl text-hachok-muted" aria-hidden="true"></i>
+                  <span class="text-xs font-bold tracking-widest uppercase">DIAGRAM PLACEHOLDER / VISUAL AID</span>
+                  <p class="text-xs text-hachok-muted max-w-xs font-serifText">
+                    Графічна схема 14-го рядка для комфортного в'язання
+                  </p>
+                </div>
+              </div>
+
+              <!-- Вкладка 2: Опери для атмосфери (Spotify Віджет) -->
+              <div id="tab-content-opera" class="hidden space-y-4">
+                
+                <div class="flex flex-wrap items-center justify-between pb-2 border-b border-hachok-gold/40 gap-2">
+                  <span class="text-xs font-bold text-hachok-dark tracking-wider uppercase flex items-center gap-2">
+                    <i class="fab fa-spotify text-emerald-700 text-base" aria-hidden="true"></i> Плейлист під процес в'язання
+                  </span>
+                  
+                  <!-- Перемикач альбомів Spotify -->
+                  <div class="flex gap-2">
+                    <button type="button" onclick="switchSpotifyTrack(1)" id="spotify-btn-1" class="px-3 py-1 text-[11px] font-bold uppercase tracking-wider bg-hachok-dark text-hachok-gold border border-hachok-gold shadow-sm">
+                      Опера 1
+                    </button>
+                    <button type="button" onclick="switchSpotifyTrack(2)" id="spotify-btn-2" class="px-3 py-1 text-[11px] font-bold uppercase tracking-wider bg-white text-hachok-dark border border-hachok-dark hover:bg-parchment-bg transition-colors">
+                      Опера 2
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Spotify Плеєр 1 -->
+                <div id="spotify-player-1" class="block rounded-xl overflow-hidden shadow-md border border-hachok-dark/20">
+                  <iframe 
+                    style="border-radius:12px" 
+                    src="https://open.spotify.com/embed/album/2g12QZ0wXFoyOyDo8nUUsM?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="152" 
+                    frameBorder="0" 
+                    allowfullscreen="" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"
+                    title="Spotify Альбом 1 — Опери для атмосфери">
+                  </iframe>
+                </div>
+
+                <!-- Spotify Плеєр 2 -->
+                <div id="spotify-player-2" class="hidden rounded-xl overflow-hidden shadow-md border border-hachok-dark/20">
+                  <iframe 
+                    style="border-radius:12px" 
+                    src="https://open.spotify.com/embed/album/4sD3O2NsmbzU7hkjgTpbjG?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="152" 
+                    frameBorder="0" 
+                    allowfullscreen="" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"
+                    title="Spotify Альбом 2 — Опери для атмосфери">
+                  </iframe>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Права колонка: Live Нитковимірювач та Нотатки -->
+      <section class="bg-white border-2 border-hachok-dark shadow-md flex flex-col justify-between">
+        
+        <div class="bg-parchment-card border-b border-hachok-dark/30 p-4 sm:p-5 flex items-center justify-between flex-wrap gap-2">
+          <h2 class="font-heading font-bold text-lg sm:text-xl text-hachok-dark uppercase tracking-wider">
+            LIVE НИТКОВИМІРЮВАЧ ТА НОТАТКИ
+          </h2>
+          <span class="inline-flex items-center gap-2 text-xs font-bold text-hachok-dark tracking-wider uppercase">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span> СЕНСОР: АКТИВНИЙ
+          </span>
+        </div>
+
+        <div class="p-6 space-y-6 flex-grow flex flex-col justify-between">
+          
+          <!-- Дисплей метражу -->
+          <div class="bg-[#EFE4CF] border border-hachok-gold p-6 text-center space-y-2 shadow-inner">
+            <div class="text-xs font-bold text-hachok-dark tracking-widest uppercase">LIVE ЗЧИТУВАННЯ МЕТРАЖУ</div>
+            <div class="font-heading font-bold text-5xl sm:text-6xl text-hachok-dark tracking-wider">00.00 m</div>
+            <div class="text-xs text-hachok-muted font-mono">OFFSET: +0.02m | DRIFT: 0.00</div>
+          </div>
+
+          <!-- ПЛАШКА ЗАЛИШКУ (ТЕПЕР ЗВЕРХУ) -->
+          <div class="flex items-center justify-between border-y border-hachok-dark/20 py-3 text-sm text-hachok-dark">
+            <div class="flex items-center gap-2 font-medium">
+              <i class="fas fa-scroll text-hachok-muted" aria-hidden="true"></i> Залишок у мотку: <strong class="font-bold">80 м</strong>
+            </div>
+            <span class="bg-white border border-hachok-dark text-hachok-dark text-xs font-bold px-3 py-1 shadow-sm">
+              Вам вистачає
+            </span>
+          </div>
+
+          <!-- НОТАТКИ (ТЕПЕР ЗНИЗУ ТА РОЗТЯГНУТІ ДО КІНЦЯ СЕКЦІЇ) -->
+          <div class="space-y-2 flex-grow flex flex-col">
+            <label for="section-note" class="text-xs font-bold text-hachok-dark tracking-widest uppercase block">
+              ВАША НОТА ДО ЦІЄЇ СЕКЦІЇ
+            </label>
+            <textarea id="section-note" placeholder="Додати коментар (напр. щільність, зміна гачка, особливості натягу нитки)..." class="w-full h-full min-h-[200px] flex-grow p-4 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark text-sm placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors font-serifText resize-none"></textarea>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ПІДВАЛ САЙТУ -->
+  <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
+    <div class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-stone-300" aria-label="Навігація у підвалі">
+        <a href="stand.html" class="hover:text-hachok-gold transition-colors">Завантажити 3D / PDF Стенд</a>
+        <a href="index.html#faq" class="hover:text-hachok-gold transition-colors">Зворотний зв'язок та FAQ</a>
+        <a href="index.html#privacy" class="hover:text-hachok-gold transition-colors">Політика конфіденційності</a>
+        <a href="index.html#terms" class="hover:text-hachok-gold transition-colors">Умови користування</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Ми в Instagram">
+          <img src="assets/icons/Instagram.svg" alt="" aria-hidden="true" width="20" height="20" loading="lazy" class="w-5 h-5"> 
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Ми в X (Twitter)">
+          <img src="assets/icons/Twitter.svg" alt="" aria-hidden="true" width="20" height="20" loading="lazy" class="w-5 h-5"> 
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- СКРИПТИ ДЛЯ МЕНЮ, ВКЛАДОК ТА ПЛЕЄРА -->
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const btn = document.querySelector('button[aria-controls="mobile-menu"]');
+      const isHidden = menu.classList.toggle('hidden');
+      if (btn) {
+        btn.setAttribute('aria-expanded', !isHidden);
+      }
+    }
+
+    // Перемикання вкладок Visual Aid / Опери
+    function switchVisualTab(tab) {
+      const diagramTab = document.getElementById('tab-content-diagram');
+      const operaTab = document.getElementById('tab-content-opera');
+      const btnDiagram = document.getElementById('tab-btn-diagram');
+      const btnOpera = document.getElementById('tab-btn-opera');
+
+      if (tab === 'diagram') {
+        diagramTab.classList.remove('hidden');
+        diagramTab.classList.add('block');
+        operaTab.classList.remove('block');
+        operaTab.classList.add('hidden');
+
+        btnDiagram.className = "flex-1 py-2.5 px-3 font-heading font-bold text-xs sm:text-sm uppercase tracking-wider text-hachok-gold bg-hachok-dark border-r border-hachok-dark/30 transition-colors flex items-center justify-center gap-2";
+        btnOpera.className = "flex-1 py-2.5 px-3 font-heading font-bold text-xs sm:text-sm uppercase tracking-wider text-hachok-dark hover:bg-parchment-card transition-colors flex items-center justify-center gap-2";
+      } else {
+        operaTab.classList.remove('hidden');
+        operaTab.classList.add('block');
+        diagramTab.classList.remove('block');
+        diagramTab.classList.add('hidden');
+
+        btnOpera.className = "flex-1 py-2.5 px-3 font-heading font-bold text-xs sm:text-sm uppercase tracking-wider text-hachok-gold bg-hachok-dark transition-colors flex items-center justify-center gap-2";
+        btnDiagram.className = "flex-1 py-2.5 px-3 font-heading font-bold text-xs sm:text-sm uppercase tracking-wider text-hachok-dark border-r border-hachok-dark/30 hover:bg-parchment-card transition-colors flex items-center justify-center gap-2";
+      }
+    }
+
+    // Перемикання списку плейлистів Spotify
+    function switchSpotifyTrack(num) {
+      const p1 = document.getElementById('spotify-player-1');
+      const p2 = document.getElementById('spotify-player-2');
+      const btn1 = document.getElementById('spotify-btn-1');
+      const btn2 = document.getElementById('spotify-btn-2');
+
+      if (num === 1) {
+        p1.classList.remove('hidden');
+        p1.classList.add('block');
+        p2.classList.remove('block');
+        p2.classList.add('hidden');
+
+        btn1.className = "px-3 py-1 text-[11px] font-bold uppercase tracking-wider bg-hachok-dark text-hachok-gold border border-hachok-gold shadow-sm";
+        btn2.className = "px-3 py-1 text-[11px] font-bold uppercase tracking-wider bg-white text-hachok-dark border border-hachok-dark hover:bg-parchment-bg transition-colors";
+      } else {
+        p2.classList.remove('hidden');
+        p2.classList.add('block');
+        p1.classList.remove('block');
+        p1.classList.add('hidden');
+
+        btn2.className = "px-3 py-1 text-[11px] font-bold uppercase tracking-wider bg-hachok-dark text-hachok-gold border border-hachok-gold shadow-sm";
+        btn1.className = "px-3 py-1 text-[11px] font-bold uppercase tracking-wider bg-white text-hachok-dark border border-hachok-dark hover:bg-parchment-bg transition-colors";
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Генерал Гачок — українська платформа для любителів в'язання гачком. Безкоштовні схеми, відеоуроки, довідник матеріалів та інтерактивний нитковимірювач.">
+  <title>Генерал Гачок — Майстерня та Калькулятор Пряжі</title>
+
+  <!-- Google Fonts (З оптимізованим відображенням display=swap) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Налаштування фірмової теми Tailwind (з покращеним контрастом hachok-muted для WCAG AA) -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'hachok-dark': '#343E19',
+            'hachok-dark-hover': '#1E251B',
+            'hachok-gold': '#D9B868',
+            'hachok-gold-hover': '#C5A352',
+            'parchment-bg': '#FAF4E8',
+            'parchment-card': '#F2E8D5',
+            'hachok-muted': '#524C41',
+            'hachok-text': '#1A1A1A',
+          },
+          fontFamily: {
+            heading: ['Cormorant Garamond', 'serif'],
+            body: ['Noto Serif', 'serif'],
+            sans: ['Noto Serif', 'serif'],
+            serifText: ['Noto Serif', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Користувацькі стилі -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-parchment-bg text-hachok-text font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Швидке посилання для клавіатурної навігації (WCAG 2.4.1) -->
+  <a href="#main-content" class="skip-link">
+    Перейти до основного вмісту
+  </a>
+
+  <!-- ШАПКА САЙТУ -->
+  <header class="bg-hachok-dark border-b border-hachok-gold/40 sticky top-0 z-50 shadow-md">
+    <div class="max-w-full mx-auto px-2 sm:px-4 h-16 flex items-center justify-between">
+      
+      <!-- Логотип -->
+      <a href="index.html" class="flex items-center gap-3" aria-label="Головна сторінка Генерал Гачок">
+        <img src="assets/icons/logo.svg" alt="Логотип Генерал Гачок" width="160" height="40" class="h-10 w-auto">
+      </a>
+      
+      <!-- Десктопна навігація -->
+      <nav class="hidden md:flex items-center gap-6 lg:gap-10" aria-label="Основна навігація">
+        <a href="catalog.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Схеми</a>
+        <a href="lessons.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Відеоуроки</a>
+        <a href="stand.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Нитковимірювач</a>
+        <a href="index.html#about" class="font-heading font-bold text-lg uppercase tracking-wider text-hachok-gold hover:text-hachok-gold transition-colors" aria-current="page">Про нас</a>
+        <a href="dovidnyk.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Довідник</a>
+      </nav>
+      
+      <!-- Профіль та гамбургер-меню -->
+      <div class="flex items-center gap-3">
+        <a href="profile.html" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-hachok-gold/20 transition-all" aria-label="Перейти до профілю користувача">
+          <img src="assets/icons/profile.svg" alt="" aria-hidden="true" width="40" height="40" class="w-10 h-10">
+        </a>
+
+        <button type="button" class="md:hidden p-2 text-hachok-gold hover:text-white focus:outline-none" aria-label="Відкрити головне меню навігації" aria-expanded="false" aria-controls="mobile-menu" onclick="toggleMobileMenu()">
+          <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Мобільне випадаюче меню -->
+    <div id="mobile-menu" class="hidden md:hidden bg-hachok-dark border-b border-hachok-gold/30 px-4 pt-3 pb-5 space-y-3">
+      <a href="catalog.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Схеми</a>
+      <a href="lessons.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Відеоуроки</a>
+      <a href="stand.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Нитковимірювач</a>
+      <a href="index.html#about" class="block font-heading font-bold text-xl uppercase text-hachok-gold py-2 border-b border-hachok-gold/20" aria-current="page">Про нас</a>
+      <a href="dovidnyk.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Довідник</a>
+      <a href="profile.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2">Профіль</a>
+    </div>
+  </header>
+
+  <!-- ОСНОВНИЙ КОНТЕНТ -->
+  <main id="main-content" class="flex-grow">
+    
+    <!-- HERO СЕКЦІЯ -->
+    <section class="bg-hachok-dark border-b border-hachok-gold py-16 lg:py-14 px-4 relative overflow-hidden">
+      
+      <!-- Лівий декор -->
+      <img src="assets/icons/gold_decor.svg" alt="" aria-hidden="true" width="200" height="650" class="hidden lg:block absolute left-5 top-1/2 -translate-y-1/2 h-[100%] max-h-[650px] w-auto object-contain select-none opacity-90 pointer-events-none">
+
+      <!-- Центральний блок -->
+      <div class="max-w-5xl mx-auto flex flex-col items-center text-center space-y-10 sm:space-y-12 relative z-10">
+        
+        <!-- Підзаголовок зверху -->
+        <p class="font-heading text-2xl sm:text-3xl text-hachok-gold tracking-widest">
+          Твій цифровий помічник у світі в’язання
+        </p>
+        
+        <!-- ЄДИНИЙ ГОЛОВНИЙ ЗАГОЛОВОК H1 НА СТОРІНЦІ -->
+        <div class="flex items-center justify-center">
+          <h1 class="font-heading font-bold text-4xl sm:text-6xl lg:text-7xl text-hachok-gold flex flex-wrap items-center justify-center gap-5 sm:gap-8 tracking-widest">
+            <span>ГЕНЕРАЛ</span>
+            <a href="index.html" class="inline-block transition-transform hover:scale-105" aria-label="Символ та Медаль Генерал Гачок">
+              <img src="assets/icons/medal_main(1).svg" alt="Медаль Генерал Гачок" width="320" height="320" class="w-60 h-60 sm:w-60 sm:h-60 lg:w-80 lg:h-80">
+            </a>
+            <span>ГАЧОК</span>
+          </h1>
+        </div>
+
+        <!-- Опис знизу -->
+        <p class="font-heading text-xl sm:text-2xl lg:text-3xl text-hachok-gold max-w-4xl leading-relaxed">
+          Зручні схеми, відеопідказки українською та миттєвий вимірювач витрати нитки в одному місці.
+        </p>
+      </div>
+
+      <!-- Правий декор -->
+      <img src="assets/icons/gold_decor.svg" alt="" aria-hidden="true" width="200" height="650" class="hidden lg:block absolute right-5 top-1/2 -translate-y-1/2 h-[100%] max-h-[650px] w-auto object-contain select-none opacity-90 -scale-x-100 pointer-events-none">
+
+    </section>
+
+    <!-- СЕКЦІЯ "ЧОМУ МИ?" -->
+    <section class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-10 py-6 lg:py-8" id="about">
+      
+      <!-- Картуш-заголовок (H2) -->
+      <div class="cartouche-header mb-6 py-2">
+        <h2>ЧОМУ МИ?</h2>
+      </div>
+      
+      <!-- Картка-контейнер -->
+      <div class="bg-parchment-card border-2 border-hachok-dark p-8 sm:p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center shadow-md">
+        
+        <!-- Текстова частина -->
+        <div class="lg:col-span-6 space-y-6 text-lg sm:text-xl lg:text-xl text-hachok-dark leading-relaxed font-serifText">
+          <p>Кожна в’язальниця знає цей страх: до кінця виробу лишилося два ряди, а пряжа закінчується. Або інша історія — купуєш моток «із запасом», і він роками припадає пилом у шафі. Додайте сюди заплутані описи та іноземні скорочення, і замість відпочинку отримуєш стрес.</p>
+          <p>Ми створили «Генерал Гачок», щоб повернути у в’язання спокій.</p>
+          <p>Ми поєднали зрозумілу базу схем, короткі відеопідказки українською та простий вимірювач нитки, який працює через звичайну комп'ютерну мишку. Тепер ви чітко знаєте, скільки метрів іде на один стібок, і бачите точний розрахунок ще до початку роботи.</p>
+          <p class="font-bold text-hachok-dark">Більше жодних гадань на кавовій гущі та докуповувань пряжі з іншої партії. Тільки ви, затишок і впевненість у кожному рядку.</p>
+        </div>
+        
+        <!-- Відео з preload="metadata" -->
+        <div class="lg:col-span-6 flex justify-center">
+          <div class="bg-hachok-dark shadow-lg max-w-lg sm:max-w-xl w-full">
+            <video autoplay loop muted playsinline preload="metadata" aria-label="Демонстраційне відео роботи з вимірювачем нитки" title="Демонстрація вимірювання нитки" class="w-full h-auto object-contain">
+              <source src="assets/images/ladWhamster.mp4" type="video/mp4">
+              Ваш браузер не підтримує відтворення відео.
+            </video>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- СЕКЦІЯ ПОСЛУГ / КАРТОК -->
+    <section class="max-w-full lg:max-w-[1500px] mx-auto px-6 sm:px-10 lg:px-8 py-8 lg:py-10" id="schemes">
+<div class="cartouche-header ">
+  <h2>ЩО МАЄ ГЕНЕРАЛ ГАЧОК?</h2>
+</div>
+      
+      <!-- Збільшені картки -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+        
+        <!-- Картка 1 -->
+        <article class="bg-white border-2 border-hachok-dark p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:border-hachok-gold transition-all duration-300 shadow-md min-h-[420px]">
+          <a href="catalog.html" class="block overflow-hidden mb-5 border border-hachok-dark/20 aspect-[4/3]" aria-label="Перейти до бібліотеки безкоштовних схем">
+            <img src="assets/images/lib_img.png" alt="Бібліотека безкоштовних схем в'язання" width="400" height="300" loading="lazy" decoding="async" class="w-full h-52 sm:h-56 lg:h-60 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <div class="space-y-2">
+            <h3 class="font-heading font-bold text-2xl lg:text-3xl text-hachok-dark">
+              <a href="catalog.html" class="hover:text-hachok-gold-hover transition-colors">Бібліотека безкоштовних схем</a>
+            </h3>
+            <p class="text-base text-hachok-muted leading-relaxed">Безкоштовні схеми українською мовою.</p>
+          </div>
+        </article>
+
+        <!-- Картка 2 (Унікально) -->
+        <article class="bg-white border-2 border-hachok-dark p-6 sm:p-7 flex flex-col justify-between relative hover:-translate-y-1.5 hover:border-hachok-gold transition-all duration-300 shadow-md min-h-[420px]">
+          <span class="absolute top-4 right-4 bg-hachok-dark text-hachok-gold font-bold text-xs px-3 py-1 uppercase tracking-wider z-10 border border-hachok-gold">УНІКАЛЬНО!</span>
+          <a href="stand.html" class="block overflow-hidden mb-5 border border-hachok-dark/20 aspect-[4/3] mt-2" aria-label="Перейти до інтерактивного нитковимірювача">
+            <img src="assets/images/vym.png" alt="Інтерактивний нитковимірювач" width="400" height="300" loading="lazy" decoding="async" class="w-full h-52 sm:h-56 lg:h-60 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <div class="space-y-2">
+            <h3 class="font-heading font-bold text-2xl lg:text-3xl text-hachok-dark">
+              <a href="stand.html" class="hover:text-hachok-gold-hover transition-colors">Нитковимірювач</a>
+            </h3>
+            <p class="text-base text-hachok-muted leading-relaxed">Унікальний вимірювач нитки, що використовує CMOS-сенсор вашої мишки.</p>
+          </div>
+        </article>
+
+        <!-- Картка 3 -->
+        <article class="bg-white border-2 border-hachok-dark p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:border-hachok-gold transition-all duration-300 shadow-md min-h-[420px]">
+          <a href="profile.html" class="block overflow-hidden mb-5 border border-hachok-dark/20 aspect-[4/3]" aria-label="Перейти до відстежування залишків пряжі у профілі">
+            <img src="assets/images/image-row.png" alt="Аналіз залишків пряжі" width="400" height="300" loading="lazy" decoding="async" class="w-full h-52 sm:h-56 lg:h-60 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <div class="space-y-2">
+            <h3 class="font-heading font-bold text-2xl lg:text-3xl text-hachok-dark">
+              <a href="profile.html" class="hover:text-hachok-gold-hover transition-colors">Залишки пряжі</a>
+            </h3>
+            <p class="text-base text-hachok-muted leading-relaxed">Прогнозування закінчення запасів, розрахунок потрібної пряжі для проєкту.</p>
+          </div>
+        </article>
+
+        <!-- Картка 4 -->
+        <article class="bg-white border-2 border-hachok-dark p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:border-hachok-gold transition-all duration-300 shadow-md min-h-[420px]">
+          <a href="lessons.html" class="block overflow-hidden mb-5 border border-hachok-dark/20 aspect-[4/3]" aria-label="Перейти до навчальних відеоуроків">
+            <img src="assets/images/imageVidl.png" alt="Відеоуроки з в'язання гачком" width="400" height="300" loading="lazy" decoding="async" class="w-full h-52 sm:h-56 lg:h-60 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <div class="space-y-2">
+            <h3 class="font-heading font-bold text-2xl lg:text-3xl text-hachok-dark">
+              <a href="lessons.html" class="hover:text-hachok-gold-hover transition-colors">Відеоуроки</a>
+            </h3>
+            <p class="text-base text-hachok-muted leading-relaxed">Детальні відеоуроки додані прямо у текст схеми.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- СЕКЦІЯ: НИТКОВИМІРЮВАЧ ТА РЕЄСТРАЦІЯ (2-КОЛОНОЧНА СІТКА) -->
+    <section class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-10 py-10 lg:py-10" id="calculator">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
+        
+        <!-- Зліва: Нитковимірювач Демо -->
+        <div class="bg-[#E8DEC8] border-2 border-hachok-gold rounded-md p-8 sm:p-10 lg:p-12 text-center flex flex-col justify-between items-center space-y-6 shadow-md">
+          <div class="space-y-4">
+            <h2 class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">Спробуйте Нитковимірювач просто зараз</h2>
+            <p class="text-base sm:text-lg text-hachok-dark leading-relaxed">
+              Інтерактивна картка-закладка дозволяє відкалібрувати сенсор мишки, виміряти точну витрату нитки та зберегти розрахунки у свій кабінет.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full pt-4">
+            <a href="catalog.html" class="w-full sm:w-auto px-6 py-3.5 bg-parchment-bg text-hachok-dark font-heading font-bold border-2 border-hachok-dark hover:bg-hachok-dark hover:text-hachok-gold transition-all uppercase text-sm tracking-wider">
+              ОГЛЯНУТИ СХЕМИ
+            </a>
+            <a href="stand.html" class="w-full sm:w-auto px-6 py-3.5 bg-hachok-dark text-hachok-gold font-heading font-bold border border-hachok-gold hover:bg-hachok-dark-hover transition-all uppercase text-sm tracking-wider">
+              СПРОБУВАТИ СЕНСОР
+            </a>
+          </div>
+        </div>
+
+        <!-- Справа: Реєстрація (CTA) -->
+        <div class="bg-hachok-dark text-parchment-bg border-2 border-hachok-gold rounded-md p-8 sm:p-10 lg:p-12 text-center flex flex-col justify-between items-center space-y-6 shadow-md">
+          <div class="space-y-4">
+            <div class="text-hachok-gold text-4xl">
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
+            </div>
+            <h2 class="font-heading font-bold text-3xl sm:text-4xl tracking-wide text-hachok-gold">Готові розпочати власний проєкт?</h2>
+            <p class="text-base sm:text-lg text-stone-300 max-w-lg mx-auto leading-relaxed">
+              Створіть безкоштовний акаунт, щоб зберігати точно виміряні метражі пряжі, відстежувати лічильник рядків та отримати повний доступ до каталогу схем.
+            </p>
+          </div>
+          <div class="w-full pt-4 space-y-3">
+            <a href="auth.html" class="inline-block w-full sm:w-auto px-8 py-4 bg-hachok-gold text-hachok-dark font-heading font-bold text-lg border border-hachok-gold hover:bg-hachok-gold-hover transition-all shadow-sm uppercase tracking-wider">
+              ЗАРЄЄСТРУВАТИСЯ ЗАРАЗ
+            </a>
+            <p class="text-xs text-hachok-gold opacity-80 italic block">Безкоштовно для усіх майстринь та майстрів</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ПІДВАЛ САЙТУ -->
+  <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
+    <div class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-stone-300" aria-label="Навігація у підвалі">
+        <a href="stand.html" class="hover:text-hachok-gold transition-colors">Завантажити 3D / PDF Стенд</a>
+        <a href="index.html#faq" class="hover:text-hachok-gold transition-colors">Зворотний зв'язок та FAQ</a>
+        <a href="index.html#privacy" class="hover:text-hachok-gold transition-colors">Політика конфіденційності</a>
+        <a href="index.html#terms" class="hover:text-hachok-gold transition-colors">Умови користування</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Ми в Instagram">
+          <img src="assets/icons/Instagram.svg" alt="" aria-hidden="true" width="20" height="20" loading="lazy" class="w-5 h-5"> 
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Ми в X (Twitter)">
+          <img src="assets/icons/Twitter.svg" alt="" aria-hidden="true" width="20" height="20" loading="lazy" class="w-5 h-5"> 
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипт мобільного меню -->
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const btn = document.querySelector('button[aria-controls="mobile-menu"]');
+      const isHidden = menu.classList.toggle('hidden');
+      if (btn) {
+        btn.setAttribute('aria-expanded', !isHidden);
+      }
+    }
+  </script>
+
+</body>
+</html>

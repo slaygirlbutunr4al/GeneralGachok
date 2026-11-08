@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Схема: Літній ажурний топ — Генерал Гачок</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Inter:wght@400;500;600&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Налаштування фірмової теми Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'hachok-dark': '#343E19',
+            'hachok-dark-hover': '#1E251B',
+            'hachok-gold': '#D9B868',
+            'hachok-gold-hover': '#C5A352',
+            'parchment-bg': '#FAF4E8',
+            'parchment-card': '#F2E8D5',
+            'hachok-muted': '#6E6658',
+            'hachok-text': '#1A1A1A',
+          },
+          fontFamily: {
+            heading: ['Cormorant Garamond', 'serif'],
+            body: ['Noto Serif', 'serif'],
+            sans: ['Noto Serif', 'serif'],
+            serifText: ['Noto Serif', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-parchment-bg text-hachok-text font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Skip Link для доступності -->
+  <a href="#main-content" class="skip-link">Перейти до основного вмісту</a>
+
+  <!-- ШАПКА САЙТУ -->
+  <header class="bg-hachok-dark border-b border-hachok-gold/40 sticky top-0 z-50 shadow-md">
+    <div class="max-w-full mx-auto px-2 sm:px-4 h-16 flex items-center justify-between">
+      
+      <!-- Логотип -->
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/icons/logo.svg" alt="Логотип Генерал Гачок" class="h-10 w-auto">
+      </a>
+      
+      <!-- Десктопна навігація -->
+      <nav class="hidden md:flex items-center gap-6 lg:gap-10" aria-label="Основна навігація">
+        <a href="catalog.html" class="font-heading font-bold text-lg uppercase tracking-wider text-hachok-gold transition-colors">Схеми</a>
+        <a href="lessons.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Відеоуроки</a>
+        <a href="stand.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Нитковимірювач</a>
+        <a href="index.html#about" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Про нас</a>
+        <a href="dovidnyk.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Довідник</a>
+      </nav>
+      
+      <!-- Профіль та гамбургер-меню -->
+      <div class="flex items-center gap-3">
+        <a href="profile.html" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-hachok-gold/20 transition-all" aria-label="Перейти до профілю користувача">
+          <img src="assets/icons/profile.svg" alt="" aria-hidden="true" class="w-10 h-10">
+        </a>
+
+        <button type="button" class="md:hidden p-2 text-hachok-gold hover:text-white focus:outline-none" aria-label="Відкрити меню" onclick="toggleMobileMenu()">
+          <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Мобільне випадаюче меню -->
+    <div id="mobile-menu" class="hidden md:hidden bg-hachok-dark border-b border-hachok-gold/30 px-4 pt-3 pb-5 space-y-3">
+      <a href="catalog.html" class="block font-heading font-bold text-xl uppercase text-hachok-gold py-2 border-b border-hachok-gold/20">Схеми</a>
+      <a href="lessons.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Відеоуроки</a>
+      <a href="stand.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Нитковимірювач</a>
+      <a href="index.html#about" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Про нас</a>
+      <a href="dovidnyk.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Довідник</a>
+      <a href="profile.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2">Профіль</a>
+    </div>
+  </header>
+
+  <!-- ОСНОВНИЙ КОНТЕНТ СТОРІНКИ СХЕМИ -->
+  <main id="main-content" class="pattern-detail-main flex-grow">
+    
+    <!-- ВЕРХНІЙ БЛОК: ОБКЛАДИНКА, СПЕЦИФІКАЦІЯ ТА ДЕКОР -->
+    <section class="pattern-hero-card">
+      
+      <!-- Зображення схеми -->
+      <div class="pattern-cover">
+        <img src="assets/images/top.jpg" alt="Обкладинка схеми Літній ажурний топ" class="pattern-cover-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="pattern-cover-placeholder">
+          <i class="fas fa-image" aria-hidden="true"></i>
+          <span>ФОТО СХЕМИ</span>
+        </div>
+      </div>
+
+      <!-- Інформація про схему -->
+      <div class="pattern-meta-details">
+        <h1>Літній ажурний топ</h1>
+
+        <div class="pattern-specs-grid">
+          
+          <!-- Набір стібків -->
+          <div class="spec-column">
+            <h3>НАБІР СТІБКІВ:</h3>
+            <ul class="spec-list">
+              <li>
+                <span>1. Стовпчик з накидом (СсН)</span>
+                <span class="badge-status badge-success"><i class="fas fa-check-circle" aria-hidden="true"></i> Калібрування виконано</span>
+              </li>
+              <li>
+                <span>2. Повітряна петля (ПП)</span>
+                <span class="badge-status badge-success"><i class="fas fa-check-circle" aria-hidden="true"></i> Калібрування виконано</span>
+              </li>
+              <li>
+                <span>3. Стовпчик без накиду (СбН)</span>
+                <span class="badge-status badge-warning"><i class="fas fa-exclamation-circle" aria-hidden="true"></i> Калібрування невиконано</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Інструменти і матеріали -->
+          <div class="spec-column">
+            <h3>ІНСТРУМЕНТИ І МАТЕРІАЛИ:</h3>
+            <ul class="spec-list">
+              <li>
+                <span>1. Cotton Dream (450м)</span>
+                <span class="badge-status badge-success"><i class="fas fa-check-circle" aria-hidden="true"></i> В наявності</span>
+              </li>
+              <li>
+                <span>2. Гачок 4 мм</span>
+                <span class="badge-status badge-info"><i class="fas fa-wrench" aria-hidden="true"></i> Рекомендовано</span>
+              </li>
+              <li>
+                <span>3. Гачок 5 мм</span>
+                <span class="badge-status badge-info"><i class="fas fa-wrench" aria-hidden="true"></i> Для обв'язки</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- КНОПКА СТВОРЕННЯ ПРОЄКТУ -->
+    <section class="pattern-action-section">
+      <a href="workspace.html" class="btn-primary btn-create-project">
+        <i class="fas fa-plus-circle" aria-hidden="true"></i> Створити проєкт з цією схемою
+      </a>
+    </section>
+
+    <!-- ТЕКСТ ТА ОПИС СХЕМИ (ДВІ КОЛОНКИ) -->
+    <section class="pattern-text-grid">
+      
+      <!-- Ліва колонка з текстом схеми -->
+      <article class="pattern-text-card">
+        <div class="card-title-bar">
+          <h2><i class="fas fa-book-open" aria-hidden="true"></i> Текст схеми (Частина 1: Спинка)</h2>
+        </div>
+        <div class="pattern-text-content">
+          <p><strong>Рядок 1:</strong> Наберіть ланцюжок з 80 повітряних петель (ПП). Зробіть 3 ПП підйому, далі в'яжіть 1 стовпчик з накидом (СсН) у 4-ту петлю від гачка.</p>
+          <p><strong>Рядок 2:</strong> 2 ПП підйому, *1 СсН, пропустіть 1 петлю, 2 ПП, 1 СсН в наступну петлю*. Повторюйте від * до * до кінця рядка.</p>
+          <p><strong>Рядки 3–15:</strong> Продовжуйте в'язати ажурним візерунком за базовим калібруванням щільності (1.24 см/ст).</p>
+          <p><em>Примітка:</em> Слідкуйте за натягом нитки у бокових арках, щоб полотно не стягувалося по краях.</p>
+        </div>
+      </article>
+
+      <!-- Права колонка з текстом схеми / збиранням -->
+      <article class="pattern-text-card">
+        <div class="card-title-bar">
+          <h2><i class="fas fa-layer-group" aria-hidden="true"></i> Текст схеми (Частина 2: Перед та Збирання)</h2>
+        </div>
+        <div class="pattern-text-content">
+          <p><strong>Рядок 16 (Горловина):</strong> Зменшуйте по 2 СсН з кожного краю протягом наступних 4 рядків для формування вирізу горловини.</p>
+          <p><strong>Рядок 20–30:</strong> В'яжіть плечові лямки прямими та зворотними рядками (по 15 СсН у кожному рядку).</p>
+          <p><strong>Збирання виробу:</strong> Виконайте плечові та бокові шви за допомогою гачка 4 мм або трикотажної голки. Зробіть фінішну обв'язку рачим кроком по краю пройми.</p>
+        </div>
+      </article>
+
+    </section>
+
+  </main>
+
+  <!-- ПІДВАЛ САЙТУ -->
+  <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
+    <div class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-stone-300" aria-label="Навігація у підвалі">
+        <a href="stand.html" class="hover:text-hachok-gold transition-colors">Завантажити 3D / PDF Стенд</a>
+        <a href="index.html#faq" class="hover:text-hachok-gold transition-colors">Зворотний зв'язок та FAQ</a>
+        <a href="index.html#privacy" class="hover:text-hachok-gold transition-colors">Політика конфіденційності</a>
+        <a href="index.html#terms" class="hover:text-hachok-gold transition-colors">Умови користування</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Instagram">
+          <img src="assets/icons/Instagram.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Twitter">
+          <img src="assets/icons/Twitter.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипт мобільного меню -->
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+  </script>
+
+</body>
+</html>

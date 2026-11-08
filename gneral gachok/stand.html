@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Підставка для нитковимірювача — Генерал Гачок</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Налаштування фірмової теми Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'hachok-dark': '#343E19',
+            'hachok-dark-hover': '#1E251B',
+            'hachok-gold': '#D9B868',
+            'hachok-gold-hover': '#C5A352',
+            'parchment-bg': '#FAF4E8',
+            'parchment-card': '#F2E8D5',
+            'hachok-muted': '#6E6658',
+            'hachok-text': '#1A1A1A',
+          },
+          fontFamily: {
+            heading: ['Cormorant Garamond', 'serif'],
+            body: ['Noto Serif', 'serif'],
+            sans: ['Noto Serif', 'serif'],
+            serifText: ['Noto Serif', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Користувацькі стилі -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-parchment-bg text-hachok-text font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Швидке посилання для клавіатурної навігації (WCAG 2.4.1) -->
+  <a href="#main-content" class="skip-link">
+    Перейти до основного вмісту
+  </a>
+
+
+  <!-- ШАПКА САЙТУ -->
+  <header class="bg-hachok-dark border-b border-hachok-gold/40 sticky top-0 z-50 shadow-md">
+    <div class="max-w-full mx-auto px-2 sm:px-4 h-16 flex items-center justify-between">
+      
+      <!-- Логотип -->
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/icons/logo.svg" alt="Логотип Генерал Гачок" class="h-10 w-auto">
+      </a>
+      
+      <!-- Десктопна навігація -->
+      <nav class="hidden md:flex items-center gap-6 lg:gap-10" aria-label="Основна навігація">
+        <a href="catalog.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Схеми</a>
+        <a href="lessons.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Відеоуроки</a>
+        <a href="stand.html" class="font-heading font-bold text-lg uppercase tracking-wider text-hachok-gold hover:text-hachok-gold transition-colors">Нитковимірювач</a>
+        <a href="index.html#about" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Про нас</a>
+        <a href="dovidnyk.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Довідник</a>
+      </nav>
+      
+      <!-- Профіль та гамбургер-меню -->
+      <div class="flex items-center gap-3">
+        <a href="profile.html" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-hachok-gold/20 transition-all" aria-label="Перейти до профілю користувача">
+          <img src="assets/icons/profile.svg" alt="" aria-hidden="true" class="w-10 h-10">
+        </a>
+
+        <button type="button" class="md:hidden p-2 text-hachok-gold hover:text-white focus:outline-none" aria-label="Відкрити меню" onclick="toggleMobileMenu()">
+          <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Мобільне випадаюче меню -->
+    <div id="mobile-menu" class="hidden md:hidden bg-hachok-dark border-b border-hachok-gold/30 px-4 pt-3 pb-5 space-y-3">
+      <a href="catalog.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Схеми</a>
+      <a href="lessons.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Відеоуроки</a>
+      <a href="stand.html" class="block font-heading font-bold text-xl uppercase text-hachok-gold py-2 border-b border-hachok-gold/20">Нитковимірювач</a>
+      <a href="index.html#about" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Про нас</a>
+      <a href="dovidnyk.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Довідник</a>
+      <a href="profile.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2">Профіль</a>
+    </div>
+  </header>
+
+  <!-- ОСНОВНИЙ КОНТЕНТ СТОРІНКИ -->
+  <main id="main-content" class="flex-grow max-w-full lg:max-w-[1500px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+    
+    <!-- 1. ЗАГОЛОВОК ТА ГОЛОВНЕ ВІДЕО/ПЕРЕГЛЯД -->
+    <section class="flex flex-col items-center text-center space-y-6">
+      
+      <!-- ІДЕАЛЬНО ВИРІВНЯНИЙ КАРТУШ-ЗАГОЛОВОК -->
+      <div class="relative w-full max-w-3xl mx-auto flex items-center justify-center px-4 py-2">
+        <!-- Лівий орнаментальний завит декор -->
+        <div class="hidden sm:block flex-grow border-b-2 border-hachok-dark/40 relative">
+          <div class="absolute right-0 -top-1.5 w-3 h-3 bg-hachok-dark rotate-45"></div>
+        </div>
+
+        <div class="px-6 py-3 bg-parchment-card border-2 border-hachok-dark shadow-sm relative z-10 mx-2">
+          <h1 class="font-heading font-bold text-2xl sm:text-3xl lg:text-4xl text-hachok-dark uppercase tracking-wider">
+            Підставка для нитковимірювача
+          </h1>
+        </div>
+
+        <!-- Правий орнаментальний завит декор -->
+        <div class="hidden sm:block flex-grow border-b-2 border-hachok-dark/40 relative">
+          <div class="absolute left-0 -top-1.5 w-3 h-3 bg-hachok-dark rotate-45"></div>
+        </div>
+      </div>
+
+      <p class="font-serifText text-base sm:text-lg text-hachok-muted max-w-2xl leading-relaxed">
+        Спеціальна підставка зафіксує оптичну мишку та забезпечить точне проходження нитки через сенсор.
+      </p>
+
+      <!-- Головний плейсхолдер відео / попереднього перегляду -->
+      <div class="w-full max-w-4xl aspect-video bg-[#D0C9B8] border-2 border-hachok-dark shadow-md flex flex-col items-center justify-center relative p-6 cursor-pointer group hover:border-hachok-gold transition-colors">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-hachok-dark text-hachok-gold rounded-full flex items-center justify-center text-2xl sm:text-3xl border-2 border-hachok-gold shadow-md group-hover:scale-110 transition-transform mb-4">
+          <i class="fas fa-play ml-1" aria-hidden="true"></i>
+        </div>
+        <span class="font-serifText text-sm sm:text-base text-hachok-dark font-medium max-w-md text-center">
+          Попередній перегляд підставки та процесу збирання
+        </span>
+      </div>
+
+    </section>
+
+    <!-- 2. СЕКЦІЯ ЗАВАНТАЖЕННЯ (3 КАРТКИ) -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch" aria-label="Файли для завантаження та інструкції">
+      
+      <!-- Картка 1: PDF Розподіл -->
+      <article class="bg-white border-2 border-hachok-dark p-6 flex flex-col justify-between shadow-md hover:border-hachok-gold transition-colors space-y-6">
+        <div class="space-y-4">
+          <div class="text-3xl text-hachok-dark">
+            <i class="fas fa-file-pdf" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-heading font-bold text-xl text-hachok-dark">
+            PDF-роздруківка (Паперова коробочка-лекало)
+          </h3>
+          <p class="font-serifText text-sm text-hachok-muted leading-relaxed">
+            Для друку на звичайному принтері А4. Виріжте та складіть за лініями згину.
+          </p>
+        </div>
+
+        <div class="space-y-3 pt-2">
+          <span class="inline-block bg-[#EFE4CF] text-hachok-dark text-xs font-bold px-3 py-1 border border-hachok-gold">
+            PDF • 1.2 MB
+          </span>
+          <a href="assets/downloads/stand-box-template.pdf" class="w-full py-3 bg-hachok-dark text-hachok-gold font-heading font-bold text-sm border border-hachok-gold hover:bg-hachok-dark-hover transition-colors flex items-center justify-center gap-2 uppercase tracking-wider shadow-sm" download>
+            <i class="fas fa-download text-xs" aria-hidden="true"></i> Завантажити PDF
+          </a>
+        </div>
+      </article>
+
+      <!-- Картка 2: 3D Модель STL -->
+      <article class="bg-white border-2 border-hachok-dark p-6 flex flex-col justify-between shadow-md hover:border-hachok-gold transition-colors space-y-6">
+        <div class="space-y-4">
+          <div class="text-3xl text-hachok-dark">
+            <i class="fas fa-cube" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-heading font-bold text-xl text-hachok-dark">
+            Файл для 3D-друку (.STL)
+          </h3>
+          <ul class="font-serifText text-sm text-hachok-dark space-y-1">
+            <li><strong class="font-bold">Пластик:</strong> PLA/PETG</li>
+            <li><strong class="font-bold">Час друку:</strong> ~1.5 год</li>
+            <li><strong class="font-bold">Підтримки:</strong> Без підтримки</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3 pt-2">
+          <span class="inline-block bg-[#EFE4CF] text-hachok-dark text-xs font-bold px-3 py-1 border border-hachok-gold">
+            STL • 4.5 MB
+          </span>
+          <a href="assets/downloads/stand-model.stl" class="w-full py-3 bg-hachok-dark text-hachok-gold font-heading font-bold text-sm border border-hachok-gold hover:bg-hachok-dark-hover transition-colors flex items-center justify-center gap-2 uppercase tracking-wider shadow-sm" download>
+            <i class="fas fa-download text-xs" aria-hidden="true"></i> Завантажити .STL
+          </a>
+        </div>
+      </article>
+
+      <!-- Картка 3: Відеоінструкція -->
+      <article class="bg-white border-2 border-hachok-dark p-6 flex flex-col justify-between shadow-md hover:border-hachok-gold transition-colors space-y-6">
+        <div class="space-y-4">
+          <div class="w-full aspect-video bg-hachok-dark relative overflow-hidden border border-hachok-dark/20 flex items-center justify-center group cursor-pointer">
+            <div class="w-10 h-10 rounded-full bg-hachok-gold text-hachok-dark flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+              <i class="fas fa-play ml-0.5" aria-hidden="true"></i>
+            </div>
+            <span class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-0.5 font-bold">
+              03:12
+            </span>
+          </div>
+
+          <h3 class="font-heading font-bold text-xl text-hachok-dark">
+            Відеоінструкція: Як зібрати коробочку
+          </h3>
+          <p class="font-serifText text-sm text-hachok-muted leading-relaxed">
+            Покроковий відеоурок зі складання паперового шаблону та фіксації мишки.
+          </p>
+        </div>
+
+        <div class="pt-2">
+          <a href="#watch-video" class="w-full py-3 bg-white text-hachok-dark font-heading font-bold text-sm border border-hachok-dark hover:bg-parchment-bg transition-colors flex items-center justify-center gap-2 uppercase tracking-wider">
+            <i class="fas fa-video text-xs" aria-hidden="true"></i> Дивитися відеоурок (3 хв)
+          </a>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- 3. АЛЬТЕРНАТИВА БЕЗ 3D-ПРИНТЕРА -->
+    <section class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 space-y-6 shadow-md">
+      <h2 class="font-heading font-bold text-2xl sm:text-3xl text-hachok-dark text-center">
+        Альтернатива без 3D-принтера
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+        
+        <!-- Альтернатива 1: Картон -->
+        <article class="bg-white border border-hachok-dark p-5 space-y-4 shadow-sm hover:border-hachok-gold transition-colors">
+          <div class="w-full aspect-video bg-[#D0C9B8] border border-hachok-dark/30 flex items-center justify-center cursor-pointer group">
+            <div class="w-12 h-12 rounded-full bg-hachok-dark text-hachok-gold flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+              <i class="fas fa-play ml-0.5" aria-hidden="true"></i>
+            </div>
+          </div>
+          <h3 class="font-heading font-bold text-xl text-hachok-dark">Підставка з картону</h3>
+          <p class="font-serifText text-sm text-hachok-muted leading-relaxed">
+            Як використати звичайний гофрокартон для надійної фіксації сенсора.
+          </p>
+        </article>
+
+        <!-- Альтернатива 2: Дерев'яний брусок -->
+        <article class="bg-white border border-hachok-dark p-5 space-y-4 shadow-sm hover:border-hachok-gold transition-colors">
+          <div class="w-full aspect-video bg-[#D0C9B8] border border-hachok-dark/30 flex items-center justify-center cursor-pointer group">
+            <div class="w-12 h-12 rounded-full bg-hachok-dark text-hachok-gold flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+              <i class="fas fa-play ml-0.5" aria-hidden="true"></i>
+            </div>
+          </div>
+          <h3 class="font-heading font-bold text-xl text-hachok-dark">Підставка з дерев'яного бруска</h3>
+          <p class="font-serifText text-sm text-hachok-muted leading-relaxed">
+            Надійний DIY-варіант для тих, хто має базовий інструмент по дереву.
+          </p>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- 4. ЧАСТІ ЗАПИТАННЯ (FAQ ACCORDION) -->
+    <section class="max-w-4xl mx-auto space-y-6">
+      <h2 class="font-heading font-bold text-2xl sm:text-3xl text-hachok-dark text-center">
+        Часті запитання
+      </h2>
+
+      <div class="space-y-4">
+        
+        <details class="group border-2 border-hachok-dark bg-white shadow-sm" open>
+          <summary class="p-4 sm:p-5 font-heading font-bold text-lg sm:text-xl text-hachok-dark cursor-pointer flex items-center justify-between select-none bg-parchment-card/40 border-b border-transparent group-open:border-hachok-dark/20">
+            <span>Чи обов'язкова підставка для вимірювання?</span>
+            <i class="fas fa-chevron-down text-sm text-hachok-muted group-open:rotate-180 transition-transform" aria-hidden="true"></i>
+          </summary>
+          <div class="p-5 font-serifText text-sm sm:text-base text-hachok-dark leading-relaxed">
+            <p>Так, для стабільної роботи сенсора мишка повинна бути зафіксована на певній відстані від нитки. Будь-який люфт або зміщення призведе до похибки у вимірюванні довжини.</p>
+          </div>
+        </details>
+
+        <details class="group border-2 border-hachok-dark bg-white shadow-sm">
+          <summary class="p-4 sm:p-5 font-heading font-bold text-lg sm:text-xl text-hachok-dark cursor-pointer flex items-center justify-between select-none bg-parchment-card/40 border-b border-transparent group-open:border-hachok-dark/20">
+            <span>Яка миша підходить для сенсора?</span>
+            <i class="fas fa-chevron-down text-sm text-hachok-muted group-open:rotate-180 transition-transform" aria-hidden="true"></i>
+          </summary>
+          <div class="p-5 font-serifText text-sm sm:text-base text-hachok-dark leading-relaxed">
+            <p>Підходить більшість стандартних оптичних мишей з роздільною здатністю від 800 DPI. Бажано обирати мишу з плоскою основою навколо сенсора для легшої фіксації.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ПІДВАЛ САЙТУ -->
+  <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
+    <div class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-stone-300" aria-label="Навігація у підвалі">
+        <a href="stand.html" class="hover:text-hachok-gold transition-colors">Завантажити 3D / PDF Стенд</a>
+        <a href="index.html#faq" class="hover:text-hachok-gold transition-colors">Зворотний зв'язок та FAQ</a>
+        <a href="index.html#privacy" class="hover:text-hachok-gold transition-colors">Політика конфіденційності</a>
+        <a href="index.html#terms" class="hover:text-hachok-gold transition-colors">Умови користування</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Instagram">
+          <img src="assets/icons/Instagram.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Twitter">
+          <img src="assets/icons/Twitter.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипт мобільного меню -->
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+  </script>
+
+</body>
+</html>

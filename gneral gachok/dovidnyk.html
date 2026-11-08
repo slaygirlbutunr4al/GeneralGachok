@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Довідник матеріалів та інструментів — Генерал Гачок</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Налаштування фірмової теми Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'hachok-dark': '#343E19',
+            'hachok-dark-hover': '#1E251B',
+            'hachok-gold': '#D9B868',
+            'hachok-gold-hover': '#C5A352',
+            'parchment-bg': '#FAF4E8',
+            'parchment-card': '#F2E8D5',
+            'hachok-muted': '#6E6658',
+            'hachok-text': '#1A1A1A',
+          },
+          fontFamily: {
+            heading: ['Cormorant Garamond', 'serif'],
+            body: ['Noto Serif', 'serif'],
+            sans: ['Noto Serif', 'serif'],
+            serifText: ['Noto Serif', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Користувацькі стилі -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-parchment-bg text-hachok-text font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Швидке посилання для клавіатурної навігації (WCAG 2.4.1) -->
+  <a href="#main-content" class="skip-link">
+    Перейти до основного вмісту
+  </a>
+
+  <!-- ШАПКА САЙТУ -->
+  <header class="bg-hachok-dark border-b border-hachok-gold/40 sticky top-0 z-50 shadow-md">
+    <div class="max-w-full mx-auto px-2 sm:px-4 h-16 flex items-center justify-between">
+      
+      <!-- Логотип -->
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/icons/logo.svg" alt="Логотип Генерал Гачок" class="h-10 w-auto">
+      </a>
+      
+      <!-- Десктопна навігація -->
+      <nav class="hidden md:flex items-center gap-6 lg:gap-10" aria-label="Основна навігація">
+        <a href="catalog.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Схеми</a>
+        <a href="lessons.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Відеоуроки</a>
+        <a href="stand.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Нитковимірювач</a>
+        <a href="index.html#about" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Про нас</a>
+        <a href="dovidnyk.html" class="font-heading font-bold text-lg uppercase tracking-wider text-hachok-gold hover:text-hachok-gold transition-colors">Довідник</a>
+      </nav>
+      
+      <!-- Профіль та гамбургер-меню -->
+      <div class="flex items-center gap-3">
+        <a href="profile.html" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-hachok-gold/20 transition-all" aria-label="Перейти до профілю користувача">
+          <img src="assets/icons/profile.svg" alt="" aria-hidden="true" class="w-10 h-10">
+        </a>
+
+        <button type="button" class="md:hidden p-2 text-hachok-gold hover:text-white focus:outline-none" aria-label="Відкрити меню" onclick="toggleMobileMenu()">
+          <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Мобільне випадаюче меню -->
+    <div id="mobile-menu" class="hidden md:hidden bg-hachok-dark border-b border-hachok-gold/30 px-4 pt-3 pb-5 space-y-3">
+      <a href="catalog.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Схеми</a>
+      <a href="lessons.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Відеоуроки</a>
+      <a href="stand.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Нитковимірювач</a>
+      <a href="index.html#about" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Про нас</a>
+      <a href="dovidnyk.html" class="block font-heading font-bold text-xl uppercase text-hachok-gold py-2 border-b border-hachok-gold/20">Довідник</a>
+      <a href="profile.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2">Профіль</a>
+    </div>
+  </header>
+
+  <!-- ОСНОВНИЙ КОНТЕНТ СТОРІНКИ ДОВІДНИКА -->
+  <main id="main-content" class="flex-grow max-w-full lg:max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+    
+    <!-- 1. ЗАГОЛОВОК СТОРІНКИ -->
+    <header class="flex flex-col items-center text-center space-y-4">
+      <div class="cartouche-header">
+        <h2>ДОВІДНИК МАТЕРІАЛІВ</h2>
+      </div>
+      <h1 class="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-hachok-dark max-w-4xl leading-tight">
+        Гармонія Нитки та Гачка: Філософія та Практичний Довідник Майстра
+      </h1>
+      <p class="font-serifText text-base sm:text-lg text-hachok-muted max-w-3xl leading-relaxed">
+        Естетика вибору інструментів та класичний стандарт співвідношення пряжі за традиціями видань <em>Keito Dama</em>, посібників <em>Columbia Yarns</em> та експертних досліджень <em>Catherine Crochets</em>.
+      </p>
+    </header>
+
+    <!-- ВСТУПНА ФІЛОСОФСЬКА КАРТКА -->
+    <section class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-md">
+      <blockquote class="border-l-4 border-hachok-gold pl-4 sm:pl-6 space-y-3">
+        <p class="font-serifText italic text-base sm:text-lg text-hachok-dark leading-relaxed">
+          «В'язання гачком — це ремесло, де математична точність зустрічається з тактильною естетикою. Як у класичних випусках японського журналу <strong>Keito Dama</strong>, створення кожної речі починається не з першої петлі, а з глибокого розуміння матеріалу та інструменту. Американські посібники початку XX століття (як-от <strong>Columbia Yarns Handbook</strong>) та сучасні дослідження матеріалознавства <strong>Catherine Crochets</strong> заклали фундаментальні стандарти підбору інструментів, які допомагають уникнути втому рук, зберегти потрібний натяг нитки та досягти ідеальної драпіровки полотна.»
+        </p>
+      </blockquote>
+    </section>
+
+    <!-- ЧАСТИНА I. АНАТОМІЯ ТА ТАКТИЛЬНА ПРИРОДА ГАЧКА -->
+    <section class="space-y-6">
+      <div class="border-b-2 border-hachok-dark pb-3">
+        <h2 class="font-heading font-bold text-2xl sm:text-3xl text-hachok-dark uppercase tracking-wider flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-hachok-dark text-hachok-gold text-base flex items-center justify-center font-mono">I</span>
+          Анатомія та тактильна природа гачка
+        </h2>
+      </div>
+
+      <p class="font-serifText text-sm sm:text-base text-hachok-muted leading-relaxed">
+        Матеріал, з якого виготовлено гачок, прямо впливає на вагу інструмента, його гнучкість, рівень тертя з ниткою та тактильне тепло в долоні.
+      </p>
+
+      <!-- СІТКА КАРТОК МАТЕРІАЛІВ З ЗОБРАЖЕННЯМИ -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        
+        <!-- Картка 1: Сталеві гачки -->
+        <article class="bg-white border-2 border-hachok-dark flex flex-col justify-between shadow-md hover:border-hachok-gold transition-all duration-300 group">
+          <div>
+            <div class="w-full h-48 bg-hachok-dark overflow-hidden border-b-2 border-hachok-dark relative">
+              <img src="assets/images/steel.jpg" alt="Сталеві гачки для в'язання" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='steel.jpg';">
+              <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+            </div>
+            <div class="p-5 space-y-3">
+              <h3 class="font-heading font-bold text-xl text-hachok-dark group-hover:text-hachok-gold-hover transition-colors">
+                Сталеві гачки (Steel Hooks)
+              </h3>
+              <p class="font-serifText text-xs sm:text-sm text-hachok-muted leading-relaxed">
+                Найміцніші інструменти для мікро-в'язання (0.5 – 2.25 мм). Сталь не згинається навіть під високим натягом нитки. Ідеально підходить для тонкої бавовни, філейного мережива та витончених деталей аміґурумі.
+              </p>
+            </div>
+          </div>
+          <div class="p-5 pt-0">
+            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-hachok-dark bg-parchment-bg border border-hachok-gold px-3 py-1">
+              МІЦНІСТЬ ТА ТОЧНІСТЬ
+            </span>
+          </div>
+        </article>
+
+        <!-- Картка 2: Бамбукові гачки -->
+        <article class="bg-white border-2 border-hachok-dark flex flex-col justify-between shadow-md hover:border-hachok-gold transition-all duration-300 group">
+          <div>
+            <div class="w-full h-48 bg-hachok-dark overflow-hidden border-b-2 border-hachok-dark relative">
+              <img src="assets/images/bamboo.jpg" alt="Бамбукові гачки для в'язання" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='bamboo.jpg';">
+              <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+            </div>
+            <div class="p-5 space-y-3">
+              <h3 class="font-heading font-bold text-xl text-hachok-dark group-hover:text-hachok-gold-hover transition-colors">
+                Бамбук та Дерево (Bamboo & Wood)
+              </h3>
+              <p class="font-serifText text-xs sm:text-sm text-hachok-muted leading-relaxed">
+                Основа філософії <em>Keito Dama</em>. Натуральне дерево моментально теплішає в руках та знижує навантаження на суглоби. Поверхня має природне зачеплення, що утримує слизький шовк, віскозу та акрил.
+              </p>
+            </div>
+          </div>
+          <div class="p-5 pt-0">
+            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-hachok-dark bg-parchment-bg border border-hachok-gold px-3 py-1">
+              ТЕПЛО ТА ЕРГОНОМІКА
+            </span>
+          </div>
+        </article>
+
+        <!-- Картка 3: Алюмінієві гачки -->
+        <article class="bg-white border-2 border-hachok-dark flex flex-col justify-between shadow-md hover:border-hachok-gold transition-all duration-300 group">
+          <div>
+            <div class="w-full h-48 bg-hachok-dark overflow-hidden border-b-2 border-hachok-dark relative">
+              <img src="assets/images/alumminum.jpg" alt="Алюмінієві кольорові гачки" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='aluminum.jpg';">
+              <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+            </div>
+            <div class="p-5 space-y-3">
+              <h3 class="font-heading font-bold text-xl text-hachok-dark group-hover:text-hachok-gold-hover transition-colors">
+                Алюміній (Aluminum Hooks)
+              </h3>
+              <p class="font-serifText text-xs sm:text-sm text-hachok-muted leading-relaxed">
+                Універсальні та ультра-гладкі гачки. Анодоване покриття забезпечує блискавичне ковзання вовни й мериноса, а якразне кольорове маркування допомагає миттєво знайти потрібний розмір у робочому кошику.
+              </p>
+            </div>
+          </div>
+          <div class="p-5 pt-0">
+            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-hachok-dark bg-parchment-bg border border-hachok-gold px-3 py-1">
+              ШВИДКІСТЬ ТА СЛАЙД
+            </span>
+          </div>
+        </article>
+
+        <!-- Картка 4: Ергономічні гачки (Додано зі статті Catherine Crochets) -->
+        <article class="bg-white border-2 border-hachok-dark flex flex-col justify-between shadow-md hover:border-hachok-gold transition-all duration-300 group">
+          <div>
+           <div class="w-full h-48 bg-hachok-dark overflow-hidden border-b-2 border-hachok-dark relative">
+              <img src="assets/images/aluminum.jpg" alt="Алюмінієві ергономічні  гачки" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='aluminum.jpg';">
+              <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+            </div>
+            <div class="p-5 space-y-3">
+              <h3 class="font-heading font-bold text-xl text-hachok-dark group-hover:text-hachok-gold-hover transition-colors">
+                Ергономічні (Rubber & Silicone)
+              </h3>
+              <p class="font-serifText text-xs sm:text-sm text-hachok-muted leading-relaxed">
+                Як зазначає <em>Catherine Crochets</em>, гачки з м'якою силіконовою або ґумовою ручкою зменшують тиск на зап’ястя та запобігають утомі при синдромі зап'ястного каналу чи тривалих проєктах.
+              </p>
+            </div>
+          </div>
+          <div class="p-5 pt-0">
+            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-hachok-dark bg-parchment-bg border border-hachok-gold px-3 py-1">
+              МАКСИМАЛЬНИЙ КОМФОРТ
+            </span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ЧАСТИНА II. ТАБЛИЦЯ СПІВВІДНОШЕННЯ ПРЯЖІ ТА ГАЧКІВ -->
+    <section class="space-y-6">
+      <div class="border-b-2 border-hachok-dark pb-3">
+        <h2 class="font-heading font-bold text-2xl sm:text-3xl text-hachok-dark uppercase tracking-wider flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-hachok-dark text-hachok-gold text-base flex items-center justify-center font-mono">II</span>
+          Класична система співвідношення пряжі та гачків
+        </h2>
+      </div>
+
+      <p class="font-serifText text-sm sm:text-base text-hachok-muted leading-relaxed">
+        Для досягнення стабільної щільності полотна в міжнародній практиці використовують стандартизовану категорію ваги пряжі (Yarn Weight System) та відповідні діаметри гачків.
+      </p>
+
+      <!-- ТАБЛИЦЯ СПІВВІДНОШЕННЯ -->
+      <div class="bg-white border-2 border-hachok-dark shadow-md overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-hachok-dark text-hachok-gold font-heading text-base sm:text-lg border-b border-hachok-gold/40">
+                <th class="py-3.5 px-4 font-bold uppercase tracking-wider">Категорія пряжі</th>
+                <th class="py-3.5 px-4 font-bold uppercase tracking-wider">Назва та тип</th>
+                <th class="py-3.5 px-4 font-bold uppercase tracking-wider">Метричний гачок</th>
+                <th class="py-3.5 px-4 font-bold uppercase tracking-wider">Розмір (US/UK)</th>
+                <th class="py-3.5 px-4 font-bold uppercase tracking-wider">Рекомендоване застосування</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hachok-dark/20 text-xs sm:text-sm font-medium">
+              <tr class="hover:bg-parchment-bg transition-colors">
+                <td class="py-3.5 px-4 font-bold text-hachok-dark">0 — Lace</td>
+                <td class="py-3.5 px-4 text-hachok-muted font-serifText">Тонке мереживо, мікрофібра</td>
+                <td class="py-3.5 px-4 font-mono font-bold text-hachok-dark">1.6 мм – 2.25 мм</td>
+                <td class="py-3.5 px-4 font-mono text-hachok-muted">Steel 6-8 / B-1</td>
+                <td class="py-3.5 px-4 text-hachok-dark font-serifText">Філейні серветки, ажурні комірці, шалі</td>
+              </tr>
+              <tr class="hover:bg-parchment-bg transition-colors">
+                <td class="py-3.5 px-4 font-bold text-hachok-dark">1 — Super Fine</td>
+                <td class="py-3.5 px-4 text-hachok-muted font-serifText">Шкарпеткова, Fingering</td>
+                <td class="py-3.5 px-4 font-mono font-bold text-hachok-dark">2.25 мм – 3.5 мм</td>
+                <td class="py-3.5 px-4 font-mono text-hachok-muted">B-1 – E-4</td>
+                <td class="py-3.5 px-4 text-hachok-dark font-serifText">Тонкі джемпери, дитячий одяг, літні топи</td>
+              </tr>
+              <tr class="hover:bg-parchment-bg transition-colors">
+                <td class="py-3.5 px-4 font-bold text-hachok-dark">2 — Fine</td>
+                <td class="py-3.5 px-4 text-hachok-muted font-serifText">Sport, Baby cotton</td>
+                <td class="py-3.5 px-4 font-mono font-bold text-hachok-dark">3.5 мм – 4.5 мм</td>
+                <td class="py-3.5 px-4 font-mono text-hachok-muted">E-4 – 7</td>
+                <td class="py-3.5 px-4 text-hachok-dark font-serifText">Кардигани, рельєфні серветки, іграшки amigurumi</td>
+              </tr>
+              <tr class="hover:bg-parchment-bg transition-colors">
+                <td class="py-3.5 px-4 font-bold text-hachok-dark">3 — Light</td>
+                <td class="py-3.5 px-4 text-hachok-muted font-serifText">DK, Light Worsted</td>
+                <td class="py-3.5 px-4 font-mono font-bold text-hachok-dark">4.5 мм – 5.5 мм</td>
+                <td class="py-3.5 px-4 font-mono text-hachok-muted">7 – I-9</td>
+                <td class="py-3.5 px-4 text-hachok-dark font-serifText">Осінні пледи, светри, ошатні головні убори</td>
+              </tr>
+              <tr class="hover:bg-parchment-bg transition-colors">
+                <td class="py-3.5 px-4 font-bold text-hachok-dark">4 — Medium</td>
+                <td class="py-3.5 px-4 text-hachok-muted font-serifText">Worsted, Aran</td>
+                <td class="py-3.5 px-4 font-mono font-bold text-hachok-dark">5.5 мм – 6.5 мм</td>
+                <td class="py-3.5 px-4 font-mono text-hachok-muted">I-9 – K-10½</td>
+                <td class="py-3.5 px-4 text-hachok-dark font-serifText">Пальта, щільні дитячі пледи, сумки, чохли</td>
+              </tr>
+              <tr class="hover:bg-parchment-bg transition-colors">
+                <td class="py-3.5 px-4 font-bold text-hachok-dark">5 — Bulky</td>
+                <td class="py-3.5 px-4 text-hachok-muted font-serifText">Chunky, товста вовна</td>
+                <td class="py-3.5 px-4 font-mono font-bold text-hachok-dark">6.5 мм – 9.0 мм</td>
+                <td class="py-3.5 px-4 font-mono text-hachok-muted">K-10½ – M-13</td>
+                <td class="py-3.5 px-4 text-hachok-dark font-serifText">Снуди, фактурні килимки, теплі капори</td>
+              </tr>
+              <tr class="hover:bg-parchment-bg transition-colors">
+                <td class="py-3.5 px-4 font-bold text-hachok-dark">6 — Super Bulky</td>
+                <td class="py-3.5 px-4 text-hachok-muted font-serifText">Ровниця, шнур</td>
+                <td class="py-3.5 px-4 font-mono font-bold text-hachok-dark">9.0 мм і більше</td>
+                <td class="py-3.5 px-4 font-mono text-hachok-muted">M-13 і більше</td>
+                <td class="py-3.5 px-4 text-hachok-dark font-serifText">Інтер'єрні пуфи, кошики, вироби за 1 вечір</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ЧАСТИНА III. ПРОБА ЩІЛЬНОСТІ -->
+    <section class="space-y-6">
+      <div class="border-b-2 border-hachok-dark pb-3">
+        <h2 class="font-heading font-bold text-2xl sm:text-3xl text-hachok-dark uppercase tracking-wider flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-hachok-dark text-hachok-gold text-base flex items-center justify-center font-mono">III</span>
+          Золоте правило підбору: Проба щільності (Gauge Swatches)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        
+        <!-- Лівий блок: Тест на пластичність -->
+        <div class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-sm flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <span class="text-xs font-bold text-hachok-muted uppercase tracking-widest">ПРАКТИЧНИЙ ТЕСТ</span>
+            <h3 class="font-heading font-bold text-2xl text-hachok-dark">
+              1. Тест на пластичність
+            </h3>
+            <p class="font-serifText text-sm sm:text-base text-hachok-dark leading-relaxed">
+              Зв'яжіть зразок 10×10 см рекомендованим гачком. Якщо полотно «стоїть колом» — візьміть гачок на 0.5–1.0 мм більший. Якщо узори провисають і втрачають форму — зменшіть розмір гачка.
+            </p>
+          </div>
+          <div class="border-t border-hachok-dark/20 pt-4 text-xs font-bold uppercase tracking-wider text-hachok-muted">
+            Порада від Генерала Гачка: Завжди влаштовуйте СОТ (волого-теплову обробку) зразка перед замірами.
+          </div>
+        </div>
+
+        <!-- Правий блок: Особливості волокна -->
+        <div class="bg-white border-2 border-hachok-dark p-6 sm:p-8 shadow-sm flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <span class="text-xs font-bold text-hachok-muted uppercase tracking-widest">СПЕЦИФІКА МАТЕРІАЛУ</span>
+            <h3 class="font-heading font-bold text-2xl text-hachok-dark">
+              2. Особливості волокна
+            </h3>
+            <ul class="space-y-3 text-sm sm:text-base text-hachok-dark font-serifText">
+              <li class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-hachok-gold mt-1" aria-hidden="true"></i>
+                <span><strong>Мохер та альпака:</strong> Завжди беруть гачок на 1–2 розміри більший за рекомендований, щоб ворс розпушився у повітряних проміжках.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-hachok-gold mt-1" aria-hidden="true"></i>
+                <span><strong>Бавовна та льон:</strong> Не мають власної еластичності, тому вимагають точного збігу гачка та помірного натягу нитки.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ЧАСТИНА IV. КАРТА МАЙСТЕРЕНЬ ТА ПАРТНЕРСЬКИХ МАГАЗИНІВ ПРЯЖІ (GOOGLE MAPS) -->
+    <section id="yarn-stores-map" class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-md space-y-6 my-10">
+      
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-hachok-dark/30 pb-4">
+        <div>
+          <span class="text-xs font-bold text-hachok-muted uppercase tracking-widest block">ПАРТНЕРСЬКИЙ МАГАЗИН</span>
+          <h2 class="font-heading font-bold text-2xl sm:text-3xl text-hachok-dark">
+            Де випробувати та придбати пряжу
+          </h2>
+        </div>
+        <span class="bg-hachok-dark text-hachok-gold font-mono text-xs font-bold px-3 py-1.5 rounded-sm uppercase tracking-wider">
+          <i class="fas fa-store mr-1" aria-hidden="true"></i> Candy Yarn
+        </span>
+      </div>
+
+      <p class="font-serifText text-sm sm:text-base text-hachok-muted max-w-3xl leading-relaxed">
+        Завітайте до нашого партнера — магазина пряжі та рукоділля <strong>Candy Yarn</strong>, де ви зможете наживо оцінити тактильну якість мотків, випробувати бамбукові та сталеві гачки різного калібру й отримати персональну консультацію.
+      </p>
+
+      <!-- Адаптивний контейнер Google Maps з оновленою локацією Candy Yarn -->
+      <div class="relative w-full aspect-video sm:aspect-[21/9] bg-hachok-dark border-2 border-hachok-dark shadow-inner overflow-hidden rounded-sm">
+        <iframe 
+          class="w-full h-full border-0"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2572.7766114992555!2d24.027349899999997!3d49.8466548!2m3!1f0!1f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x473adda7dcb5084b%3A0xc6efd675773ecdb9!2z0JzQsNCz0LDQt9C40L0g0L_RgNGP0LbRliDRgtCwINGA0YPQutC-0LTRltC70LvRjyBDYW5keSBZYXJu!5e0!3m2!1suk!2sua!4v1793573677222!5m2!1suk!2sua" 
+          title="Інтерактивна карта — Магазин пряжі та рукоділля Candy Yarn" 
+          loading="lazy" 
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs sm:text-sm text-hachok-dark font-medium">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-map-marker-alt text-hachok-gold text-base" aria-hidden="true"></i>
+          <span>м. Львів, Магазин Candy Yarn</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="fas fa-clock text-hachok-gold text-base" aria-hidden="true"></i>
+          <span>Пн-Нд: 09:00 — 20:00</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="fas fa-phone-alt text-hachok-gold text-base" aria-hidden="true"></i>
+          <span>+380 (44) 123-45-67</span>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ПІДВАЛ САЙТУ -->
+  <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
+    <div class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-stone-300" aria-label="Навігація у підвалі">
+        <a href="stand.html" class="hover:text-hachok-gold transition-colors">Завантажити 3D / PDF Стенд</a>
+        <a href="index.html#faq" class="hover:text-hachok-gold transition-colors">Зворотний зв'язок та FAQ</a>
+        <a href="index.html#privacy" class="hover:text-hachok-gold transition-colors">Політика конфіденційності</a>
+        <a href="index.html#terms" class="hover:text-hachok-gold transition-colors">Умови користування</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Instagram">
+          <img src="assets/icons/Instagram.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Twitter">
+          <img src="assets/icons/Twitter.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипт мобільного меню -->
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+  </script>
+
+</body>
+</html>

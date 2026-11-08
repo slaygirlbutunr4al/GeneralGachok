@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вхід та Реєстрація — Генерал Гачок</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Налаштування фірмової теми Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'hachok-dark': '#343E19',
+            'hachok-dark-hover': '#1E251B',
+            'hachok-gold': '#D9B868',
+            'hachok-gold-hover': '#C5A352',
+            'parchment-bg': '#FAF4E8',
+            'parchment-card': '#F2E8D5',
+            'hachok-muted': '#6E6658',
+            'hachok-text': '#1A1A1A',
+          },
+          fontFamily: {
+            heading: ['Cormorant Garamond', 'serif'],
+            body: ['Noto Serif', 'serif'],
+            sans: ['Noto Serif', 'serif'],
+            serifText: ['Noto Serif', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Користувацькі стилі -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-parchment-bg text-hachok-text font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Skip Link для доступності (WCAG) -->
+  <a href="#main-content" class="skip-link">
+    Перейти до основного вмісту
+  </a>
+
+ 
+  <!-- ШАПКА САЙТУ -->
+  <header class="bg-hachok-dark border-b border-hachok-gold/40 sticky top-0 z-50 shadow-md">
+    <div class="max-w-full mx-auto px-2 sm:px-4 h-16 flex items-center justify-between">
+      
+      <!-- Логотип -->
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/icons/logo.svg" alt="Логотип Генерал Гачок" class="h-10 w-auto">
+      </a>
+      
+      <!-- Десктопна навігація -->
+      <nav class="hidden md:flex items-center gap-6 lg:gap-10" aria-label="Основна навігація">
+        <a href="catalog.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Схеми</a>
+        <a href="lessons.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Відеоуроки</a>
+        <a href="stand.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Нитковимірювач</a>
+        <a href="index.html#about" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Про нас</a>
+        <a href="dovidnyk.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Довідник</a>
+      </nav>
+      
+      <!-- Профіль та гамбургер-меню -->
+      <div class="flex items-center gap-3">
+        <a href="profile.html" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-hachok-gold/20 transition-all" aria-label="Перейти до профілю користувача">
+          <img src="assets/icons/profile.svg" alt="" aria-hidden="true" class="w-10 h-10">
+        </a>
+
+        <button type="button" class="md:hidden p-2 text-hachok-gold hover:text-white focus:outline-none" aria-label="Відкрити меню" onclick="toggleMobileMenu()">
+          <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Мобільне випадаюче меню -->
+    <div id="mobile-menu" class="hidden md:hidden bg-hachok-dark border-b border-hachok-gold/30 px-4 pt-3 pb-5 space-y-3">
+      <a href="catalog.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Схеми</a>
+      <a href="lessons.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Відеоуроки</a>
+      <a href="stand.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Нитковимірювач</a>
+      <a href="index.html#about" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Про нас</a>
+      <a href="dovidnyk.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Довідник</a>
+      <a href="profile.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2">Профіль</a>
+    </div>
+  </header>
+
+  <!-- ОСНОВНИЙ КОНТЕНТ СТОРІНКИ АВТОРИЗАЦІЇ -->
+  <main id="main-content" class="flex-grow flex items-center justify-center py-10 sm:py-14 px-4">
+    
+    <!-- Подвійна рамка картки як на скриншоті -->
+    <div class="border border-hachok-dark p-1 bg-parchment-card max-w-md w-full shadow-lg">
+      <div class="border border-hachok-dark p-6 sm:p-10 flex flex-col items-center bg-parchment-card">
+        
+        <!-- Кругла емблема логотипу -->
+        <div class="w-24 h-24 rounded-full  flex items-center justify-center p-3 mb-6 shadow-sm">
+          <img src="assets/icons/logo.svg" alt="" aria-hidden="true" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <i class="fas fa-hat-cowboy-side text-hachok-dark text-4xl hidden" aria-hidden="true"></i>
+        </div>
+
+        <!-- Заголовок -->
+        <h1 class="font-heading font-bold text-2xl sm:text-3xl text-hachok-dark uppercase tracking-wider text-center mb-8 max-w-xs leading-snug" id="auth-heading">
+          ВХІД ДО ОСОБИСТОГО КАБІНЕТУ
+        </h1>
+
+        <!-- Вкладки (Увійти / Зареєструватися) -->
+        <nav class="w-full flex border-b border-hachok-dark/40 mb-8" aria-label="Вибір форми авторизації">
+          <button type="button" class="w-1/2 pb-2 font-serifText text-base text-center transition-colors border-b-2 -mb-[1px] border-hachok-dark text-hachok-dark font-medium" id="tab-login" onclick="switchAuthTab('login')">
+            Увійти
+          </button>
+          <button type="button" class="w-1/2 pb-2 font-serifText text-base text-center transition-colors border-b-2 -mb-[1px] border-transparent text-hachok-muted hover:text-hachok-dark" id="tab-register" onclick="switchAuthTab('register')">
+            Зареєструватися
+          </button>
+        </nav>
+
+        <!-- 1. ФОРМА ВХОДУ (УВІЙТИ) -->
+        <form id="login-form" class="w-full flex flex-col gap-5" action="profile.html" method="GET">
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="login-email" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ЕЛЕКТРОННА ПОШТА</label>
+            <div class="relative w-full">
+              <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
+              <input type="email" id="login-email" name="email" placeholder="your.email@example.com" required autocomplete="email" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="login-password" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ПАРОЛЬ</label>
+            <div class="relative w-full">
+              <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
+              <input type="password" id="login-password" name="password" placeholder="••••••••" required autocomplete="current-password" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-2 text-sm pt-1">
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none text-hachok-dark text-xs sm:text-sm">
+              <input type="checkbox" name="remember" class="w-4 h-4 accent-hachok-dark border-hachok-dark rounded">
+              <span>Запам'ятати мене</span>
+            </label>
+            <a href="#forgot-password" class="text-hachok-dark underline hover:text-hachok-gold transition-colors font-bold text-xs sm:text-sm">Забули пароль?</a>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 bg-hachok-dark text-hachok-gold font-heading font-bold text-lg border border-hachok-gold/30 hover:bg-hachok-dark-hover transition-all shadow-sm uppercase tracking-wider mt-2">
+            УВІЙТИ У КАБІНЕТ
+          </button>
+        </form>
+
+        <!-- 2. ФОРМА РЕЄСТРАЦІЇ (ПРИХОВАНА ЗА ЗАМОВЧУВАННЯМ) -->
+        <form id="register-form" class="w-full flex-col gap-5 hidden" action="profile.html" method="GET">
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="reg-name" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ІМ'Я ТА ПРІЗВИЩЕ</label>
+            <div class="relative w-full">
+              <i class="fas fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
+              <input type="text" id="reg-name" name="fullname" placeholder="Майстриня Олена" required autocomplete="name" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="reg-email" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ЕЛЕКТРОННА ПОШТА</label>
+            <div class="relative w-full">
+              <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
+              <input type="email" id="reg-email" name="email" placeholder="your.email@example.com" required autocomplete="email" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="reg-password" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ПАРОЛЬ</label>
+            <div class="relative w-full">
+              <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
+              <input type="password" id="reg-password" name="password" placeholder="••••••••" required autocomplete="new-password" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 bg-hachok-dark text-hachok-gold font-heading font-bold text-lg border border-hachok-gold/30 hover:bg-hachok-dark-hover transition-all shadow-sm uppercase tracking-wider mt-2">
+            СТВОРИТИ АКАУНТ
+          </button>
+        </form>
+
+        <!-- Інформаційний баннер з акцентною лінією зліва -->
+        <div class="w-full border-l-4 border-hachok-dark bg-[#EFE4CF]/60 p-4 mt-8">
+          <p class="font-serifText italic text-xs sm:text-sm text-hachok-dark leading-relaxed">
+            Створіть акаунт, щоб зберігати заміри пряжі, калібрування та прогрес проєктів.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ПІДВАЛ САЙТУ -->
+  <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
+    <div class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-stone-300" aria-label="Навігація у підвалі">
+        <a href="stand.html" class="hover:text-hachok-gold transition-colors">Завантажити 3D / PDF Стенд</a>
+        <a href="index.html#faq" class="hover:text-hachok-gold transition-colors">Зворотний зв'язок та FAQ</a>
+        <a href="index.html#privacy" class="hover:text-hachok-gold transition-colors">Політика конфіденційності</a>
+        <a href="index.html#terms" class="hover:text-hachok-gold transition-colors">Умови користування</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Instagram">
+          <img src="assets/icons/Instagram.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Twitter">
+          <img src="assets/icons/Twitter.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипти: перемикання мобільного меню та вкладок авторизації -->
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    function switchAuthTab(tab) {
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+      const tabLogin = document.getElementById('tab-login');
+      const tabRegister = document.getElementById('tab-register');
+      const heading = document.getElementById('auth-heading');
+
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        loginForm.classList.add('flex');
+        registerForm.classList.remove('flex');
+        registerForm.classList.add('hidden');
+
+        tabLogin.className = "w-1/2 pb-2 font-serifText text-base text-center transition-colors border-b-2 -mb-[1px] border-hachok-dark text-hachok-dark font-medium";
+        tabRegister.className = "w-1/2 pb-2 font-serifText text-base text-center transition-colors border-b-2 -mb-[1px] border-transparent text-hachok-muted hover:text-hachok-dark";
+        
+        heading.textContent = 'ВХІД ДО ОСОБИСТОГО КАБІНЕТУ';
+      } else {
+        loginForm.classList.remove('flex');
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+        registerForm.classList.add('flex');
+
+        tabRegister.className = "w-1/2 pb-2 font-serifText text-base text-center transition-colors border-b-2 -mb-[1px] border-hachok-dark text-hachok-dark font-medium";
+        tabLogin.className = "w-1/2 pb-2 font-serifText text-base text-center transition-colors border-b-2 -mb-[1px] border-transparent text-hachok-muted hover:text-hachok-dark";
+
+        heading.textContent = 'РЕЄСТРАЦІЯ АКАУНТУ';
+      }
+    }
+  </script>
+
+</body>
+</html>
