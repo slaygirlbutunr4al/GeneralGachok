@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Зворотний зв'язок — Генерал Гачок</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Налаштування фірмової теми Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'hachok-dark': '#343E19',
+            'hachok-dark-hover': '#1E251B',
+            'hachok-gold': '#D9B868',
+            'hachok-gold-hover': '#C5A352',
+            'parchment-bg': '#FAF4E8',
+            'parchment-card': '#F2E8D5',
+            'hachok-muted': '#6E6658',
+            'hachok-text': '#1A1A1A',
+          },
+          fontFamily: {
+            heading: ['Cormorant Garamond', 'serif'],
+            body: ['Noto Serif', 'serif'],
+            sans: ['Noto Serif', 'serif'],
+            serifText: ['Noto Serif', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Користувацькі стилі -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-parchment-bg text-hachok-text font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Skip Link для доступності (WCAG) -->
+  <a href="#main-content" class="skip-link">
+    Перейти до основного вмісту
+  </a>
+
+  <!-- ШАПКА САЙТУ -->
+  <header class="bg-hachok-dark border-b border-hachok-gold/40 sticky top-0 z-40 shadow-md">
+    <div class="max-w-full mx-auto px-2 sm:px-4 h-16 flex items-center justify-between">
+      
+      <!-- Логотип -->
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/icons/logo.svg" alt="Логотип Генерал Гачок" class="h-10 w-auto">
+      </a>
+      
+      <!-- Десктопна навігація -->
+      <nav class="hidden md:flex items-center gap-6 lg:gap-10" aria-label="Основна навігація">
+        <a href="catalog.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Схеми</a>
+        <a href="lessons.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Відеоуроки</a>
+        <a href="stand.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Нитковимірювач</a>
+        <a href="index.html#about" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Про нас</a>
+        <a href="dovidnyk.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Довідник</a>
+      </nav>
+      
+      <!-- Профіль та гамбургер-меню -->
+      <div class="flex items-center gap-3">
+        <a href="profile.html" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-hachok-gold/20 transition-all" aria-label="Перейти до профілю користувача">
+          <img src="assets/icons/profile.svg" alt="" aria-hidden="true" class="w-10 h-10">
+        </a>
+
+        <button type="button" class="md:hidden p-2 text-hachok-gold hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-hachok-gold" aria-label="Відкрити меню" onclick="toggleMobileMenu()">
+          <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Мобільне випадаюче меню -->
+    <div id="mobile-menu" class="hidden md:hidden bg-hachok-dark border-b border-hachok-gold/30 px-4 pt-3 pb-5 space-y-3">
+      <a href="catalog.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Схеми</a>
+      <a href="lessons.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Відеоуроки</a>
+      <a href="stand.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Нитковимірювач</a>
+      <a href="index.html#about" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Про нас</a>
+      <a href="dovidnyk.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Довідник</a>
+      <a href="profile.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2">Профіль</a>
+    </div>
+  </header>
+
+  <!-- ОСНОВНИЙ КОНТЕНТ СТОРІНКИ ЗВОРОТНОГО ЗВ'ЯЗКУ -->
+  <main id="main-content" class="flex-grow flex items-center justify-center py-10 sm:py-14 px-4">
+    
+    <!-- Подвійна рамка картки у стилі сторінки авторизації -->
+    <div class="border border-hachok-dark p-1 bg-parchment-card max-w-2xl w-full shadow-lg">
+      <div class="border border-hachok-dark p-6 sm:p-10 flex flex-col items-center bg-parchment-card">
+        
+        <!-- Емблема логотипу -->
+        <div class="w-20 h-20 rounded-full flex items-center justify-center p-2 mb-4 shadow-sm">
+          <img src="assets/icons/logo.svg" alt="" aria-hidden="true" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <i class="fas fa-feather-pointed text-hachok-dark text-4xl hidden" aria-hidden="true"></i>
+        </div>
+
+        <!-- Заголовок та підзаголовок -->
+        <h1 class="font-heading font-bold text-2xl sm:text-4xl text-hachok-dark uppercase tracking-wider text-center mb-3 leading-snug">
+          ЗВОРОТНИЙ ЗВ'ЯЗОК
+        </h1>
+        <p class="font-serifText text-sm sm:text-base text-hachok-muted text-center max-w-lg mb-6">
+          Маєте запитання щодо схем в'язання, роботи нитковимірювача чи співпраці? Напишіть нам, і майстерня «Генерал Гачок» відповість найближчим часом.
+        </p>
+
+        <!-- Посилання-навігація назад до FAQ -->
+        <div class="w-full flex justify-center border-b border-hachok-dark/30 pb-4 mb-7">
+          <a href="index.html#faq" class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-hachok-dark hover:text-hachok-gold-hover transition-colors uppercase tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hachok-dark">
+            <i class="fas fa-arrow-left text-xs" aria-hidden="true"></i>
+            <span>Переглянути часті запитання (FAQ)</span>
+          </a>
+        </div>
+
+        <!-- ФОРМА ЗВОРОТНОГО ЗВ'ЯЗКУ -->
+        <form id="feedbackForm" class="w-full flex flex-col gap-5" novalidate>
+          
+          <!-- Адаптивна сітка: 1 колонка на мобільному, 2 колонки від md -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            
+            <!-- 1. Ім'я -->
+            <div class="flex flex-col gap-1.5">
+              <label for="username" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">
+                ВАШЕ ІМ'Я <span class="text-red-700" aria-hidden="true">*</span>
+              </label>
+              <div class="relative w-full">
+                <i class="fas fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="Наприклад: Олена"
+                  autocomplete="name"
+                  aria-required="true"
+                  aria-invalid="false"
+                  aria-describedby="usernameError"
+                  class="w-full min-h-[46px] pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 hover:border-hachok-gold-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-hachok-gold transition-colors text-sm"
+                >
+              </div>
+              <p id="usernameError" class="hidden text-xs text-red-700 font-medium" role="alert"></p>
+            </div>
+
+            <!-- 2. Емейл -->
+            <div class="flex flex-col gap-1.5">
+              <label for="email" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">
+                ЕЛЕКТРОННА ПОШТА <span class="text-red-700" aria-hidden="true">*</span>
+              </label>
+              <div class="relative w-full">
+                <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="user@gmail.com"
+                  autocomplete="email"
+                  aria-required="true"
+                  aria-invalid="false"
+                  aria-describedby="emailError"
+                  class="w-full min-h-[46px] pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 hover:border-hachok-gold-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-hachok-gold transition-colors text-sm"
+                >
+              </div>
+              <p id="emailError" class="hidden text-xs text-red-700 font-medium" role="alert"></p>
+            </div>
+
+            <!-- 3. Телефон -->
+            <div class="flex flex-col gap-1.5">
+              <label for="phone" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">
+                НОМЕР ТЕЛЕФОНУ <span class="text-red-700" aria-hidden="true">*</span>
+              </label>
+              <div class="relative w-full">
+                <i class="fas fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  placeholder="+380501234567"
+                  autocomplete="tel"
+                  aria-required="true"
+                  aria-invalid="false"
+                  aria-describedby="phoneError"
+                  class="w-full min-h-[46px] pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 hover:border-hachok-gold-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-hachok-gold transition-colors text-sm"
+                >
+              </div>
+              <p id="phoneError" class="hidden text-xs text-red-700 font-medium" role="alert"></p>
+              <!-- Кнопка швидкого виправлення формату 0XXXXXXXXX -> +380XXXXXXXXX -->
+              <button type="button" id="phoneFixBtn" class="hidden self-start text-xs underline font-bold text-hachok-dark hover:text-hachok-gold-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hachok-dark"></button>
+            </div>
+
+            <!-- Додатковий семантичний select для балансу сітки -->
+            <div class="flex flex-col gap-1.5">
+              <label for="topic" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">
+                ТЕМА ЗВЕРНЕННЯ
+              </label>
+              <div class="relative w-full">
+                <i class="fas fa-tag absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
+                <select
+                  id="topic"
+                  name="topic"
+                  class="w-full min-h-[46px] pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark hover:border-hachok-gold-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-hachok-gold transition-colors text-sm"
+                >
+                  <option value="patterns">Питання щодо схем в'язання</option>
+                  <option value="measurer">Робота нитковимірювача та калібрування</option>
+                  <option value="lessons">Відеоуроки та довідник петель</option>
+                  <option value="other">Інше запитання або пропозиція</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 4. Повідомлення (на всю ширину) -->
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <label for="message" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">
+                ТЕКСТ ПОВІДОМЛЕННЯ <span class="text-red-700" aria-hidden="true">*</span>
+              </label>
+              <span id="messageCounter" class="text-xs text-hachok-muted">0 / мін. 10 символів</span>
+            </div>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              placeholder="Опишіть ваше запитання або вкажіть назву схеми..."
+              aria-required="true"
+              aria-invalid="false"
+              aria-describedby="messageError"
+              class="w-full p-3.5 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 hover:border-hachok-gold-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-hachok-gold transition-colors text-sm resize-y"
+            ></textarea>
+            <p id="messageError" class="hidden text-xs text-red-700 font-medium" role="alert"></p>
+          </div>
+
+          <!-- 5. Чекбокс згоди з політикою конфіденційності -->
+          <div class="flex flex-col gap-1.5 pt-1">
+            <label for="agreement" class="inline-flex items-start gap-3 cursor-pointer select-none text-hachok-dark text-xs sm:text-sm leading-snug">
+              <input
+                type="checkbox"
+                id="agreement"
+                name="agreement"
+                aria-required="true"
+                aria-invalid="false"
+                aria-describedby="agreementError"
+                class="mt-0.5 w-4 h-4 accent-hachok-dark border-hachok-dark rounded focus-visible:ring-2 focus-visible:ring-hachok-gold shrink-0"
+              >
+              <span>
+                Я погоджуюся з <a href="index.html#privacy" class="underline font-bold hover:text-hachok-gold-hover">Політикою конфіденційності</a> та обробкою персональних даних <span class="text-red-700" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p id="agreementError" class="hidden text-xs text-red-700 font-medium" role="alert"></p>
+          </div>
+
+          <!-- 6. Кнопка Надіслати -->
+          <button
+            type="submit"
+            class="w-full min-h-[48px] py-3.5 bg-hachok-dark text-hachok-gold font-heading font-bold text-lg border border-hachok-gold/30 hover:bg-hachok-dark-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-hachok-gold transition-all shadow-sm uppercase tracking-wider mt-1"
+          >
+            НАДІСЛАТИ ПОВІДОМЛЕННЯ
+          </button>
+
+        </form>
+
+        <!-- Інформаційний банер -->
+        <div class="w-full border-l-4 border-hachok-dark bg-[#EFE4CF]/60 p-4 mt-7">
+          <p class="font-serifText italic text-xs sm:text-sm text-hachok-dark leading-relaxed">
+            Порада: якщо питання стосується розрахунку пряжі, вкажіть у повідомленні її назву та номер гачка.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ДОСТУПНЕ МОДАЛЬНЕ ВІКНО УСПІШНОГО НАДСИЛАННЯ -->
+  <div
+    id="successModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+    aria-describedby="modalDesc"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+  >
+    <div class="border border-hachok-dark p-1 bg-parchment-card max-w-md w-full shadow-2xl">
+      <div class="border border-hachok-dark p-6 sm:p-8 bg-parchment-card flex flex-col items-center text-center">
+        
+        <div class="w-16 h-16 rounded-full bg-hachok-dark text-hachok-gold flex items-center justify-center mb-4 border border-hachok-gold">
+          <i class="fas fa-check text-2xl" aria-hidden="true"></i>
+        </div>
+
+        <h2 id="modalTitle" class="font-heading font-bold text-2xl sm:text-3xl text-hachok-dark uppercase tracking-wider mb-3">
+          Дякуємо! Ваше повідомлення успішно надіслано.
+        </h2>
+
+        <p id="modalDesc" class="font-serifText text-sm text-hachok-muted leading-relaxed mb-6">
+          Форма успішно пройшла клієнтську валідацію. Демонстрація успішного надсилання.
+        </p>
+
+        <button
+          type="button"
+          id="closeModalBtn"
+          class="w-full min-h-[46px] py-3 bg-hachok-dark text-hachok-gold font-heading font-bold text-lg border border-hachok-gold/30 hover:bg-hachok-dark-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-hachok-gold transition-all uppercase tracking-wider"
+        >
+          ЗАКРИТИ
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ПІДВАЛ САЙТУ -->
+  <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
+    <div class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-stone-300" aria-label="Навігація у підвалі">
+        <a href="stand.html" class="hover:text-hachok-gold transition-colors">Завантажити 3D / PDF Стенд</a>
+        <a href="index.html#faq" class="hover:text-hachok-gold transition-colors">Часті запитання (FAQ)</a>
+        <a href="feedback.html" class="text-hachok-gold font-semibold">Зворотний зв'язок</a>
+        <a href="index.html#privacy" class="hover:text-hachok-gold transition-colors">Політика конфіденційності</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Instagram">
+          <img src="assets/icons/Instagram.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Twitter">
+          <img src="assets/icons/Twitter.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипт мобільного меню -->
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+  </script>
+
+  <!-- Підключення клієнтської валідації форми -->
+  <script src="assets/js/validation.js" defer></script>
+
+</body>
+</html>
