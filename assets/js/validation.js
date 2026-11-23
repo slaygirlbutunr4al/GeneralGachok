@@ -263,7 +263,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 6. ОБРОБКА ПОДІЇ SUBMIT
+  // 6. ОБРОБКА ПОДІЇ SUBMIT ТА РЕАЛЬНА ВІДПРАВКА НА ПОШТУ
+
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const topicSelect = document.getElementById('topic');
+  const modalDesc = document.getElementById('modalDesc');
 
   function resetFormState() {
     form.reset();
@@ -271,16 +275,17 @@ document.addEventListener('DOMContentLoaded', () => {
       touched[key] = false;
       clearError(fields[key], errors[key]);
     });
-    phoneFixBtn.classList.add('hidden');
+    if (phoneFixBtn) {
+      phoneFixBtn.classList.add('hidden');
+    }
     if (messageCounter) {
       messageCounter.textContent = '0 / мін. 10 символів';
     }
   }
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    // Позначаємо всі поля як перевірені
     Object.keys(touched).forEach((key) => {
       touched[key] = true;
     });
@@ -299,7 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
       isAgreementValid;
 
     if (!isFormValid) {
-      // Переводимо фокус на перше поле з помилкою для зручності
       const firstInvalid = Object.keys(fields).find(
         (key) => fields[key].getAttribute('aria-invalid') === 'true'
       );
@@ -309,8 +313,45 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Успішна валідація: очищаємо форму та відкриваємо модальне вікно
-    resetFormState();
-    openSuccessModal();
+    // Блокуємо кнопку на час відправки, щоб уникнути подвійного кліку
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'НАДСИЛАННЯ...';
+
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/2dwhpdalek.dentist3@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          _subject: 'Нове повідомлення з сайту «Генерал Гачок»',
+          _template: 'table',
+          Імя: fields.username.value.trim(),
+          Email: fields.email.value.trim(),
+          Телефон: fields.phone.value.trim(),
+          Тема: topicSelect ? topicSelect.options[topicSelect.selectedIndex].text : 'Загальне питання',
+          Повідомлення: fields.message.value.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Помилка сервера при відправці');
+      }
+
+      if (modalDesc) {
+        modalDesc.textContent = 'Ми отримали ваше повідомлення та відповімо на вказану електронну пошту найближчим часом.';
+      }
+
+      resetFormState();
+      openSuccessModal();
+    } catch (error) {
+      console.error('[Feedback Submit Error]:', error);
+      alert('Не вдалося надіслати повідомлення. Перевірте підключення до інтернету та спробуйте ще раз.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+    }
   });
 });
