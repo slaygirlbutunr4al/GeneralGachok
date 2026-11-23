@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.textContent = 'НАДСИЛАННЯ...';
 
     try {
-      const response = await fetch('https://formsubmit.co/ajax/2dwhpdalek.dentist3@gmail.com', {
+      const response = await fetch('https://formsubmit.co/ajax/82da8f3cfc8fa1a5281686ec46190151', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
