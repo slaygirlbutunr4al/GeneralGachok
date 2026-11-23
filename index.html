@@ -97,14 +97,14 @@
   <!-- ОСНОВНИЙ КОНТЕНТ -->
   <main id="main-content" class="flex-grow">
     
-    <!-- HERO СЕКЦІЯ -->
-    <section class="bg-hachok-dark border-b border-hachok-gold py-16 lg:py-14 px-4 relative overflow-hidden">
+<!-- HERO СЕКЦІЯ -->
+    <section class="bg-hachok-dark border-b border-hachok-gold py-14 lg:py-[clamp(2.5rem,4vw,4rem)] lg:min-h-[calc(100vh-4rem)] px-4 relative overflow-hidden flex flex-col justify-center">
       
-      <!-- Лівий декор -->
-      <img src="assets/icons/gold_decor.svg" alt="" aria-hidden="true" width="200" height="650" class="hidden lg:block absolute left-5 top-1/2 -translate-y-1/2 h-[100%] max-h-[650px] w-auto object-contain select-none opacity-90 pointer-events-none">
+      <!-- Лівий декор (однакові пропорційні відступи зверху і знизу) -->
+      <img src="assets/icons/gold_decor.svg" alt="" aria-hidden="true" width="200" height="650" class="hidden lg:block absolute left-[clamp(1.25rem,2.5vw,2.75rem)] top-[clamp(1.25rem,2.5vw,2.75rem)] h-[calc(100%-clamp(2.5rem,5vw,5.5rem))] w-auto object-contain select-none opacity-90 pointer-events-none">
 
       <!-- Центральний блок -->
-      <div class="max-w-5xl mx-auto flex flex-col items-center text-center space-y-10 sm:space-y-12 relative z-10">
+      <div class="max-w-5xl mx-auto flex flex-col items-center text-center space-y-8 sm:space-y-10 lg:space-y-[clamp(1.75rem,3vw,3rem)] relative z-10">
         
         <!-- Підзаголовок зверху -->
         <p class="font-heading text-2xl sm:text-3xl text-hachok-gold tracking-widest">
@@ -113,10 +113,10 @@
         
         <!-- ЄДИНИЙ ГОЛОВНИЙ ЗАГОЛОВОК H1 НА СТОРІНЦІ -->
         <div class="flex items-center justify-center">
-          <h1 class="font-heading font-bold text-4xl sm:text-6xl lg:text-7xl text-hachok-gold flex flex-wrap items-center justify-center gap-5 sm:gap-8 tracking-widest">
+          <h1 class="font-heading font-bold text-4xl sm:text-6xl lg:text-[clamp(2.25rem,4.1vw,4.5rem)] text-hachok-gold flex flex-wrap lg:flex-nowrap items-center justify-center gap-5 sm:gap-8 lg:gap-[clamp(0.875rem,1.8vw,2rem)] tracking-widest">
             <span>ГЕНЕРАЛ</span>
-            <a href="index.html" class="inline-block transition-transform hover:scale-105" aria-label="Символ та Медаль Генерал Гачок">
-              <img src="assets/icons/medal_main(1).svg" alt="Медаль Генерал Гачок" width="320" height="320" class="w-60 h-60 sm:w-60 sm:h-60 lg:w-80 lg:h-80">
+            <a href="index.html" class="inline-block transition-transform hover:scale-105 shrink-0" aria-label="Символ та Медаль Генерал Гачок">
+              <img src="assets/icons/medal_main(1).svg" alt="Медаль Генерал Гачок" width="320" height="320" class="w-60 h-60 sm:w-60 sm:h-60 lg:w-[clamp(10.5rem,18.2vw,20rem)] lg:h-[clamp(10.5rem,18.2vw,20rem)]">
             </a>
             <span>ГАЧОК</span>
           </h1>
@@ -128,8 +128,8 @@
         </p>
       </div>
 
-      <!-- Правий декор -->
-      <img src="assets/icons/gold_decor.svg" alt="" aria-hidden="true" width="200" height="650" class="hidden lg:block absolute right-5 top-1/2 -translate-y-1/2 h-[100%] max-h-[650px] w-auto object-contain select-none opacity-90 -scale-x-100 pointer-events-none">
+      <!-- Правий декор (однакові пропорційні відступи зверху і знизу) -->
+      <img src="assets/icons/gold_decor.svg" alt="" aria-hidden="true" width="200" height="650" class="hidden lg:block absolute right-[clamp(1.25rem,2.5vw,2.75rem)] top-[clamp(1.25rem,2.5vw,2.75rem)] h-[calc(100%-clamp(2.5rem,5vw,5.5rem))] w-auto object-contain select-none opacity-90 -scale-x-100 pointer-events-none">
 
     </section>
 
