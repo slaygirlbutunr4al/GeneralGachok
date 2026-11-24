@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Схема: Літній ажурний топ — Генерал Гачок</title>
+  <title>Деталі схеми — Генерал Гачок</title>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,14 +92,13 @@
   </header>
 
   <!-- ОСНОВНИЙ КОНТЕНТ СТОРІНКИ СХЕМИ -->
-  <main id="main-content" class="pattern-detail-main flex-grow">
+  <main id="main-content" class="pattern-detail-main flex-grow w-full">
     
-    <!-- ВЕРХНІЙ БЛОК: ОБКЛАДИНКА, СПЕЦИФІКАЦІЯ ТА ДЕКОР -->
+    <!-- ВЕРХНІЙ БЛОК: ОБКЛАДИНКА ТА СПЕЦИФІКАЦІЯ -->
     <section class="pattern-hero-card">
       
       <!-- Зображення схеми -->
-      <div class="pattern-cover">
-        <img src="assets/images/top.jpg" alt="Обкладинка схеми Літній ажурний топ" class="pattern-cover-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="pattern-cover" id="pattern-cover-box">
         <div class="pattern-cover-placeholder">
           <i class="fas fa-image" aria-hidden="true"></i>
           <span>ФОТО СХЕМИ</span>
@@ -108,45 +107,27 @@
 
       <!-- Інформація про схему -->
       <div class="pattern-meta-details">
-        <h1>Літній ажурний топ</h1>
+        <div>
+          <div class="flex flex-wrap items-center gap-2 mb-2" id="pattern-badges-row"></div>
+          <h1 id="pattern-title">Завантаження схеми...</h1>
+          <p id="pattern-description" class="text-sm text-hachok-muted mb-5 leading-relaxed hidden"></p>
+        </div>
 
         <div class="pattern-specs-grid">
           
           <!-- Набір стібків -->
           <div class="spec-column">
             <h3>НАБІР СТІБКІВ:</h3>
-            <ul class="spec-list">
-              <li>
-                <span>1. Стовпчик з накидом (СсН)</span>
-                <span class="badge-status badge-success"><i class="fas fa-check-circle" aria-hidden="true"></i> Калібрування виконано</span>
-              </li>
-              <li>
-                <span>2. Повітряна петля (ПП)</span>
-                <span class="badge-status badge-success"><i class="fas fa-check-circle" aria-hidden="true"></i> Калібрування виконано</span>
-              </li>
-              <li>
-                <span>3. Стовпчик без накиду (СбН)</span>
-                <span class="badge-status badge-warning"><i class="fas fa-exclamation-circle" aria-hidden="true"></i> Калібрування невиконано</span>
-              </li>
+            <ul class="spec-list" id="pattern-stitches-list">
+              <li class="text-xs text-hachok-muted">Завантаження стібків...</li>
             </ul>
           </div>
 
           <!-- Інструменти і матеріали -->
           <div class="spec-column">
             <h3>ІНСТРУМЕНТИ І МАТЕРІАЛИ:</h3>
-            <ul class="spec-list">
-              <li>
-                <span>1. Cotton Dream (450м)</span>
-                <span class="badge-status badge-success"><i class="fas fa-check-circle" aria-hidden="true"></i> В наявності</span>
-              </li>
-              <li>
-                <span>2. Гачок 4 мм</span>
-                <span class="badge-status badge-info"><i class="fas fa-wrench" aria-hidden="true"></i> Рекомендовано</span>
-              </li>
-              <li>
-                <span>3. Гачок 5 мм</span>
-                <span class="badge-status badge-info"><i class="fas fa-wrench" aria-hidden="true"></i> Для обв'язки</span>
-              </li>
+            <ul class="spec-list" id="pattern-materials-list">
+              <li class="text-xs text-hachok-muted">Завантаження матеріалів...</li>
             </ul>
           </div>
 
@@ -157,42 +138,40 @@
 
     <!-- КНОПКА СТВОРЕННЯ ПРОЄКТУ -->
     <section class="pattern-action-section">
-      <a href="workspace.html" class="btn-primary btn-create-project">
+      <button type="button" id="create-project-from-pattern-btn" class="btn-primary btn-create-project">
         <i class="fas fa-plus-circle" aria-hidden="true"></i> Створити проєкт з цією схемою
-      </a>
+      </button>
     </section>
 
-    <!-- ТЕКСТ ТА ОПИС СХЕМИ (ДВІ КОЛОНКИ) -->
-    <section class="pattern-text-grid">
-      
-      <!-- Ліва колонка з текстом схеми -->
-      <article class="pattern-text-card">
-        <div class="card-title-bar">
-          <h2><i class="fas fa-book-open" aria-hidden="true"></i> Текст схеми (Частина 1: Спинка)</h2>
-        </div>
-        <div class="pattern-text-content">
-          <p><strong>Рядок 1:</strong> Наберіть ланцюжок з 80 повітряних петель (ПП). Зробіть 3 ПП підйому, далі в'яжіть 1 стовпчик з накидом (СсН) у 4-ту петлю від гачка.</p>
-          <p><strong>Рядок 2:</strong> 2 ПП підйому, *1 СсН, пропустіть 1 петлю, 2 ПП, 1 СсН в наступну петлю*. Повторюйте від * до * до кінця рядка.</p>
-          <p><strong>Рядки 3–15:</strong> Продовжуйте в'язати ажурним візерунком за базовим калібруванням щільності (1.24 см/ст).</p>
-          <p><em>Примітка:</em> Слідкуйте за натягом нитки у бокових арках, щоб полотно не стягувалося по краях.</p>
-        </div>
-      </article>
-
-      <!-- Права колонка з текстом схеми / збиранням -->
-      <article class="pattern-text-card">
-        <div class="card-title-bar">
-          <h2><i class="fas fa-layer-group" aria-hidden="true"></i> Текст схеми (Частина 2: Перед та Збирання)</h2>
-        </div>
-        <div class="pattern-text-content">
-          <p><strong>Рядок 16 (Горловина):</strong> Зменшуйте по 2 СсН з кожного краю протягом наступних 4 рядків для формування вирізу горловини.</p>
-          <p><strong>Рядок 20–30:</strong> В'яжіть плечові лямки прямими та зворотними рядками (по 15 СсН у кожному рядку).</p>
-          <p><strong>Збирання виробу:</strong> Виконайте плечові та бокові шви за допомогою гачка 4 мм або трикотажної голки. Зробіть фінішну обв'язку рачим кроком по краю пройми.</p>
-        </div>
-      </article>
-
-    </section>
+    <!-- ТЕКСТ ТА ОПИС СХЕМИ (ЧАСТИНИ ПО 2 В РЯД ІЗ РОЗДІЛЬНИКОМ) -->
+    <div id="pattern-sections-container" class="space-y-6">
+      <p class="text-center text-sm text-hachok-muted py-6">Завантаження частин схеми...</p>
+    </div>
 
   </main>
+
+  <!-- СТІКІ-КНОПКА ТА КОНТЕЙНЕР ПІД МАЙСТЕР «НИТКОВИМІРЮВАЧ» -->
+  <div id="measurer-sticky-anchor" class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+    <div id="measurer-toast" class="hidden max-w-xs bg-parchment-card border-2 border-hachok-dark p-4 shadow-xl text-xs text-hachok-dark space-y-2">
+      <div class="flex items-start justify-between gap-2">
+        <strong class="font-heading uppercase text-sm tracking-wider">Майстер «Нитковимірювач»</strong>
+        <button type="button" onclick="document.getElementById('measurer-toast').classList.add('hidden')" class="text-hachok-muted hover:text-hachok-dark" aria-label="Закрити підказку">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p id="measurer-toast-text" class="leading-relaxed text-hachok-muted"></p>
+      <a href="stand.html" class="inline-block font-bold underline text-hachok-dark hover:text-hachok-gold uppercase tracking-wider">
+        Перейти до стенду вимірювача →
+      </a>
+    </div>
+
+    <button type="button" id="sticky-measurer-btn" onclick="openMeasurerWidget({ step: 'menu' })" class="flex items-center gap-3 px-4 py-3 bg-hachok-dark text-hachok-gold border-2 border-hachok-gold shadow-lg hover:bg-hachok-dark-hover transition-all" aria-label="Відкрити майстер Нитковимірювач">
+      <img src="assets/icons/logo.svg" alt="" aria-hidden="true" class="w-7 h-7 object-contain">
+      <span class="font-heading font-bold text-sm uppercase tracking-wider hidden sm:inline">Нитковимірювач</span>
+    </button>
+  </div>
+
+  <div id="measurer-widget-root"></div>
 
   <!-- ПІДВАЛ САЙТУ -->
   <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
@@ -216,13 +195,14 @@
     </div>
   </footer>
 
-  <!-- Скрипт мобільного меню -->
+  <!-- Скрипти -->
   <script>
     function toggleMobileMenu() {
       const menu = document.getElementById('mobile-menu');
       menu.classList.toggle('hidden');
     }
   </script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/pattern.js"></script>
 </body>
 </html>
