@@ -106,8 +106,8 @@
       <a href="lessons.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Відеоуроки</a>
       <a href="stand.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Нитковимірювач</a>
       <a href="index.html#about" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Про нас</a>
-      <a href="dovidnyk.html" class="block font-heading font-bold text-xl uppercase text-hachok-gold py-2 border-b border-hachok-gold/20">Довідник</a>
-      <a href="profile.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2">Профіль</a>
+      <a href="dovidnyk.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Довідник</a>
+      <a href="profile.html" class="block font-heading font-bold text-xl uppercase text-hachok-gold py-2">Профіль</a>
     </div>
   </header>
 
@@ -123,10 +123,13 @@
           <i class="fas fa-user" aria-hidden="true"></i>
         </div>
         <div>
-          <h1 class="font-heading font-bold text-2xl sm:text-4xl text-hachok-dark">Майстриня Олена</h1>
-          <p class="text-sm sm:text-base text-hachok-muted flex items-center gap-2 mt-1">
-            <i class="far fa-calendar-alt" aria-hidden="true"></i> У спільноті з вересня 2024
+          <h1 id="profile-nickname" class="font-heading font-bold text-2xl sm:text-4xl text-hachok-dark">Завантаження...</h1>
+          <p id="profile-reg-date" class="text-sm sm:text-base text-hachok-muted flex items-center gap-2 mt-1">
+            <i class="far fa-calendar-alt" aria-hidden="true"></i> <span>—</span>
           </p>
+          <button type="button" id="logout-btn" class="mt-2 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-hachok-dark underline hover:text-red-700 transition-colors">
+            <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Вийти з акаунту
+          </button>
         </div>
       </div>
 
@@ -138,7 +141,7 @@
             <span>АКТИВНІ ПРОЄКТИ</span>
             <i class="fas fa-scroll text-hachok-muted" aria-hidden="true"></i>
           </div>
-          <div class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">3</div>
+          <div id="stat-active-projects" class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">0</div>
         </div>
 
         <div class="bg-white border border-hachok-dark p-4 flex flex-col justify-between min-w-[160px] shadow-sm">
@@ -146,7 +149,7 @@
             <span>ПРЯЖІ В ЗАПАСІ</span>
             <i class="fas fa-cubes text-hachok-muted" aria-hidden="true"></i>
           </div>
-          <div class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">1,250 м</div>
+          <div id="stat-total-yarn" class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">0 м</div>
         </div>
 
         <div class="bg-white border border-hachok-dark p-4 flex flex-col justify-between min-w-[160px] shadow-sm">
@@ -154,7 +157,7 @@
             <span>ЗБЕРЕЖЕНІ КАЛІБРУВАННЯ</span>
             <i class="fas fa-sliders-h text-hachok-muted" aria-hidden="true"></i>
           </div>
-          <div class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">4</div>
+          <div id="stat-calibrations" class="font-heading font-bold text-3xl sm:text-4xl text-hachok-dark">0</div>
         </div>
 
       </div>
@@ -162,11 +165,10 @@
 
     <!-- ТАБИ ПРОФІЛЮ -->
     <nav class="border-b-2 border-hachok-dark/30 overflow-x-auto" aria-label="Вкладки кабінету">
-      <ul class="flex gap-6 sm:gap-10 min-w-max pb-1">
-        <li><a href="#projects" class="font-heading font-bold text-lg sm:text-xl text-hachok-dark pb-3 border-b-2 border-hachok-dark block">Мої проєкти</a></li>
-        <li><a href="#yarn" class="font-heading font-bold text-lg sm:text-xl text-hachok-muted hover:text-hachok-dark pb-3 border-b-2 border-transparent block transition-colors">Моя пряжа</a></li>
-        <li><a href="#calibrations" class="font-heading font-bold text-lg sm:text-xl text-hachok-muted hover:text-hachok-dark pb-3 border-b-2 border-transparent block transition-colors">Мої калібрування</a></li>
-        <li><a href="#settings" class="font-heading font-bold text-lg sm:text-xl text-hachok-muted hover:text-hachok-dark pb-3 border-b-2 border-transparent block transition-colors">Налаштування</a></li>
+      <ul class="flex gap-6 sm:gap-10 min-w-max pb-1" id="profile-tabs">
+        <li><a href="#projects" data-tab="projects" class="profile-tab font-heading font-bold text-lg sm:text-xl text-hachok-dark pb-3 border-b-2 border-hachok-dark block">Мої проєкти</a></li>
+        <li><a href="#yarn" data-tab="yarn" class="profile-tab font-heading font-bold text-lg sm:text-xl text-hachok-muted hover:text-hachok-dark pb-3 border-b-2 border-transparent block transition-colors">Моя пряжа</a></li>
+        <li><a href="#calibrations" data-tab="calibrations" class="profile-tab font-heading font-bold text-lg sm:text-xl text-hachok-muted hover:text-hachok-dark pb-3 border-b-2 border-transparent block transition-colors">Мої калібрування</a></li>
       </ul>
     </nav>
 
@@ -178,17 +180,20 @@
         
         <div class="relative flex-grow max-w-md">
           <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-hachok-muted text-sm" aria-hidden="true"></i>
-          <input type="search" placeholder="Пошук проєктів..." aria-label="Пошук проєктів" class="w-full pl-11 pr-4 py-2.5 bg-white border border-hachok-dark text-hachok-dark placeholder-hachok-muted focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+          <input type="search" id="project-search" placeholder="Пошук проєктів..." aria-label="Пошук проєктів" class="w-full pl-11 pr-4 py-2.5 bg-white border border-hachok-dark text-hachok-dark placeholder-hachok-muted focus:outline-none focus:border-hachok-gold transition-colors text-sm">
         </div>
         
         <div class="flex items-center gap-3">
-          <select aria-label="Фільтр проєктів" class="bg-white border border-hachok-dark px-4 py-2.5 text-hachok-dark text-sm focus:outline-none focus:border-hachok-gold cursor-pointer min-w-[140px]">
+          <select id="project-category-filter" aria-label="Фільтр проєктів" class="bg-white border border-hachok-dark px-4 py-2.5 text-hachok-dark text-sm focus:outline-none focus:border-hachok-gold cursor-pointer min-w-[140px]">
             <option value="all">Всі проєкти</option>
-            <option value="clothing">Одяг</option>
-            <option value="accessories">Аксесуари</option>
+            <option value="1">Іграшки</option>
+            <option value="2">Одяг</option>
+            <option value="3">Аксесуари</option>
+            <option value="4">Інтер'єр</option>
+            <option value="5">Мереживо</option>
           </select>
 
-          <button type="button" class="px-5 py-2.5 bg-hachok-dark text-hachok-gold font-heading font-bold text-sm border border-hachok-gold hover:bg-hachok-dark-hover transition-all uppercase tracking-wider flex items-center justify-center gap-2 whitespace-nowrap shadow-sm">
+          <button type="button" onclick="openMeasurerWidget({ step: 'project' })" class="px-5 py-2.5 bg-hachok-dark text-hachok-gold font-heading font-bold text-sm border border-hachok-gold hover:bg-hachok-dark-hover transition-all uppercase tracking-wider flex items-center justify-center gap-2 whitespace-nowrap shadow-sm">
             <i class="fas fa-plus text-xs" aria-hidden="true"></i> Новий проєкт
           </button>
         </div>
@@ -196,173 +201,36 @@
       </div>
 
       <!-- ГРІД АКТИВНИХ ПРОЄКТІВ -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-        
-        <!-- Картка проєкту 1 -->
-        <article class="bg-white border-2 border-hachok-dark p-5 sm:p-6 flex flex-col sm:flex-row gap-5 shadow-md hover:border-hachok-gold transition-all duration-300">
-          <div class="w-full sm:w-44 h-48 sm:h-auto border border-hachok-dark/20 overflow-hidden flex-shrink-0">
-            <img src="assets/images/sweater.jpg" alt="Прев'ю проєкту Светр Оверсайз" class="w-full h-full object-cover">
-          </div>
-
-          <div class="flex flex-col justify-between flex-grow space-y-4">
-            <div>
-              <span class="text-xs font-bold text-hachok-muted tracking-wider uppercase block mb-1">ОДЯГ</span>
-              <h3 class="font-heading font-bold text-2xl text-hachok-dark">Светр Оверсайз</h3>
-            </div>
-
-            <!-- Прогрес -->
-            <div class="space-y-1.5">
-              <div class="flex justify-between text-xs text-hachok-dark font-medium">
-                <span>Рядок 18 з 50</span>
-                <span>36%</span>
-              </div>
-              <div class="w-full h-3 bg-parchment-card border border-hachok-dark/30 rounded-full overflow-hidden">
-                <div class="h-full bg-hachok-dark" style="width: 36%;"></div>
-              </div>
-            </div>
-
-            <!-- Деталі -->
-            <ul class="text-xs text-hachok-muted space-y-1">
-              <li class="flex items-center gap-2"><i class="far fa-clock" aria-hidden="true"></i> Оновлено: 12 Квітня, 2026</li>
-              <li class="flex items-center gap-2"><i class="fas fa-fill-drip" aria-hidden="true"></i> Пряжа: Wool Cotton (200m left)</li>
-            </ul>
-
-            <!-- Кнопки дій -->
-            <div class="flex items-center gap-3 pt-2">
-              <a href="workspace.html" class="flex-grow py-2.5 px-4 bg-hachok-gold text-hachok-dark font-heading font-bold text-center text-xs sm:text-sm uppercase tracking-wider border border-hachok-gold hover:bg-hachok-gold-hover transition-colors shadow-sm">
-                Продовжити в'язати
-              </a>
-              <a href="pattern.html" class="py-2.5 px-4 bg-white text-hachok-dark font-heading font-bold text-center text-xs sm:text-sm uppercase tracking-wider border border-hachok-dark hover:bg-parchment-bg transition-colors">
-                Деталі
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Картка проєкту 2 -->
-        <article class="bg-white border-2 border-hachok-dark p-5 sm:p-6 flex flex-col sm:flex-row gap-5 shadow-md hover:border-hachok-gold transition-all duration-300">
-          <div class="w-full sm:w-44 h-48 sm:h-auto border border-hachok-dark/20 overflow-hidden flex-shrink-0">
-            <img src="assets/images/shwl.jpg" alt="Прев'ю проєкту Весняна Хустина" class="w-full h-full object-cover">
-          </div>
-
-          <div class="flex flex-col justify-between flex-grow space-y-4">
-            <div>
-              <span class="text-xs font-bold text-hachok-muted tracking-wider uppercase block mb-1">АКСЕСУАРИ</span>
-              <h3 class="font-heading font-bold text-2xl text-hachok-dark">Весняна Хустина</h3>
-            </div>
-
-            <!-- Прогрес -->
-            <div class="space-y-1.5">
-              <div class="flex justify-between text-xs text-hachok-dark font-medium">
-                <span>Рядок 45 з 60</span>
-                <span>75%</span>
-              </div>
-              <div class="w-full h-3 bg-parchment-card border border-hachok-dark/30 rounded-full overflow-hidden">
-                <div class="h-full bg-hachok-dark" style="width: 75%;"></div>
-              </div>
-            </div>
-
-            <!-- Деталі -->
-            <ul class="text-xs text-hachok-muted space-y-1">
-              <li class="flex items-center gap-2"><i class="far fa-clock" aria-hidden="true"></i> Оновлено: 10 Квітня, 2026</li>
-              <li class="flex items-center gap-2"><i class="fas fa-fill-drip" aria-hidden="true"></i> Пряжа: Alpaca Soft (50m left)</li>
-            </ul>
-
-            <!-- Кнопки дій -->
-            <div class="flex items-center gap-3 pt-2">
-              <a href="workspace.html" class="flex-grow py-2.5 px-4 bg-hachok-gold text-hachok-dark font-heading font-bold text-center text-xs sm:text-sm uppercase tracking-wider border border-hachok-gold hover:bg-hachok-gold-hover transition-colors shadow-sm">
-                Продовжити в'язати
-              </a>
-              <a href="pattern.html" class="py-2.5 px-4 bg-white text-hachok-dark font-heading font-bold text-center text-xs sm:text-sm uppercase tracking-wider border border-hachok-dark hover:bg-parchment-bg transition-colors">
-                Деталі
-              </a>
-            </div>
-          </div>
-        </article>
-
+      <div id="active-projects-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <p class="text-sm text-hachok-muted col-span-full py-4">Завантаження проєктів...</p>
       </div>
 
       <!-- Кнопка розгортання завершених проєктів -->
-      <div class="pt-2">
-        <button type="button" class="text-hachok-dark font-bold text-sm hover:text-hachok-gold transition-colors flex items-center gap-2">
-          <i class="fas fa-chevron-right text-xs" aria-hidden="true"></i> Завершені проєкти (12)
+      <div class="pt-2 space-y-4">
+        <button type="button" id="toggle-completed-btn" class="text-hachok-dark font-bold text-sm hover:text-hachok-gold transition-colors flex items-center gap-2">
+          <i id="completed-chevron" class="fas fa-chevron-right text-xs transition-transform" aria-hidden="true"></i>
+          <span>Завершені проєкти (<span id="completed-projects-count">0</span>)</span>
         </button>
+
+        <div id="completed-projects-grid" class="hidden grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8"></div>
       </div>
 
     </section>
 
-    <!-- НИЖНІЙ БЛОК: ЗАПАСИ ПРЯЖІ ТА КАЛІБРУВАННЯ (ОДНАКОВА ВИСОТА ТА СКРОЛ) -->
+    <!-- НИЖНІЙ БЛОК: ЗАПАСИ ПРЯЖІ ТА КАЛІБРУВАННЯ -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch pt-4">
       
       <!-- Ліва колонка: Запаси Пряжі -->
       <section class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-md flex flex-col h-[460px]" id="yarn">
         <div class="flex items-center justify-between border-b border-hachok-dark/20 pb-4 shrink-0">
           <h2 class="font-heading font-bold text-2xl text-hachok-dark">Запаси Пряжі</h2>
-          <a href="#edit-yarn" class="text-xs font-bold text-hachok-dark underline hover:text-hachok-gold transition-colors uppercase tracking-wider">Редагувати запаси</a>
+          <button type="button" onclick="openMeasurerWidget({ step: 'yarn' })" class="text-xs font-bold text-hachok-dark underline hover:text-hachok-gold transition-colors uppercase tracking-wider">
+            + Відкалібрувати пряжу
+          </button>
         </div>
 
-        <div class="space-y-3 overflow-y-auto flex-1 custom-scrollbar pr-2 pt-4">
-          
-          <div class="bg-white border border-hachok-dark p-4 flex items-center justify-between gap-4 shadow-sm">
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 bg-parchment-bg border border-hachok-dark/40 flex items-center justify-center text-hachok-dark flex-shrink-0">
-                <i class="fas fa-boxes-stacked text-sm" aria-hidden="true"></i>
-              </div>
-              <div>
-                <h4 class="font-heading font-bold text-lg text-hachok-dark">Merino Gold</h4>
-                <p class="text-xs text-hachok-muted">Fine Weight • 450м залишилось</p>
-              </div>
-            </div>
-            <button type="button" class="text-hachok-muted hover:text-hachok-dark p-1.5 transition-colors" aria-label="Редагувати Merino Gold">
-              <i class="fas fa-pencil text-xs" aria-hidden="true"></i>
-            </button>
-          </div>
-
-          <div class="bg-white border border-hachok-dark p-4 flex items-center justify-between gap-4 shadow-sm">
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 bg-parchment-bg border border-hachok-dark/40 flex items-center justify-center text-hachok-dark flex-shrink-0">
-                <i class="fas fa-boxes-stacked text-sm" aria-hidden="true"></i>
-              </div>
-              <div>
-                <h4 class="font-heading font-bold text-lg text-hachok-dark">Cotton Dream Зелений</h4>
-                <p class="text-xs text-hachok-muted">Sport Weight • 800м залишилось</p>
-              </div>
-            </div>
-            <button type="button" class="text-hachok-muted hover:text-hachok-dark p-1.5 transition-colors" aria-label="Редагувати Cotton Dream">
-              <i class="fas fa-pencil text-xs" aria-hidden="true"></i>
-            </button>
-          </div>
-
-          <div class="bg-white border border-hachok-dark p-4 flex items-center justify-between gap-4 shadow-sm">
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 bg-parchment-bg border border-hachok-dark/40 flex items-center justify-center text-hachok-dark flex-shrink-0">
-                <i class="fas fa-boxes-stacked text-sm" aria-hidden="true"></i>
-              </div>
-              <div>
-                <h4 class="font-heading font-bold text-lg text-hachok-dark">Cotton Dream Жовтий</h4>
-                <p class="text-xs text-hachok-muted">Sport Weight • 800м залишилось</p>
-              </div>
-            </div>
-            <button type="button" class="text-hachok-muted hover:text-hachok-dark p-1.5 transition-colors" aria-label="Редагувати Cotton Dream">
-              <i class="fas fa-pencil text-xs" aria-hidden="true"></i>
-            </button>
-          </div>
-
-          <div class="bg-white border border-hachok-dark p-4 flex items-center justify-between gap-4 shadow-sm">
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 bg-parchment-bg border border-hachok-dark/40 flex items-center justify-center text-hachok-dark flex-shrink-0">
-                <i class="fas fa-boxes-stacked text-sm" aria-hidden="true"></i>
-              </div>
-              <div>
-                <h4 class="font-heading font-bold text-lg text-hachok-dark">Cotton Dream Червоний</h4>
-                <p class="text-xs text-hachok-muted">Sport Weight • 800м залишилось</p>
-              </div>
-            </div>
-            <button type="button" class="text-hachok-muted hover:text-hachok-dark p-1.5 transition-colors" aria-label="Редагувати Cotton Dream">
-              <i class="fas fa-pencil text-xs" aria-hidden="true"></i>
-            </button>
-          </div>
-
+        <div id="yarn-stash-list" class="space-y-3 overflow-y-auto flex-1 custom-scrollbar pr-2 pt-4">
+          <p class="text-sm text-hachok-muted">Завантаження запасів пряжі...</p>
         </div>
       </section>
 
@@ -370,7 +238,9 @@
       <section class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-md flex flex-col h-[460px]" id="calibrations">
         <div class="flex items-center justify-between border-b border-hachok-dark/20 pb-4 shrink-0">
           <h2 class="font-heading font-bold text-2xl text-hachok-dark">Мої Калібрування</h2>
-          <a href="#all-calibrations" class="text-xs font-bold text-hachok-dark underline hover:text-hachok-gold transition-colors uppercase tracking-wider">Всі калібрування</a>
+          <button type="button" onclick="openMeasurerWidget({ step: 'stitch' })" class="text-xs font-bold text-hachok-dark underline hover:text-hachok-gold transition-colors uppercase tracking-wider">
+            + Новий замір стібка
+          </button>
         </div>
 
         <div class="overflow-y-auto flex-1 custom-scrollbar pr-1 pt-4">
@@ -383,36 +253,9 @@
                 <th scope="col" class="py-3 px-3">ДАТА</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-hachok-dark/10 bg-white">
-              <tr class="hover:bg-parchment-bg/40 transition-colors">
-                <td class="py-3 px-3 font-bold">Merino Bulky</td>
-                <td class="py-3 px-3">6.0 mm</td>
-                <td class="py-3 px-3">Пов.Пет</td>
-                <td class="py-3 px-3 text-hachok-muted text-xs">01.04.2026</td>
-              </tr>
-              <tr class="hover:bg-parchment-bg/40 transition-colors">
-                <td class="py-3 px-3 font-bold">Summer Silk</td>
-                <td class="py-3 px-3">3.5 mm</td>
-                <td class="py-3 px-3">СБН</td>
-                <td class="py-3 px-3 text-hachok-muted text-xs">22.03.2026</td>
-              </tr>
-              <tr class="hover:bg-parchment-bg/40 transition-colors">
-                <td class="py-3 px-3 font-bold">Lace Cotton</td>
-                <td class="py-3 px-3">5.0 mm</td>
-                <td class="py-3 px-3">ССН</td>
-                <td class="py-3 px-3 text-hachok-muted text-xs">15.03.2026</td>
-              </tr>
-              <tr class="hover:bg-parchment-bg/40 transition-colors">
-                <td class="py-3 px-3 font-bold">Lace Cotton</td>
-                <td class="py-3 px-3">2.0 mm</td>
-                <td class="py-3 px-3">Пов.Пет</td>
-                <td class="py-3 px-3 text-hachok-muted text-xs">15.03.2026</td>
-              </tr>
-              <tr class="hover:bg-parchment-bg/40 transition-colors">
-                <td class="py-3 px-3 font-bold">Lace Cotton</td>
-                <td class="py-3 px-3">2.0 mm</td>
-                <td class="py-3 px-3">ССН</td>
-                <td class="py-3 px-3 text-hachok-muted text-xs">15.07.2026</td>
+            <tbody id="calibrations-table-body" class="divide-y divide-hachok-dark/10 bg-white">
+              <tr>
+                <td colspan="4" class="py-4 px-3 text-sm text-hachok-muted">Завантаження калібрувань...</td>
               </tr>
             </tbody>
           </table>
@@ -422,6 +265,32 @@
     </div>
 
   </main>
+
+  <!-- СТІКІ-КНОПКА ТА КОНТЕЙНЕР ПІД МАЙСТЕР «НИТКОВИМІРЮВАЧ» -->
+  <div id="measurer-sticky-anchor" class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+    <!-- Тимчасове повідомлення-заглушка до підключення скрипту віджета -->
+    <div id="measurer-toast" class="hidden max-w-xs bg-parchment-card border-2 border-hachok-dark p-4 shadow-xl text-xs text-hachok-dark space-y-2">
+      <div class="flex items-start justify-between gap-2">
+        <strong class="font-heading uppercase text-sm tracking-wider">Майстер «Нитковимірювач»</strong>
+        <button type="button" onclick="document.getElementById('measurer-toast').classList.add('hidden')" class="text-hachok-muted hover:text-hachok-dark" aria-label="Закрити підказку">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p id="measurer-toast-text" class="leading-relaxed text-hachok-muted"></p>
+      <a href="stand.html" class="inline-block font-bold underline text-hachok-dark hover:text-hachok-gold uppercase tracking-wider">
+        Перейти до стенду вимірювача →
+      </a>
+    </div>
+
+    <!-- Плаваюча стікі-кнопка відкриття майстра -->
+    <button type="button" id="sticky-measurer-btn" onclick="openMeasurerWidget({ step: 'menu' })" class="flex items-center gap-3 px-4 py-3 bg-hachok-dark text-hachok-gold border-2 border-hachok-gold shadow-lg hover:bg-hachok-dark-hover transition-all" aria-label="Відкрити майстер Нитковимірювач">
+      <img src="assets/icons/logo.svg" alt="" aria-hidden="true" class="w-7 h-7 object-contain">
+      <span class="font-heading font-bold text-sm uppercase tracking-wider hidden sm:inline">Нитковимірювач</span>
+    </button>
+  </div>
+
+  <!-- Сюди монтуватиметься сам стікі-віджет майстра у наступній лабораторній -->
+  <div id="measurer-widget-root"></div>
 
   <!-- ПІДВАЛ САЙТУ -->
   <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
@@ -445,13 +314,14 @@
     </div>
   </footer>
 
-  <!-- Скрипт мобільного меню -->
+  <!-- Скрипти -->
   <script>
     function toggleMobileMenu() {
       const menu = document.getElementById('mobile-menu');
       menu.classList.toggle('hidden');
     }
   </script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/profile.js"></script>
 </body>
 </html>
