@@ -51,20 +51,20 @@ function renderPatterns(list) {
       const authorText = item.author ? `Автор: ${item.author}` : 'Майстерня «Генерал Гачок»';
 
       const mediaHtml = item.image_url
-        ? `<img src="${item.image_url}" alt="${item.name_pattern}" width="400" height="300" loading="lazy" decoding="async" class="w-full h-52 sm:h-56 lg:h-60 object-cover hover:scale-105 transition-transform duration-300">`
-        : `<div class="w-full h-52 sm:h-56 lg:h-60 bg-parchment-card flex flex-col items-center justify-center text-hachok-muted gap-2">
+        ? `<img src="${item.image_url}" alt="${item.name_pattern}" width="400" height="300" loading="lazy" decoding="async" class="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-300">`
+        : `<div class="w-full h-full bg-parchment-card flex flex-col items-center justify-center text-hachok-muted gap-2">
              <i class="fas fa-scroll text-3xl text-hachok-dark/60" aria-hidden="true"></i>
              <span class="text-xs uppercase tracking-wider font-bold">Схема в'язання</span>
            </div>`;
 
       return `
-        <article class="bg-white border-2 border-hachok-dark p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:border-hachok-gold transition-all duration-300 shadow-md min-h-[420px]">
+        <article class="bg-white border-2 border-hachok-dark p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:border-hachok-gold transition-all duration-300 shadow-md h-full">
           <div>
-            <a href="pattern.html?id=${item.id_pattern}" class="block overflow-hidden mb-5 border border-hachok-dark/20 aspect-[4/3]" aria-label="Переглянути схему ${item.name_pattern}">
+            <a href="pattern.html?id=${item.id_pattern}" class="block overflow-hidden mb-5 border border-hachok-dark/20 w-full h-56" aria-label="Переглянути схему ${item.name_pattern}">
               ${mediaHtml}
             </a>
 
-            <h2 class="font-heading font-bold text-2xl lg:text-3xl text-hachok-dark mb-3">${item.name_pattern}</h2>
+            <h2 class="font-heading font-bold text-2xl lg:text-3xl text-hachok-dark mb-3 line-clamp-2 min-h-[3.75rem]">${item.name_pattern}</h2>
 
             <div class="flex gap-2 flex-wrap mb-4">
               <span class="bg-parchment-bg border border-hachok-gold text-hachok-dark text-xs font-bold px-2.5 py-1 tracking-wider uppercase">${category.label}</span>
