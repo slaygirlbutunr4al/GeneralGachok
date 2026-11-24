@@ -52,17 +52,13 @@
     Перейти до основного вмісту
   </a>
 
- 
   <!-- ШАПКА САЙТУ -->
   <header class="bg-hachok-dark border-b border-hachok-gold/40 sticky top-0 z-50 shadow-md">
     <div class="max-w-full mx-auto px-2 sm:px-4 h-16 flex items-center justify-between">
-      
-      <!-- Логотип -->
       <a href="index.html" class="flex items-center gap-3">
         <img src="assets/icons/logo.svg" alt="Логотип Генерал Гачок" class="h-10 w-auto">
       </a>
-      
-      <!-- Десктопна навігація -->
+
       <nav class="hidden md:flex items-center gap-6 lg:gap-10" aria-label="Основна навігація">
         <a href="catalog.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Схеми</a>
         <a href="lessons.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Відеоуроки</a>
@@ -70,8 +66,7 @@
         <a href="index.html#about" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Про нас</a>
         <a href="dovidnyk.html" class="font-heading font-bold text-lg uppercase tracking-wider text-parchment-bg hover:text-hachok-gold transition-colors">Довідник</a>
       </nav>
-      
-      <!-- Профіль та гамбургер-меню -->
+
       <div class="flex items-center gap-3">
         <a href="profile.html" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-hachok-gold/20 transition-all" aria-label="Перейти до профілю користувача">
           <img src="assets/icons/profile.svg" alt="" aria-hidden="true" class="w-10 h-10">
@@ -83,7 +78,6 @@
       </div>
     </div>
 
-    <!-- Мобільне випадаюче меню -->
     <div id="mobile-menu" class="hidden md:hidden bg-hachok-dark border-b border-hachok-gold/30 px-4 pt-3 pb-5 space-y-3">
       <a href="catalog.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Схеми</a>
       <a href="lessons.html" class="block font-heading font-bold text-xl uppercase text-parchment-bg py-2 border-b border-hachok-gold/20">Відеоуроки</a>
@@ -96,13 +90,11 @@
 
   <!-- ОСНОВНИЙ КОНТЕНТ СТОРІНКИ АВТОРИЗАЦІЇ -->
   <main id="main-content" class="flex-grow flex items-center justify-center py-10 sm:py-14 px-4">
-    
-    <!-- Подвійна рамка картки як на скриншоті -->
     <div class="border border-hachok-dark p-1 bg-parchment-card max-w-md w-full shadow-lg">
       <div class="border border-hachok-dark p-6 sm:p-10 flex flex-col items-center bg-parchment-card">
-        
+
         <!-- Кругла емблема логотипу -->
-        <div class="w-24 h-24 rounded-full  flex items-center justify-center p-3 mb-6 shadow-sm">
+        <div class="w-24 h-24 rounded-full flex items-center justify-center p-3 mb-6 shadow-sm">
           <img src="assets/icons/logo.svg" alt="" aria-hidden="true" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
           <i class="fas fa-hat-cowboy-side text-hachok-dark text-4xl hidden" aria-hidden="true"></i>
         </div>
@@ -123,46 +115,57 @@
         </nav>
 
         <!-- 1. ФОРМА ВХОДУ (УВІЙТИ) -->
-        <form id="login-form" class="w-full flex flex-col gap-5" action="profile.html" method="GET">
-          
+        <form id="login-form" class="w-full flex flex-col gap-5" novalidate>
+          <div id="login-status" class="hidden text-xs p-3 border font-medium" role="alert"></div>
+
           <div class="flex flex-col gap-1.5">
             <label for="login-email" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ЕЛЕКТРОННА ПОШТА</label>
             <div class="relative w-full">
               <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
               <input type="email" id="login-email" name="email" placeholder="your.email@example.com" required autocomplete="email" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
             </div>
+            <p id="login-email-error" class="hidden text-xs text-red-700 font-medium"></p>
           </div>
 
           <div class="flex flex-col gap-1.5">
             <label for="login-password" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ПАРОЛЬ</label>
             <div class="relative w-full">
               <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
-              <input type="password" id="login-password" name="password" placeholder="••••••••" required autocomplete="current-password" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+              <input type="password" id="login-password" name="password" placeholder="••••••••" required autocomplete="current-password" class="w-full pl-10 pr-10 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+              <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-hachok-muted hover:text-hachok-dark" aria-label="Показати пароль">
+                <i class="fas fa-eye text-sm"></i>
+              </button>
             </div>
+            <p id="login-password-error" class="hidden text-xs text-red-700 font-medium"></p>
           </div>
 
           <div class="flex items-center justify-between gap-2 text-sm pt-1">
             <label class="inline-flex items-center gap-2 cursor-pointer select-none text-hachok-dark text-xs sm:text-sm">
-              <input type="checkbox" name="remember" class="w-4 h-4 accent-hachok-dark border-hachok-dark rounded">
+              <input type="checkbox" id="remember-me" name="remember" class="w-4 h-4 accent-hachok-dark border-hachok-dark rounded">
               <span>Запам'ятати мене</span>
             </label>
-            <a href="#forgot-password" class="text-hachok-dark underline hover:text-hachok-gold transition-colors font-bold text-xs sm:text-sm">Забули пароль?</a>
+            <button type="button" id="forgot-password-btn" class="text-hachok-dark underline hover:text-hachok-gold transition-colors font-bold text-xs sm:text-sm">
+              Забули пароль?
+            </button>
           </div>
 
-          <button type="submit" class="w-full py-3.5 bg-hachok-dark text-hachok-gold font-heading font-bold text-lg border border-hachok-gold/30 hover:bg-hachok-dark-hover transition-all shadow-sm uppercase tracking-wider mt-2">
+          <button type="submit" id="login-submit-btn" class="w-full py-3.5 bg-hachok-dark text-hachok-gold font-heading font-bold text-lg border border-hachok-gold/30 hover:bg-hachok-dark-hover transition-all shadow-sm uppercase tracking-wider mt-2">
             УВІЙТИ У КАБІНЕТ
           </button>
         </form>
 
         <!-- 2. ФОРМА РЕЄСТРАЦІЇ (ПРИХОВАНА ЗА ЗАМОВЧУВАННЯМ) -->
-        <form id="register-form" class="w-full flex-col gap-5 hidden" action="profile.html" method="GET">
-          
+        <form id="register-form" class="w-full flex-col gap-5 hidden" novalidate>
+          <div id="register-status" class="hidden text-xs p-3 border font-medium" role="alert"></div>
+
           <div class="flex flex-col gap-1.5">
-            <label for="reg-name" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ІМ'Я ТА ПРІЗВИЩЕ</label>
+            <label for="reg-nickname" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ПСЕВДОНІМ</label>
             <div class="relative w-full">
               <i class="fas fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
-              <input type="text" id="reg-name" name="fullname" placeholder="Майстриня Олена" required autocomplete="name" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+              <input type="text" id="reg-nickname" name="nickname" maxlength="15" placeholder="olena_gachok" required autocomplete="username" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
             </div>
+            <p class="text-[11px] text-hachok-muted">Латинські літери та <code>_</code>, одне слово без пробілів, до 15 символів.</p>
+            <p id="reg-nickname-error" class="hidden text-xs text-red-700 font-medium"></p>
           </div>
 
           <div class="flex flex-col gap-1.5">
@@ -171,22 +174,28 @@
               <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
               <input type="email" id="reg-email" name="email" placeholder="your.email@example.com" required autocomplete="email" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
             </div>
+            <p id="reg-email-error" class="hidden text-xs text-red-700 font-medium"></p>
           </div>
 
           <div class="flex flex-col gap-1.5">
             <label for="reg-password" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ПАРОЛЬ</label>
             <div class="relative w-full">
               <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-hachok-dark text-sm" aria-hidden="true"></i>
-              <input type="password" id="reg-password" name="password" placeholder="••••••••" required autocomplete="new-password" class="w-full pl-10 pr-4 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+              <input type="password" id="reg-password" name="password" placeholder="••••••••" required autocomplete="new-password" class="w-full pl-10 pr-10 py-3 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark placeholder-hachok-muted/80 focus:outline-none focus:border-hachok-gold transition-colors text-sm">
+              <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-hachok-muted hover:text-hachok-dark" aria-label="Показати пароль">
+                <i class="fas fa-eye text-sm"></i>
+              </button>
             </div>
+            <p class="text-[11px] text-hachok-muted">Мінімум 8 символів: обов'язково великі й малі латинські та українські літери й цифри.</p>
+            <p id="reg-password-error" class="hidden text-xs text-red-700 font-medium"></p>
           </div>
 
-          <button type="submit" class="w-full py-3.5 bg-hachok-dark text-hachok-gold font-heading font-bold text-lg border border-hachok-gold/30 hover:bg-hachok-dark-hover transition-all shadow-sm uppercase tracking-wider mt-2">
+          <button type="submit" id="register-submit-btn" class="w-full py-3.5 bg-hachok-dark text-hachok-gold font-heading font-bold text-lg border border-hachok-gold/30 hover:bg-hachok-dark-hover transition-all shadow-sm uppercase tracking-wider mt-2">
             СТВОРИТИ АКАУНТ
           </button>
         </form>
 
-        <!-- Інформаційний баннер з акцентною лінією зліва -->
+        <!-- Інформаційний баннер -->
         <div class="w-full border-l-4 border-hachok-dark bg-[#EFE4CF]/60 p-4 mt-8">
           <p class="font-serifText italic text-xs sm:text-sm text-hachok-dark leading-relaxed">
             Створіть акаунт, щоб зберігати заміри пряжі, калібрування та прогрес проєктів.
@@ -195,13 +204,61 @@
 
       </div>
     </div>
-
   </main>
+
+  <!-- МОДАЛЬНЕ ВІКНО ВІДНОВЛЕННЯ ПАРОЛЯ -->
+  <div id="forgot-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="forgot-title">
+    <div class="border border-hachok-dark p-1 bg-parchment-card max-w-md w-full shadow-xl">
+      <div class="border border-hachok-dark p-6 sm:p-8 bg-parchment-card relative">
+        <button type="button" id="close-forgot-modal" class="absolute top-4 right-4 text-hachok-dark hover:text-hachok-gold text-xl" aria-label="Закрити вікно">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <h2 id="forgot-title" class="font-heading font-bold text-2xl text-hachok-dark uppercase tracking-wider mb-2">
+          ВІДНОВЛЕННЯ ПАРОЛЯ
+        </h2>
+        <p class="text-xs text-hachok-muted mb-5">
+          Підтвердіть вашу електронну пошту та псевдонім, щоб встановити новий пароль.
+        </p>
+
+        <form id="forgot-form" class="flex flex-col gap-4" novalidate>
+          <div id="forgot-status" class="hidden text-xs p-3 border font-medium" role="alert"></div>
+
+          <div class="flex flex-col gap-1">
+            <label for="forgot-email" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ЕЛЕКТРОННА ПОШТА</label>
+            <input type="email" id="forgot-email" placeholder="your.email@example.com" required class="w-full px-3.5 py-2.5 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark text-sm focus:outline-none focus:border-hachok-gold">
+            <p id="forgot-email-error" class="hidden text-xs text-red-700 font-medium"></p>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label for="forgot-nickname" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">ПСЕВДОНІМ</label>
+            <input type="text" id="forgot-nickname" maxlength="15" placeholder="olena_gachok" required class="w-full px-3.5 py-2.5 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark text-sm focus:outline-none focus:border-hachok-gold">
+            <p id="forgot-nickname-error" class="hidden text-xs text-red-700 font-medium"></p>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label for="forgot-new-password" class="text-xs font-bold text-hachok-dark tracking-widest uppercase">НОВИЙ ПАРОЛЬ</label>
+            <div class="relative w-full">
+              <input type="password" id="forgot-new-password" placeholder="••••••••" required class="w-full pl-3.5 pr-10 py-2.5 bg-[#EFE4CF] border border-hachok-dark text-hachok-dark text-sm focus:outline-none focus:border-hachok-gold">
+              <button type="button" onclick="togglePasswordVisibility('forgot-new-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-hachok-muted hover:text-hachok-dark" aria-label="Показати пароль">
+                <i class="fas fa-eye text-sm"></i>
+              </button>
+            </div>
+            <p class="text-[11px] text-hachok-muted">Великі й малі латинські та українські літери й цифри (мін. 8 символів).</p>
+            <p id="forgot-new-password-error" class="hidden text-xs text-red-700 font-medium"></p>
+          </div>
+
+          <button type="submit" id="forgot-submit-btn" class="w-full py-3 bg-hachok-dark text-hachok-gold font-heading font-bold text-base border border-hachok-gold/30 hover:bg-hachok-dark-hover transition-all uppercase tracking-wider mt-1">
+            ЗБЕРЕГТИ НОВИЙ ПАРОЛЬ
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- ПІДВАЛ САЙТУ -->
   <footer class="bg-hachok-dark text-parchment-bg border-t border-hachok-gold mt-16 py-8">
     <div class="max-w-full lg:max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
-      
       <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-stone-300" aria-label="Навігація у підвалі">
         <a href="stand.html" class="hover:text-hachok-gold transition-colors">Завантажити 3D / PDF Стенд</a>
         <a href="feedback.html" class="hover:text-hachok-gold transition-colors">Зворотний зв'язок та FAQ</a>
@@ -211,20 +268,32 @@
 
       <div class="flex items-center gap-4">
         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Instagram">
-          <img src="assets/icons/Instagram.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+          <img src="assets/icons/Instagram.svg" alt="" aria-hidden="true" class="w-5 h-5">
         </a>
         <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 border border-hachok-gold rounded-full flex items-center justify-center text-hachok-gold hover:scale-110 transition-transform" aria-label="Twitter">
-          <img src="assets/icons/Twitter.svg" alt="" aria-hidden="true" class="w-5 h-5"> 
+          <img src="assets/icons/Twitter.svg" alt="" aria-hidden="true" class="w-5 h-5">
         </a>
       </div>
     </div>
   </footer>
 
-  <!-- Скрипти: перемикання мобільного меню та вкладок авторизації -->
+  <!-- Скрипти інтерфейсу та підключення Supabase -->
   <script>
     function toggleMobileMenu() {
       const menu = document.getElementById('mobile-menu');
       menu.classList.toggle('hidden');
+    }
+
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
     }
 
     function switchAuthTab(tab) {
@@ -242,7 +311,7 @@
 
         tabLogin.className = "w-1/2 pb-2 font-serifText text-base text-center transition-colors border-b-2 -mb-[1px] border-hachok-dark text-hachok-dark font-medium";
         tabRegister.className = "w-1/2 pb-2 font-serifText text-base text-center transition-colors border-b-2 -mb-[1px] border-transparent text-hachok-muted hover:text-hachok-dark";
-        
+
         heading.textContent = 'ВХІД ДО ОСОБИСТОГО КАБІНЕТУ';
       } else {
         loginForm.classList.remove('flex');
@@ -257,6 +326,7 @@
       }
     }
   </script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/auth.js"></script>
 </body>
 </html>
