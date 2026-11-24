@@ -1412,6 +1412,8 @@ button {
 .pattern-cover {
   width: min(100%, 15rem);
   aspect-ratio: 1 / 1;
+  align-self: flex-start;
+  flex-shrink: 0;
   background-color: #D6CEBE;
   border: 0.0625rem solid var(--color-accent-gold);
   overflow: hidden;
