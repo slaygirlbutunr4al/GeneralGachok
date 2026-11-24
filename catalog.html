@@ -109,10 +109,10 @@
 
     <!-- СЕКЦІЯ: ПОШУК ТА ФІЛЬТРИ -->
     <section class="max-w-full lg:max-w-[1500px] mx-auto px-6 sm:px-10 lg:px-8 mb-10" aria-label="Фільтрація та пошук схем">
-      <div class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-md space-y-6">
+      <div  class="bg-parchment-card border-2 border-hachok-dark p-6 sm:p-8 shadow-md space-y-6">
         
         <!-- Пошуковий рядок -->
-        <div class="relative w-full max-w-2xl mx-auto">
+        <div id="search-pattern" class="relative w-full max-w-2xl mx-auto">
           <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-hachok-muted text-lg" aria-hidden="true"></i>
           <input type="search" placeholder="Пошук за назвою схеми..." aria-label="Пошук за назвою схеми" class="w-full pl-12 pr-4 py-3 bg-white border border-hachok-dark text-hachok-dark placeholder-hachok-muted focus:outline-none focus:border-hachok-gold transition-colors">
         </div>
@@ -159,7 +159,7 @@
           </div>
 
           <!-- Лічильник результатів -->
-          <div class="text-hachok-dark lg:text-right">
+          <div id="resultsCount" class="text-hachok-dark lg:text-right">
             Знайдено <strong class="font-bold">12</strong> схем
           </div>
 
@@ -169,8 +169,8 @@
     </section>
 
     <!-- СІТКА КАРТОК СХЕМ -->
-    <section class="max-w-full lg:max-w-[1500px] mx-auto px-6 sm:px-10 lg:px-8 mb-12" aria-label="Список схем">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 items-stretch">
+    <section id="catalogGrid" class="max-w-full lg:max-w-[1500px] mx-auto px-6 sm:px-10 lg:px-8 mb-12" aria-label="Список схем">
+      <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 items-stretch">
         
         <!-- Картка 1: Літній ажурний топ -->
         <article class="bg-white border-2 border-hachok-dark p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:border-hachok-gold transition-all duration-300 shadow-md min-h-[420px]">
@@ -307,6 +307,7 @@
       menu.classList.toggle('hidden');
     }
   </script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/catalog.js"></script>
 </body>
 </html>
