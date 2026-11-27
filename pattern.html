@@ -13,6 +13,9 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -147,6 +150,157 @@
     <div id="pattern-sections-container" class="space-y-6">
       <p class="text-center text-sm text-hachok-muted py-6">Завантаження частин схеми...</p>
     </div>
+
+    <!-- СЕКЦІЯ ВІДГУКІВ (КАРУСЕЛЬ) -->
+<section id="pattern-reviews-section" class="mt-12 pt-8 border-t-2 border-hachok-gold">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h2 class="font-heading font-bold text-2xl sm:text-3xl text-hachok-dark">
+        Відгуки майстрів (<span id="reviews-count">0</span>)
+      </h2>
+      <p class="text-sm text-hachok-muted">Враження та готові вироби за цією схемою</p>
+    </div>
+
+    <button
+      type="button"
+      id="open-review-modal-btn"
+      class="px-5 py-2.5 bg-hachok-dark text-hachok-gold font-heading font-bold uppercase text-sm tracking-wider border border-hachok-dark hover:bg-hachok-gold hover:text-hachok-dark transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-hachok-gold"
+    >
+      <i class="fas fa-pen-to-square mr-2" aria-hidden="true"></i>Залишити відгук
+    </button>
+  </div>
+
+  <!-- Порожній стан -->
+  <div id="reviews-empty-state" class="hidden bg-parchment-card border border-dashed border-hachok-gold p-8 text-center">
+    <p class="text-hachok-dark font-medium mb-1">Поки що немає відгуків для цієї схеми.</p>
+    <p class="text-sm text-hachok-muted">Станьте першим, хто поділиться враженнями або фото готового виробу!</p>
+  </div>
+
+  <!-- Карусель Swiper -->
+  <div id="reviews-swiper-wrap" class="relative hidden">
+    <div class="swiper reviews-swiper pb-12">
+      <div class="swiper-wrapper" id="reviews-swiper-wrapper"></div>
+      <div class="swiper-pagination"></div>
+    </div>
+
+    <!-- Стрілки навігації (на десктопі) -->
+    <button
+      type="button"
+      class="reviews-prev hidden md:flex items-center justify-center w-10 h-10 bg-parchment-card border border-hachok-dark text-hachok-dark hover:bg-hachok-gold transition-colors absolute top-1/2 -left-4 -translate-y-1/2 z-10"
+      aria-label="Попередній відгук"
+    >
+      <i class="fas fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <button
+      type="button"
+      class="reviews-next hidden md:flex items-center justify-center w-10 h-10 bg-parchment-card border border-hachok-dark text-hachok-dark hover:bg-hachok-gold transition-colors absolute top-1/2 -right-4 -translate-y-1/2 z-10"
+      aria-label="Наступний відгук"
+    >
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
+    </button>
+  </div>
+</section>
+
+<!-- МОДАЛЬНЕ ВІКНО ДОДАВАННЯ ВІДГУКУ -->
+<div
+  id="review-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 p-4"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="review-modal-title"
+>
+  <div class="bg-parchment-card border-2 border-hachok-dark w-full max-w-lg p-6 relative shadow-xl">
+    <button
+      type="button"
+      id="close-review-modal-btn"
+      class="absolute top-4 right-4 text-hachok-dark hover:text-hachok-gold text-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-hachok-gold"
+      aria-label="Закрити вікно відгуку"
+    >
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+
+    <h3 id="review-modal-title" class="font-heading font-bold text-2xl text-hachok-dark mb-1">
+      Залишити відгук
+    </h3>
+    <p id="review-user-note" class="text-xs text-hachok-muted mb-4"></p>
+
+    <form id="review-form" novalidate class="space-y-4">
+      <!-- Оцінка 0–5 -->
+      <div>
+        <label class="block text-sm font-bold text-hachok-dark mb-1.5">
+          Оцінка (від 0 до 5 зірок)
+        </label>
+        <div class="flex items-center gap-2">
+          <div id="review-stars-picker" class="flex items-center gap-1 text-2xl text-hachok-gold" role="radiogroup" aria-label="Оцінка схеми">
+            <button type="button" data-rating="1" class="star-btn focus-visible:outline focus-visible:outline-2" aria-label="1 зірка"><i class="far fa-star"></i></button>
+            <button type="button" data-rating="2" class="star-btn focus-visible:outline focus-visible:outline-2" aria-label="2 зірки"><i class="far fa-star"></i></button>
+            <button type="button" data-rating="3" class="star-btn focus-visible:outline focus-visible:outline-2" aria-label="3 зірки"><i class="far fa-star"></i></button>
+            <button type="button" data-rating="4" class="star-btn focus-visible:outline focus-visible:outline-2" aria-label="4 зірки"><i class="far fa-star"></i></button>
+            <button type="button" data-rating="5" class="star-btn focus-visible:outline focus-visible:outline-2" aria-label="5 зірок"><i class="far fa-star"></i></button>
+          </div>
+          <button type="button" id="review-rating-zero-btn" class="text-xs underline text-hachok-muted hover:text-hachok-dark ml-2">
+            0 зірок
+          </button>
+          <span id="review-rating-label" class="text-xs font-bold text-hachok-dark ml-auto">5 / 5</span>
+        </div>
+        <input type="hidden" id="review-rating-input" name="rating" value="5" />
+      </div>
+
+      <!-- Текст відгуку -->
+      <div>
+        <label for="review-text-input" class="block text-sm font-bold text-hachok-dark mb-1">
+          Ваш відгук <span class="text-red-700">*</span>
+        </label>
+        <textarea
+          id="review-text-input"
+          name="review_text"
+          rows="4"
+          required
+          aria-describedby="review-text-error"
+          placeholder="Поділіться враженнями про схему, зручність опису, пряжу..."
+          class="w-full p-3 bg-white border border-hachok-dark text-sm text-hachok-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-hachok-gold"
+        ></textarea>
+        <p id="review-text-error" class="hidden text-xs text-red-700 mt-1" role="alert"></p>
+      </div>
+
+      <!-- Фото (необов'язково) -->
+      <div>
+        <label for="review-photo-input" class="block text-sm font-bold text-hachok-dark mb-1">
+          Посилання на фото готового виробу (необов'язково)
+        </label>
+        <input
+          type="url"
+          id="review-photo-input"
+          name="photo_url"
+          aria-describedby="review-photo-error"
+          placeholder="https://..."
+          class="w-full p-2.5 bg-white border border-hachok-dark text-sm text-hachok-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-hachok-gold"
+        />
+        <p id="review-photo-error" class="hidden text-xs text-red-700 mt-1" role="alert"></p>
+      </div>
+
+      <!-- Повідомлення про успіх / помилку -->
+      <p id="review-form-status" class="hidden text-sm font-medium p-2.5 border"></p>
+
+      <div class="flex justify-end gap-3 pt-2">
+        <button
+          type="button"
+          id="cancel-review-modal-btn"
+          class="px-4 py-2 border border-hachok-dark text-sm font-bold text-hachok-dark hover:bg-parchment-bg"
+        >
+          Скасувати
+        </button>
+        <button
+          type="submit"
+          id="submit-review-btn"
+          class="px-5 py-2 bg-hachok-dark text-hachok-gold font-heading font-bold uppercase text-sm tracking-wider hover:bg-hachok-gold hover:text-hachok-dark transition-colors"
+        >
+          Надіслати відгук
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 
   </main>
 

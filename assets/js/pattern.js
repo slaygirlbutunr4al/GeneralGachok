@@ -340,6 +340,353 @@ function renderSectionsGrid(sections) {
 }
 
 // ==========================================
+// 5. КАРУСЕЛЬ ВІДГУКІВ (SWIPER) ТА МОДАЛЬНА ФОРМА
+// ==========================================
+let reviewsSwiperInstance = null;
+
+function escapeHtml(str = '') {
+  return String(str)
+    .replace(/&/g, '&')
+    .replace(/</g, '<')
+    .replace(/>/g, '>')
+    .replace(/"/g, '"')
+    .replace(/'/g, ''');
+}
+
+function renderStarsHtml(rating) {
+  const safeRating = Math.max(0, Math.min(5, Number(rating) || 0));
+  let html = '';
+  for (let i = 1; i <= 5; i++) {
+    html +=
+      i <= safeRating
+        ? '<i class="fas fa-star text-hachok-gold" aria-hidden="true"></i>'
+        : '<i class="far fa-star text-hachok-muted/50" aria-hidden="true"></i>';
+  }
+  return html;
+}
+
+function getCompletedProjectsBadge(count) {
+  if (!count || count <= 0) return '';
+  const text =
+    count === 1
+      ? 'Завершив проєкт за цією схемою'
+      : `Завершив ${count} проєктів за цією схемою`;
+
+  return `
+    <span
+      class="inline-flex items-center gap-1.5 text-xs font-bold text-green-800 bg-green-100 border border-green-700/40 px-2 py-0.5"
+      title="${text}"
+    >
+      <i class="fas fa-check-circle text-green-700" aria-hidden="true"></i>
+      <span>${text}</span>
+    </span>
+  `;
+}
+
+function initReviewsSwiper() {
+  if (reviewsSwiperInstance) {
+    reviewsSwiperInstance.destroy(true, true);
+    reviewsSwiperInstance = null;
+  }
+
+  if (typeof Swiper === 'undefined') {
+    console.warn('Swiper.js не підключено на сторінці.');
+    return;
+  }
+
+  reviewsSwiperInstance = new Swiper('.reviews-swiper', {
+    slidesPerView: 1.1,
+    spaceBetween: 16,
+    grabCursor: true,
+    watchOverflow: true,
+    pagination: {
+      el: '.reviews-swiper .swiper-pagination',
+      clickable: true,
+    },
+    navigation: {
+      nextEl: '.reviews-next',
+      prevEl: '.reviews-prev',
+    },
+    breakpoints: {
+      640: {
+        slidesPerView: 1.6,
+        spaceBetween: 20,
+      },
+      1024: {
+        slidesPerView: 3,
+        spaceBetween: 24,
+      },
+    },
+  });
+}
+
+async function loadAndRenderReviews(patternId) {
+  const countEl = document.getElementById('reviews-count');
+  const emptyEl = document.getElementById('reviews-empty-state');
+  const wrapEl = document.getElementById('reviews-swiper-wrap');
+  const wrapperEl = document.getElementById('reviews-swiper-wrapper');
+
+  if (!wrapperEl) return;
+
+  // 1. Завантажуємо відгуки для поточної схеми разом з ім'ям автора
+  const { data: reviews, error } = await supabaseClient
+    .from('pattern_review')
+    .select(`
+      id_review,
+      review_text,
+      photo_url,
+      rating,
+      created_at,
+      id_user,
+      user_ ( id_user, name_user )
+    `)
+    .eq('id_pattern', patternId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Помилка завантаження відгуків:', error);
+    return;
+  }
+
+  const list = reviews || [];
+  if (countEl) countEl.textContent = list.length;
+
+  if (list.length === 0) {
+    emptyEl?.classList.remove('hidden');
+    wrapEl?.classList.add('hidden');
+    return;
+  }
+
+  emptyEl?.classList.add('hidden');
+  wrapEl?.classList.remove('hidden');
+
+  // 2. Рахуємо завершені проєкти авторів відгуків по цій схемі
+  const userIds = [...new Set(list.map((r) => r.id_user).filter(Boolean))];
+  const completedCountByUser = {};
+
+  if (userIds.length > 0) {
+    const { data: completedProjects, error: projErr } = await supabaseClient
+      .from('project')
+      .select('id_user')
+      .eq('id_pattern', patternId)
+      .eq('status', 'completed')
+      .in('id_user', userIds);
+
+    if (!projErr && completedProjects) {
+      completedProjects.forEach((p) => {
+        completedCountByUser[p.id_user] = (completedCountByUser[p.id_user] || 0) + 1;
+      });
+    }
+  }
+
+  // 3. Рендеримо слайди у стилі картки з фото, зірочками та бейджем галочки
+  wrapperEl.innerHTML = list
+    .map((rev) => {
+      const authorName = rev.id_user
+        ? rev.user_?.name_user || 'Майстер'
+        : 'Гість';
+      const completedCount = rev.id_user ? completedCountByUser[rev.id_user] || 0 : 0;
+      const badgeHtml = getCompletedProjectsBadge(completedCount);
+      const dateText = rev.created_at
+        ? new Date(rev.created_at).toLocaleDateString('uk-UA')
+        : '';
+
+      const photoHtml = rev.photo_url
+        ? `<img src="${escapeHtml(rev.photo_url)}" alt="Фото виробу від ${escapeHtml(authorName)}" class="w-16 h-16 object-cover border border-hachok-dark shrink-0" loading="lazy" onerror="this.outerHTML='<div class=\\'w-16 h-16 bg-parchment-bg border border-hachok-gold flex items-center justify-center text-hachok-muted shrink-0\\'><i class=\\'fas fa-image\\'></i></div>'">`
+        : `<div class="w-16 h-16 bg-parchment-bg border border-hachok-gold flex items-center justify-center text-hachok-muted shrink-0" aria-hidden="true"><i class="fas fa-user-check text-xl"></i></div>`;
+
+      return `
+        <div class="swiper-slide h-auto">
+          <article class="bg-parchment-card border-2 border-hachok-dark p-5 h-full flex flex-col justify-between shadow-sm">
+            <div>
+              <div class="flex items-start gap-3 mb-3">
+                ${photoHtml}
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between gap-2">
+                    <h3 class="font-heading font-bold text-lg text-hachok-dark truncate">
+                      ${escapeHtml(authorName)}
+                    </h3>
+                    ${completedCount > 0 ? '<i class="fas fa-check-circle text-green-700 text-lg shrink-0" title="Завершив проєкт за цією схемою" aria-hidden="true"></i>' : ''}
+                  </div>
+                  <div class="flex items-center gap-1 text-sm mt-0.5" aria-label="Оцінка ${rev.rating} з 5">
+                    ${renderStarsHtml(rev.rating)}
+                    <span class="text-xs text-hachok-muted ml-1">${rev.rating}/5</span>
+                  </div>
+                  <div class="text-xs text-hachok-muted mt-1">${dateText}</div>
+                </div>
+              </div>
+
+              ${badgeHtml ? `<div class="mb-3">${badgeHtml}</div>` : ''}
+
+              <p class="text-sm text-hachok-dark leading-relaxed break-words">
+                ${escapeHtml(rev.review_text)}
+              </p>
+            </div>
+          </article>
+        </div>
+      `;
+    })
+    .join('');
+
+  initReviewsSwiper();
+}
+
+function initReviewModal(patternId, currentUser, projectId = null) {
+  const modal = document.getElementById('review-modal');
+  const openBtn = document.getElementById('open-review-modal-btn');
+  const closeBtn = document.getElementById('close-review-modal-btn');
+  const cancelBtn = document.getElementById('cancel-review-modal-btn');
+  const form = document.getElementById('review-form');
+  const userNote = document.getElementById('review-user-note');
+
+  const starsPicker = document.getElementById('review-stars-picker');
+  const ratingInput = document.getElementById('review-rating-input');
+  const ratingLabel = document.getElementById('review-rating-label');
+  const zeroBtn = document.getElementById('review-rating-zero-btn');
+
+  const textInput = document.getElementById('review-text-input');
+  const textError = document.getElementById('review-text-error');
+  const photoInput = document.getElementById('review-photo-input');
+  const photoError = document.getElementById('review-photo-error');
+  const statusEl = document.getElementById('review-form-status');
+  const submitBtn = document.getElementById('submit-review-btn');
+
+  if (!modal || !openBtn || !form) return;
+
+  function updateStarsUI(val) {
+    const rating = Math.max(0, Math.min(5, Number(val) || 0));
+    ratingInput.value = String(rating);
+    ratingLabel.textContent = `${rating} / 5`;
+
+    starsPicker.querySelectorAll('.star-btn').forEach((btn) => {
+      const btnVal = Number(btn.dataset.rating);
+      const icon = btn.querySelector('i');
+      if (btnVal <= rating) {
+        icon.className = 'fas fa-star';
+      } else {
+        icon.className = 'far fa-star';
+      }
+    });
+  }
+
+  function openModal() {
+    userNote.textContent = currentUser
+      ? `Ви залишаєте відгук як ${currentUser.name_user || 'авторизований майстер'}.`
+      : 'Ви залишаєте відгук як Гість. Увійдіть в акаунт, щоб відображався бейдж завершеного проєкту.';
+
+    statusEl.classList.add('hidden');
+    textError.classList.add('hidden');
+    photoError.classList.add('hidden');
+    textInput.setAttribute('aria-invalid', 'false');
+    photoInput.setAttribute('aria-invalid', 'false');
+
+    updateStarsUI(5);
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    textInput.focus();
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    openBtn.focus();
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn?.addEventListener('click', closeModal);
+  cancelBtn?.addEventListener('click', closeModal);
+
+  // Закриття по кліку на затемнений фон
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Закриття по Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
+
+  // Вибір зірочок 1–5 та 0
+  starsPicker.addEventListener('click', (e) => {
+    const btn = e.target.closest('.star-btn');
+    if (!btn) return;
+    updateStarsUI(Number(btn.dataset.rating));
+  });
+
+  zeroBtn?.addEventListener('click', () => updateStarsUI(0));
+
+  // Відправка форми в Supabase
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const reviewText = textInput.value.trim();
+    const photoUrl = photoInput.value.trim();
+    const rating = Number(ratingInput.value);
+
+    let hasError = false;
+
+    if (reviewText.length < 3) {
+      textError.textContent = 'Напишіть хоча б 3 символи у відгуку.';
+      textError.classList.remove('hidden');
+      textInput.setAttribute('aria-invalid', 'true');
+      hasError = true;
+    } else {
+      textError.classList.add('hidden');
+      textInput.setAttribute('aria-invalid', 'false');
+    }
+
+    if (photoUrl && !/^https?:\/\/.+/i.test(photoUrl)) {
+      photoError.textContent = 'Посилання має починатися з http:// або https://';
+      photoError.classList.remove('hidden');
+      photoInput.setAttribute('aria-invalid', 'true');
+      hasError = true;
+    } else {
+      photoError.classList.add('hidden');
+      photoInput.setAttribute('aria-invalid', 'false');
+    }
+
+    if (hasError) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Надсилання...';
+
+    const payload = {
+      id_pattern: patternId,
+      id_user: currentUser?.id_user || null,
+      id_project: projectId,
+      rating,
+      review_text: reviewText,
+      photo_url: photoUrl || null,
+    };
+
+    const { error } = await supabaseClient.from('pattern_review').insert([payload]);
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Надіслати відгук';
+
+    if (error) {
+      console.error('Помилка додавання відгуку:', error);
+      statusEl.textContent = 'Не вдалося зберегти відгук. Спробуйте ще раз.';
+      statusEl.className = 'text-sm font-medium p-2.5 border border-red-700 bg-red-50 text-red-800';
+      return;
+    }
+
+    form.reset();
+    updateStarsUI(5);
+    statusEl.textContent = 'Дякуємо! Ваш відгук успішно опубліковано.';
+    statusEl.className = 'text-sm font-medium p-2.5 border border-green-700 bg-green-50 text-green-800';
+
+    await loadAndRenderReviews(patternId);
+
+    setTimeout(() => {
+      closeModal();
+    }, 900);
+  });
+}
+
+// ==========================================
 // ІНІЦІАЛІЗАЦІЯ СТОРІНКИ СХЕМИ
 // ==========================================
 async function initPatternPage() {
@@ -433,6 +780,9 @@ async function initPatternPage() {
     }
     window.openMeasurerWidget({ step: 'project', patternId: pattern.id_pattern });
   });
+  // 5. Завантаження каруселі відгуків та ініціалізація модального вікна
+  await loadAndRenderReviews(pattern.id_pattern);
+  initReviewModal(pattern.id_pattern, currentUser);
 }
 
 document.addEventListener('DOMContentLoaded', initPatternPage);
