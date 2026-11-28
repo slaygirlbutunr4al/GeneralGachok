@@ -85,6 +85,68 @@ function renderPatterns(list) {
     .join('');
 }
 
+let catalogTypewriterTimer = null;
+
+function startCatalogSearchTypewriter(patterns = []) {
+  const input = document.querySelector('#search-pattern input[type="search"]') || document.querySelector('input[type="search"]');
+  if (!input) return;
+
+  if (catalogTypewriterTimer) {
+    clearTimeout(catalogTypewriterTimer);
+    catalogTypewriterTimer = null;
+  }
+
+  const basePrefix = 'Пошук за назвою схеми: ';
+  const names = [...new Set((patterns || []).map((p) => String(p.name_pattern || '').trim()).filter(Boolean))];
+  const phrases = names.length > 0 ? names : ['Літній ажурний топ', 'Мишко Амігурумі', 'Плед "Скандинавія"'];
+
+  let phraseIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  function tick() {
+    const isFocused = document.activeElement === input;
+    const hasValue = input.value.trim().length > 0;
+
+    if (isFocused || hasValue) {
+      input.placeholder = 'Пошук за назвою схеми...';
+      catalogTypewriterTimer = setTimeout(tick, 300);
+      return;
+    }
+
+    const currentPhrase = phrases[phraseIndex];
+
+    if (!isDeleting) {
+      charIndex++;
+      input.placeholder = `${basePrefix}${currentPhrase.slice(0, charIndex)}|`;
+
+      if (charIndex >= currentPhrase.length) {
+        isDeleting = true;
+        catalogTypewriterTimer = setTimeout(tick, 1400);
+        return;
+      }
+      catalogTypewriterTimer = setTimeout(tick, 75);
+    } else {
+      charIndex--;
+      input.placeholder = `${basePrefix}${currentPhrase.slice(0, Math.max(0, charIndex))}|`;
+
+      if (charIndex <= 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        catalogTypewriterTimer = setTimeout(tick, 350);
+        return;
+      }
+      catalogTypewriterTimer = setTimeout(tick, 40);
+    }
+  }
+
+  input.addEventListener('focus', () => {
+    input.placeholder = 'Пошук за назвою схеми...';
+  });
+
+  tick();
+}
+
 function applyCatalogFilters() {
   const searchInput = document.querySelector('input[type="search"]');
   const diffSelect = document.getElementById('filter-difficulty');
@@ -136,6 +198,7 @@ async function initCatalog() {
 
   allPatterns = data || [];
   renderPatterns(allPatterns);
+  startCatalogSearchTypewriter(allPatterns);
 
   // Підключення живого пошуку та селектів фільтрації
   document.querySelector('input[type="search"]')?.addEventListener('input', applyCatalogFilters);

@@ -215,7 +215,78 @@ function mapStitchToLesson(stitch) {
     isYouTube,
   };
 }
+let lessonsTypewriterTimer = null;
 
+function startLessonsSearchTypewriter(lessons = []) {
+  const input = document.getElementById('lessons-search');
+  if (!input) return;
+
+  if (lessonsTypewriterTimer) {
+    clearTimeout(lessonsTypewriterTimer);
+    lessonsTypewriterTimer = null;
+  }
+
+  const basePrefix = 'Пошук стібка чи уроку: ';
+  const stitchPhrases = [
+    ...new Set(
+      (lessons || [])
+        .map((l) => {
+          const code = String(l.code || '').trim();
+          const title = String(l.title || '').replace(/^Відеоурок:\s*/i, '').trim();
+          return code && title && !title.includes(code) ? `${code} — ${title}` : code || title;
+        })
+        .filter(Boolean)
+    ),
+  ];
+
+  const phrases = stitchPhrases.length > 0 ? stitchPhrases : ['КА', 'СБН', 'ПР', 'УБ', 'ПВ'];
+
+  let phraseIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  function tick() {
+    const isFocused = document.activeElement === input;
+    const hasValue = input.value.trim().length > 0;
+
+    if (isFocused || hasValue) {
+      input.placeholder = 'Пошук відеоуроку за назвою, стібком або технікою...';
+      lessonsTypewriterTimer = setTimeout(tick, 300);
+      return;
+    }
+
+    const currentPhrase = phrases[phraseIndex];
+
+    if (!isDeleting) {
+      charIndex++;
+      input.placeholder = `${basePrefix}${currentPhrase.slice(0, charIndex)}|`;
+
+      if (charIndex >= currentPhrase.length) {
+        isDeleting = true;
+        lessonsTypewriterTimer = setTimeout(tick, 1400);
+        return;
+      }
+      lessonsTypewriterTimer = setTimeout(tick, 75);
+    } else {
+      charIndex--;
+      input.placeholder = `${basePrefix}${currentPhrase.slice(0, Math.max(0, charIndex))}|`;
+
+      if (charIndex <= 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        lessonsTypewriterTimer = setTimeout(tick, 350);
+        return;
+      }
+      lessonsTypewriterTimer = setTimeout(tick, 40);
+    }
+  }
+
+  input.addEventListener('focus', () => {
+    input.placeholder = 'Пошук відеоуроку за назвою, стібком або технікою...';
+  });
+
+  tick();
+}
 function renderLessonCard(lesson) {
   const actionButtonHtml = lesson.isYouTube
     ? `
@@ -381,6 +452,7 @@ async function initStitchLessonsPage() {
   );
 
   allLessons = stitchesWithVideo.map(mapStitchToLesson);
+  startLessonsSearchTypewriter(allLessons);
   updateGrid();
 }
 
