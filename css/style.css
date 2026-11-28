@@ -2617,6 +2617,67 @@ button {
   margin: 0;
 }
 
+/* Полароїдний стек / coverflow для відгуків */
+.reviews-swiper {
+  overflow: visible;
+  padding-top: 12px;
+  padding-bottom: 44px;
+}
+
+.reviews-polaroid-card {
+  background: #FAF4E8;
+  border: 2px solid #343E19;
+  box-shadow: 0 10px 24px rgba(30, 37, 27, 0.14);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+/* На десктопі/планшеті бічні слайди трохи применшуються і йдуть в глибину */
+@media (min-width: 768px) {
+  .reviews-swiper .swiper-slide:not(.swiper-slide-active) .reviews-polaroid-card {
+    transform: scale(0.92);
+    opacity: 0.85;
+  }
+
+  .reviews-swiper .swiper-slide-active .reviews-polaroid-card {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 16px 32px rgba(30, 37, 27, 0.22);
+  }
+}
+
+/* Велика прямокутна фотографія виробу в стилі полароїда */
+.review-photo-frame {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 230px;
+  background: #F2E8D5;
+  border: 1px solid rgba(52, 62, 25, 0.35);
+  overflow: hidden;
+}
+
+.review-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Зелені шаріки пагінації внизу */
+.reviews-swiper .swiper-pagination-bullet {
+  width: 11px;
+  height: 11px;
+  background: #343E19;
+  opacity: 0.28;
+  transition: all 0.25s ease;
+}
+
+.reviews-swiper .swiper-pagination-bullet-active {
+  width: 24px;
+  border-radius: 9999px;
+  background: #343E19;
+  opacity: 1;
+}
+
 
 /* ==========================================
    17. МОБІЛЬНА АДАПТИВНІСТЬ (<= 768px)

@@ -383,11 +383,22 @@ function initReviewsSwiper() {
     return;
   }
 
+  const isDesktopOrTablet = window.innerWidth >= 768;
+
   reviewsSwiperInstance = new Swiper('.reviews-swiper', {
-    slidesPerView: 1.1,
-    spaceBetween: 16,
+    effect: isDesktopOrTablet ? 'coverflow' : 'slide',
+    centeredSlides: isDesktopOrTablet,
     grabCursor: true,
     watchOverflow: true,
+    slidesPerView: 1.12,
+    spaceBetween: 16,
+    coverflowEffect: {
+      rotate: 6,
+      stretch: 0,
+      depth: 120,
+      modifier: 1.35,
+      slideShadows: false,
+    },
     pagination: {
       el: '.reviews-swiper .swiper-pagination',
       clickable: true,
@@ -398,12 +409,16 @@ function initReviewsSwiper() {
     },
     breakpoints: {
       640: {
-        slidesPerView: 1.6,
+        slidesPerView: 1.5,
         spaceBetween: 20,
+      },
+      768: {
+        slidesPerView: 2.2,
+        spaceBetween: 24,
       },
       1024: {
         slidesPerView: 3,
-        spaceBetween: 24,
+        spaceBetween: 28,
       },
     },
   });
@@ -446,10 +461,10 @@ async function loadAndRenderReviews(patternId) {
     return;
   }
 
-  emptyEl?.classList.add('hidden');
+emptyEl?.classList.add('hidden');
   wrapEl?.classList.remove('hidden');
 
-  // Рахуємо завершені проєкти авторів відгуків по цій схемі через yarn(id_user)
+  // 2. Рахуємо завершені проєкти авторів відгуків по цій схемі через yarn(id_user)
   const userIds = [...new Set(list.map((r) => r.id_user).filter(Boolean))];
   const completedCountByUser = {};
 
@@ -467,7 +482,6 @@ async function loadAndRenderReviews(patternId) {
     if (!projErr && userProjects) {
       userProjects.forEach((p) => {
         const uid = p.yarn?.id_user;
-        // Вважаємо завершеним, якщо project_status >= 2 (або налаштуй свій код статусу)
         const isCompleted = Number(p.project_status) >= 2;
         if (uid && isCompleted) {
           completedCountByUser[uid] = (completedCountByUser[uid] || 0) + 1;
@@ -476,6 +490,7 @@ async function loadAndRenderReviews(patternId) {
     }
   }
 
+  // 3. Форматування кожного слайда (полароїдна картка + велике фото + галочка)
   wrapperEl.innerHTML = list
     .map((rev) => {
       const authorName = rev.id_user
@@ -491,35 +506,49 @@ async function loadAndRenderReviews(patternId) {
         : '';
 
       const photoHtml = rev.photo_url
-        ? `<img src="${escapeHtml(rev.photo_url)}" alt="Фото виробу від ${escapeHtml(authorName)}" class="w-16 h-16 object-cover border border-hachok-dark shrink-0" loading="lazy" onerror="this.outerHTML='<div class=\\'w-16 h-16 bg-parchment-bg border border-hachok-gold flex items-center justify-center text-hachok-muted shrink-0\\'><i class=\\'fas fa-image\\'></i></div>'">`
-        : `<div class="w-16 h-16 bg-parchment-bg border border-hachok-gold flex items-center justify-center text-hachok-muted shrink-0" aria-hidden="true"><i class="fas fa-user-check text-xl"></i></div>`;
+        ? `
+          <div class="review-photo-frame mb-3">
+            <img
+              src="${escapeHtml(rev.photo_url)}"
+              alt="Фото виробу від ${escapeHtml(authorName)}"
+              loading="lazy"
+              onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full flex flex-col items-center justify-center text-hachok-muted gap-1\\'><i class=\\'fas fa-image text-2xl\\'></i><span class=\\'text-xs\\'>Фото недоступне</span></div>'"
+            />
+          </div>
+        `
+        : `
+          <div class="review-photo-frame mb-3 flex flex-col items-center justify-center text-hachok-muted gap-1" aria-hidden="true">
+            <i class="fas fa-camera-retro text-2xl text-hachok-gold"></i>
+            <span class="text-xs italic">Без фото готового виробу</span>
+          </div>
+        `;
 
       return `
         <div class="swiper-slide h-auto">
-          <article class="bg-parchment-card border-2 border-hachok-dark p-5 h-full flex flex-col justify-between shadow-sm">
+          <article class="reviews-polaroid-card p-4 pb-5 h-full flex flex-col justify-between">
             <div>
-              <div class="flex items-start gap-3 mb-3">
-                ${photoHtml}
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between gap-2">
-                    <h3 class="font-heading font-bold text-lg text-hachok-dark truncate">
-                      ${escapeHtml(authorName)}
-                    </h3>
-                    ${completedCount > 0 ? '<i class="fas fa-check-circle text-green-700 text-lg shrink-0" title="Завершив проєкт за цією схемою" aria-hidden="true"></i>' : ''}
-                  </div>
-                  <div class="flex items-center gap-1 text-sm mt-0.5" aria-label="Оцінка ${rev.rating} з 5">
-                    ${renderStarsHtml(rev.rating)}
-                    <span class="text-xs text-hachok-muted ml-1">${rev.rating}/5</span>
-                  </div>
-                  <div class="text-xs text-hachok-muted mt-1">${dateText}</div>
+              ${photoHtml}
+
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div class="min-w-0">
+                  <h3 class="font-heading font-bold text-xl text-hachok-dark truncate">
+                    ${escapeHtml(authorName)}
+                  </h3>
+                  <div class="text-xs text-hachok-muted">${dateText}</div>
                 </div>
+                ${completedCount > 0 ? '<i class="fas fa-check-circle text-green-700 text-xl shrink-0 mt-0.5" title="Завершив проєкт за цією схемою" aria-hidden="true"></i>' : ''}
               </div>
 
-              ${badgeHtml ? `<div class="mb-2">${badgeHtml}</div>` : ''}
+              <div class="flex items-center gap-1 text-sm mb-2.5" aria-label="Оцінка ${rev.rating} з 5">
+                ${renderStarsHtml(rev.rating)}
+                <span class="text-xs font-bold text-hachok-dark ml-1">${rev.rating}/5</span>
+              </div>
+
+              ${badgeHtml ? `<div class="mb-2.5">${badgeHtml}</div>` : ''}
               ${projectTagHtml}
 
-              <p class="text-sm text-hachok-dark leading-relaxed break-words">
-                ${escapeHtml(rev.review_text)}
+              <p class="font-serifText italic text-sm text-hachok-dark leading-relaxed break-words">
+                «${escapeHtml(rev.review_text)}»
               </p>
             </div>
           </article>
