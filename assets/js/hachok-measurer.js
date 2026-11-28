@@ -34,8 +34,12 @@
     // --- Сенсор (реальна мишка) ---
     tracking: false, // іде запис руху
     locked: false, // активний Pointer Lock
-    pxToCm: 2.54 / 96, // 1 CSS-піксель ≈ 0.0265 см (підлаштуйте під калібрування)
-    measuredCm: 0, // накопичена довжина (X+ додає, X- віднімає)
+    defaultPxPerCm: 96 / 2.54, // стартовий коефіцієнт (пікселів на 1 см), доки пряжу не відкалібровано
+    calibrations: {}, // { 'назва пряжі': px/см } — свій коефіцієнт для кожної пряжі
+    activeYarnKey: '', // пряжа, чий коефіцієнт зараз використовується
+    unadjusted: null, // true — сирий рух без прискорення ОС; false — прискорення активне
+    calibrationCm: 100, // довжина еталонного відрізка
+    measuredPx: 0, // накопичений рух у пікселях (X+ додає, X- віднімає)
     lastDeltaX: 0, // останній зсув по X (пікселі)
     totalDx: 0, // чиста сума X (пікселі), зі знаком
     usedMeters: 200,
@@ -60,6 +64,42 @@
     if (!Number.isFinite(n)) return fallback;
     return Math.min(max, Math.max(min, n));
   }
+
+  const MIN_CALIB_PX = 20;
+  const CALIB_STORAGE_KEY = 'hachok_px_per_cm_v1';
+
+  function yarnKey(name) {
+    return String(name || '').trim().toLowerCase();
+  }
+
+  function loadCalibrations() {
+    try {
+      const raw = localStorage.getItem(CALIB_STORAGE_KEY);
+      const obj = raw ? JSON.parse(raw) : {};
+      if (obj && typeof obj === 'object') state.calibrations = obj;
+    } catch (_) {}
+  }
+
+  function setYarnCalibration(name, pxPerCm) {
+    const v = safeNum(pxPerCm, 0, 0.01, 100000);
+    if (!v) return;
+    state.calibrations[yarnKey(name)] = v;
+    try {
+      localStorage.setItem(CALIB_STORAGE_KEY, JSON.stringify(state.calibrations));
+    } catch (_) {}
+  }
+
+  // Коефіцієнт активної пряжі = (пікселі за 100 см) / 100; якщо немає — стартовий
+  function getPxPerCm() {
+    const v = state.calibrations[state.activeYarnKey];
+    return v > 0 ? v : state.defaultPxPerCm;
+  }
+
+  function getMeasuredCm() {
+    return safeNum(state.measuredPx / getPxPerCm(), 0, 0, LIMITS.maxCm);
+  }
+
+  loadCalibrations();
 
   function formatMetersCm(totalCm) {
     const cleanCm = safeNum(totalCm, 0, 0, LIMITS.maxCm);
@@ -106,7 +146,7 @@
     if (d === 0) return;
     state.lastDeltaX = d;
     state.totalDx += d;
-    state.measuredCm = safeNum(state.measuredCm + d * state.pxToCm, 0, 0, LIMITS.maxCm);
+    state.measuredPx = safeNum(state.measuredPx + d, 0, 0, 1e8);
     scheduleReadouts();
   }
 
@@ -114,11 +154,11 @@
   function applySensorDeltaCm(deltaCm) {
     const cm = safeNum(deltaCm, 0, -5000, 5000);
     if (cm === 0) return;
-    applySensorDeltaPx(cm / state.pxToCm);
+    applySensorDeltaPx(cm * getPxPerCm());
   }
 
   function resetSensorCm() {
-    state.measuredCm = 0;
+    state.measuredPx = 0;
     state.lastDeltaX = 0;
     state.totalDx = 0;
     updateLiveReadouts();
@@ -135,10 +175,26 @@
     state.tracking = true;
     const zone = document.getElementById('hm-track-zone');
     if (zone && zone.requestPointerLock) {
+      // Сирий рух мишки без прискорення ОС (Chrome/Edge). Інші браузери ігнорують опцію.
+      const fallback = () => {
+        state.unadjusted = false;
+        try {
+          const p2 = zone.requestPointerLock();
+          if (p2 && p2.catch) p2.catch(() => {});
+        } catch (_) {}
+        updateTrackerUi();
+      };
       try {
-        const p = zone.requestPointerLock();
-        if (p && p.catch) p.catch(() => {}); // без lock теж працюємо
-      } catch (_) {}
+        const p = zone.requestPointerLock({ unadjustedMovement: true });
+        state.unadjusted = !!(p && p.then);
+        if (p && p.catch) {
+          p.catch((err) => {
+            if (err && err.name === 'NotSupportedError') fallback();
+          });
+        }
+      } catch (_) {
+        fallback();
+      }
     }
     updateTrackerUi();
   }
@@ -174,6 +230,7 @@
         <div id="hm-track-title" class="hm-track-title"></div>
         <div id="hm-track-dx" class="hm-track-dx">X: 0</div>
         <div id="hm-track-hint" class="hm-track-hint"></div>
+        <div id="hm-track-coef" class="hm-track-hint" style="font-weight:700"></div>
       </button>
     `;
   }
@@ -193,7 +250,8 @@
     if (title) title.textContent = state.tracking ? '■ ЗАПИС ІДЕ — клік, щоб зупинити' : '▶ КЛІК, ЩОБ ПОЧАТИ ЗАПИС';
     if (hint) {
       hint.textContent = state.tracking
-        ? 'Рухайте мишку: → додає довжину (X+), ← віднімає (X−). Esc — вихід.'
+        ? 'Рухайте мишку: → додає (X+), ← віднімає (X−). Esc — вихід.' +
+          (state.unadjusted === false ? ' ⚠ Прискорення ОС активне: рухайтесь рівно і в одному темпі.' : '')
         : 'Мишка = датчик нитки. Рух вправо — X+, вліво — X−.';
     }
     updateLiveReadouts();
@@ -385,18 +443,26 @@
 
   function updateLiveReadouts() {
     const meterVal = document.getElementById('hm-live-meter');
-    if (meterVal) meterVal.textContent = formatMetersCm(state.measuredCm);
+    if (meterVal) meterVal.textContent = formatMetersCm(getMeasuredCm());
+
+    const coefEl = document.getElementById('hm-track-coef');
+    if (coefEl) {
+      const cal = state.calibrations[state.activeYarnKey] > 0;
+      coefEl.textContent = cal
+        ? `Коеф.: ${getPxPerCm().toFixed(2)} px/см • пряжа «${state.activeYarnKey}»`
+        : `Коеф.: ${getPxPerCm().toFixed(2)} px/см (стандартний — відкалібруйте пряжу)`;
+    }
 
     const dxEl = document.getElementById('hm-track-dx');
     if (dxEl) {
       const d = state.lastDeltaX;
       const arrow = d > 0 ? '→ X+' : d < 0 ? '← X−' : 'X';
-      dxEl.textContent = `${arrow} ${d > 0 ? '+' : ''}${Math.round(d)} px`;
+      dxEl.textContent = `${arrow} ${d > 0 ? '+' : ''}${Math.round(d)} px • Σ ${Math.round(state.measuredPx)} px`;
     }
 
     const usedEl = document.getElementById('hm-used-val');
     const remEl = document.getElementById('hm-rem-val');
-    const usedMeters = Number((state.usedMeters + state.measuredCm / 100).toFixed(2));
+    const usedMeters = Number((state.usedMeters + getMeasuredCm() / 100).toFixed(2));
     const remMeters = Math.max(0, Number((state.calculatedMeters - usedMeters).toFixed(2)));
     if (usedEl) usedEl.textContent = `${usedMeters} m`;
     if (remEl) remEl.textContent = `${remMeters} m`;
@@ -406,7 +472,7 @@
     return `
       <div class="hm-meter-box">
         <div class="text-[10px] font-bold tracking-widest uppercase text-[#6E6658]">METRAGE</div>
-        <div id="hm-live-meter" class="font-heading font-bold text-xl text-[#343E19]">${formatMetersCm(state.measuredCm)}</div>
+        <div id="hm-live-meter" class="font-heading font-bold text-xl text-[#343E19]">${formatMetersCm(getMeasuredCm())}</div>
         <div class="text-[10px] text-emerald-700 font-bold">• Live</div>
       </div>
     `;
@@ -488,7 +554,8 @@
             Відміряйте 100 см пряжі та проведіть цей відрізок через вимірювач
           </p>
           <div class="grid grid-cols-2 gap-2">
-            <input id="hm-yarn-name" type="text" value="${escapeText(state.yarnName)}" placeholder="Назва/тип пряжі..." class="p-2 text-xs bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">
+            <input id="hm-yarn-name" type="text" list="hm-yarn-names" value="${escapeText(state.yarnName)}" placeholder="Назва/тип пряжі..." class="p-2 text-xs bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">
+            <datalist id="hm-yarn-names">${state.yarns.map((y) => `<option value="${escapeText(y.name_yarn)}"></option>`).join('')}</datalist>
             <input id="hm-skein-len" type="number" min="1" max="${LIMITS.maxSkeinLength}" value="${state.skeinMeters}" placeholder="Метрів у мотку" class="p-2 text-xs bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">
           </div>
           ${trackerZoneHtml()}
@@ -512,10 +579,20 @@
           return;
         }
         stopTracking();
+        if (state.measuredPx < MIN_CALIB_PX) {
+          setFeedback('Замало руху для калібрування: увімкніть запис і проведіть 100 см нитки (мишка вправо, X+).', 'error');
+          return;
+        }
         state.yarnName = rawName || 'Калібрована пряжа';
         state.skeinMeters = rawLen;
+        // коефіцієнт = (відстань у пікселях за 100 см) / 100
+        const pxPerCm = state.measuredPx / state.calibrationCm;
+        const px = Math.round(state.measuredPx);
+        setYarnCalibration(state.yarnName, pxPerCm);
+        state.activeYarnKey = yarnKey(state.yarnName);
+        resetSensorCm();
         setFeedback(
-          `Пряжу «${state.yarnName}» (${state.skeinMeters} м/моток, заміряно ${Math.round(state.measuredCm)} см) зафіксовано.`,
+          `Пряжу «${state.yarnName}» (${state.skeinMeters} м/моток) відкалібровано: ${px} px = ${state.calibrationCm} см → ${pxPerCm.toFixed(2)} px/см.`,
           'success'
         );
       });
@@ -557,16 +634,30 @@
 
       bindTracker();
       document.getElementById('hm-reset-stitch-cm')?.addEventListener('click', resetSensorCm);
+      const syncStitchYarn = () => {
+        const val = document.getElementById('hm-stitch-yarn-select')?.value;
+        const y = state.yarns.find((yy) => String(yy.id_yarn) === String(val));
+        if (y) {
+          state.selectedYarnId = String(y.id_yarn);
+          state.activeYarnKey = yarnKey(y.name_yarn);
+        }
+      };
+      syncStitchYarn();
+      updateLiveReadouts();
+      document.getElementById('hm-stitch-yarn-select')?.addEventListener('change', () => {
+        syncStitchYarn();
+        resetSensorCm();
+      });
       document.getElementById('hm-save-stitch-btn')?.addEventListener('click', async () => {
         stopTracking();
         const stitchId = Number(document.getElementById('hm-stitch-select')?.value);
         const yarnId = Number(document.getElementById('hm-stitch-yarn-select')?.value);
 
-        if (state.measuredCm <= 0) {
+        if (getMeasuredCm() <= 0) {
           setFeedback('Спочатку виміряйте зразок: увімкніть запис і порухайте мишкою вправо.', 'error');
           return;
         }
-        const sampleCm = state.measuredCm;
+        const sampleCm = getMeasuredCm();
         const metersPerStitch = Number((sampleCm / 100 / state.stitchSampleCount).toFixed(4));
 
         if (!db || !stitchId || !yarnId) {
@@ -621,6 +712,10 @@
         const chosenYarn = state.yarns.find(
           (y) => String(y.id_yarn) === String(document.getElementById('hm-calc-yarn-select')?.value)
         );
+        if (chosenYarn) {
+          state.calcYarnId = String(chosenYarn.id_yarn);
+          state.activeYarnKey = yarnKey(chosenYarn.name_yarn);
+        }
         const perSkein = safeNum(chosenYarn?.skein_length, state.skeinMeters || 100, 10, LIMITS.maxSkeinLength);
         const availableMeters = chosenYarn
           ? safeNum(chosenYarn.skein_length, 0) * safeNum(chosenYarn.skein_count, 0)
@@ -723,8 +818,14 @@
     startTracking,
     stopTracking,
     reset: resetSensorCm,
-    setPxToCm(v) {
-      state.pxToCm = safeNum(v, state.pxToCm, 0.0001, 1);
+    // вручну задати коефіцієнт (px/см) для пряжі
+    setPxPerCm(v, yarnName) {
+      setYarnCalibration(yarnName, v);
+      if (yarnName) state.activeYarnKey = yarnKey(yarnName);
+      updateLiveReadouts();
+    },
+    getCalibrations() {
+      return { ...state.calibrations };
     },
   };
 
