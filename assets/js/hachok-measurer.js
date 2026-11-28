@@ -1,6 +1,7 @@
 /**
  * Стікі-віджет майстра «Нитковимірювач» (ЛР №11)
  * Проєкт: «Генерал Гачок»
+ * Версія з реальним трекінгом руху мишки (X+ вправо, X- вліво).
  */
 (function () {
   const SUPABASE_URL = 'https://aviukajqbzmgbtwjijmk.supabase.co';
@@ -15,13 +16,13 @@
       : null);
 
   const STEPS = ['splash', 'menu', 'yarn', 'stitch', 'calc', 'actual'];
+  const TRACK_STEPS = ['yarn', 'stitch', 'actual'];
 
-  // Захисні межі (Defensive Programming / Edge Cases)
   const LIMITS = {
-    maxCm: 500000, // до 5000 м за один сеанс
+    maxCm: 500000,
     maxSkeinLength: 5000,
     maxSkeinCount: 200,
-    defaultStitchCount: 20, // 10 ПП + ~10-20 стібків у вибірці
+    defaultStitchCount: 20,
   };
 
   const state = {
@@ -29,28 +30,29 @@
     step: 'splash',
     patternId: null,
     patternName: 'Обрана схема',
-    mouseConnected: true,
-    // Сенсор (аналог PS/2 deltaX -> len у C++ коді)
-    measuredCm: 0,
+    mouseConnected: false,
+    // --- Сенсор (реальна мишка) ---
+    tracking: false, // іде запис руху
+    locked: false, // активний Pointer Lock
+    pxToCm: 2.54 / 96, // 1 CSS-піксель ≈ 0.0265 см (підлаштуйте під калібрування)
+    measuredCm: 0, // накопичена довжина (X+ додає, X- віднімає)
+    lastDeltaX: 0, // останній зсув по X (пікселі)
+    totalDx: 0, // чиста сума X (пікселі), зі знаком
     usedMeters: 200,
-    // Екран 3: Калібрування пряжі
     yarnName: '',
     skeinMeters: 100,
     skeinCount: 1,
-    // Екран 4: Калібрування стібка
     selectedStitchId: '',
     selectedYarnId: '',
     stitchSampleCount: LIMITS.defaultStitchCount,
-    // Екран 5: Розрахунок пряжі
     calcYarnId: '',
     calculatedMeters: 200,
     calculatedSkeins: 1,
     calcStatusText: 'Вам вистачає!',
-    // Довідники з БД
     stitches: [],
     yarns: [],
     statusMessage: '',
-    statusType: 'info', // 'info' | 'success' | 'error'
+    statusType: 'info',
   };
 
   function safeNum(val, fallback = 0, min = -Infinity, max = Infinity) {
@@ -62,10 +64,8 @@
   function formatMetersCm(totalCm) {
     const cleanCm = safeNum(totalCm, 0, 0, LIMITS.maxCm);
     const meters = Math.floor(cleanCm / 100);
-    const cm = Math.round(cleanCm % 100);
-    const mStr = String(meters).padStart(2, '0');
-    const cStr = String(cm).padStart(2, '0');
-    return `${mStr}.00 m / ${cStr} cm`;
+    const cm = Math.floor(cleanCm % 100);
+    return `${String(meters).padStart(2, '0')} m / ${String(cm).padStart(2, '0')} cm`;
   }
 
   function escapeText(str = '') {
@@ -88,23 +88,118 @@
     }
   }
 
-  // Симуляція зчитування дельти сенсора (як deltaX у PS2MousePos)
+  // ───────────────────────── ТРЕКІНГ МИШКИ ─────────────────────────
+
+  let rafPending = false;
+  function scheduleReadouts() {
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(() => {
+      rafPending = false;
+      updateLiveReadouts();
+    });
+  }
+
+  // dx у пікселях: >0 вправо (X+), <0 вліво (X-)
+  function applySensorDeltaPx(dx) {
+    const d = safeNum(dx, 0, -5000, 5000);
+    if (d === 0) return;
+    state.lastDeltaX = d;
+    state.totalDx += d;
+    state.measuredCm = safeNum(state.measuredCm + d * state.pxToCm, 0, 0, LIMITS.maxCm);
+    scheduleReadouts();
+  }
+
+  // Зсув у сантиметрах (для зовнішнього API simulatePulse); знак зберігається
   function applySensorDeltaCm(deltaCm) {
-    const cleanDelta = safeNum(deltaCm, 0, -5000, 5000);
-    if (cleanDelta <= 0) return; // як у C++: if (x > 0) len += x;
-    state.measuredCm = safeNum(
-      state.measuredCm + cleanDelta,
-      0,
-      0,
-      LIMITS.maxCm
-    );
-    updateLiveReadouts();
+    const cm = safeNum(deltaCm, 0, -5000, 5000);
+    if (cm === 0) return;
+    applySensorDeltaPx(cm / state.pxToCm);
   }
 
   function resetSensorCm() {
     state.measuredCm = 0;
+    state.lastDeltaX = 0;
+    state.totalDx = 0;
     updateLiveReadouts();
   }
+
+  function onMouseMove(e) {
+    state.mouseConnected = true;
+    if (!state.tracking) return;
+    // movementX — різниця координати X між подіями (працює і під Pointer Lock)
+    applySensorDeltaPx(e.movementX || 0);
+  }
+
+  function startTracking() {
+    state.tracking = true;
+    const zone = document.getElementById('hm-track-zone');
+    if (zone && zone.requestPointerLock) {
+      try {
+        const p = zone.requestPointerLock();
+        if (p && p.catch) p.catch(() => {}); // без lock теж працюємо
+      } catch (_) {}
+    }
+    updateTrackerUi();
+  }
+
+  function stopTracking() {
+    state.tracking = false;
+    if (document.pointerLockElement) document.exitPointerLock();
+    state.locked = false;
+    updateTrackerUi();
+  }
+
+  function toggleTracking() {
+    state.tracking ? stopTracking() : startTracking();
+  }
+
+  document.addEventListener('pointerlockchange', () => {
+    const zone = document.getElementById('hm-track-zone');
+    if (zone && document.pointerLockElement === zone) {
+      state.locked = true;
+    } else if (state.locked) {
+      // вийшли з lock (Esc) — зупиняємо запис
+      state.locked = false;
+      state.tracking = false;
+    }
+    updateTrackerUi();
+  });
+
+  document.addEventListener('mousemove', onMouseMove, { passive: true });
+
+  function trackerZoneHtml() {
+    return `
+      <button type="button" id="hm-track-zone" class="hm-track-zone" aria-pressed="false">
+        <div id="hm-track-title" class="hm-track-title"></div>
+        <div id="hm-track-dx" class="hm-track-dx">X: 0</div>
+        <div id="hm-track-hint" class="hm-track-hint"></div>
+      </button>
+    `;
+  }
+
+  function bindTracker() {
+    document.getElementById('hm-track-zone')?.addEventListener('click', toggleTracking);
+    updateTrackerUi();
+  }
+
+  function updateTrackerUi() {
+    const zone = document.getElementById('hm-track-zone');
+    if (!zone) return;
+    zone.classList.toggle('hm-tracking', state.tracking);
+    zone.setAttribute('aria-pressed', String(state.tracking));
+    const title = document.getElementById('hm-track-title');
+    const hint = document.getElementById('hm-track-hint');
+    if (title) title.textContent = state.tracking ? '■ ЗАПИС ІДЕ — клік, щоб зупинити' : '▶ КЛІК, ЩОБ ПОЧАТИ ЗАПИС';
+    if (hint) {
+      hint.textContent = state.tracking
+        ? 'Рухайте мишку: → додає довжину (X+), ← віднімає (X−). Esc — вихід.'
+        : 'Мишка = датчик нитки. Рух вправо — X+, вліво — X−.';
+    }
+    updateLiveReadouts();
+  }
+
+  // ───────────────────────── UI ХЕЛПЕРИ ─────────────────────────
 
   function setFeedback(msg, type = 'info') {
     state.statusMessage = msg;
@@ -181,128 +276,66 @@
     style.id = 'hachok-measurer-styles';
     style.textContent = `
       #hachok-measurer-fab {
-        position: fixed;
-        right: 20px;
-        bottom: 20px;
-        z-index: 60;
-        background: #343E19;
-        color: #D9B868;
-        border: 2px solid #D9B868;
+        position: fixed; right: 20px; bottom: 20px; z-index: 60;
+        background: #343E19; color: #D9B868; border: 2px solid #D9B868;
         box-shadow: 0 10px 24px rgba(30, 37, 27, 0.28);
-        padding: 10px 16px;
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 700;
-        font-size: 15px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
+        padding: 10px 16px; font-family: 'Cormorant Garamond', serif;
+        font-weight: 700; font-size: 15px; letter-spacing: 0.08em;
+        text-transform: uppercase; display: inline-flex; align-items: center;
+        gap: 8px; cursor: pointer;
         transition: transform 0.2s ease, background-color 0.2s ease;
       }
-      #hachok-measurer-fab:hover {
-        background: #1E251B;
-        transform: translateY(-2px);
-      }
+      #hachok-measurer-fab:hover { background: #1E251B; transform: translateY(-2px); }
       #hachok-measurer-drawer {
-        position: fixed;
-        right: 20px;
-        bottom: 74px;
-        z-index: 65;
-        width: min(390px, calc(100vw - 24px));
-        max-height: calc(100vh - 96px);
-        overflow-y: auto;
-        background: #F2E8D5;
-        color: #1A1A1A;
-        border: 2px solid #343E19;
-        outline: 2px solid #D9B868;
-        outline-offset: -5px;
-        box-shadow: 0 18px 40px rgba(26, 26, 26, 0.35);
-        font-family: 'Noto Serif', serif;
+        position: fixed; right: 20px; bottom: 74px; z-index: 65;
+        width: min(390px, calc(100vw - 24px)); max-height: calc(100vh - 96px);
+        overflow-y: auto; background: #F2E8D5; color: #1A1A1A;
+        border: 2px solid #343E19; outline: 2px solid #D9B868; outline-offset: -5px;
+        box-shadow: 0 18px 40px rgba(26, 26, 26, 0.35); font-family: 'Noto Serif', serif;
       }
+      #hachok-measurer-drawer.hidden { display: none; }
       .hm-ornament-title {
-        display: inline-block;
-        border: 1px solid #343E19;
-        background: #FAF4E8;
-        padding: 4px 14px;
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 700;
-        font-size: 13px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: #343E19;
+        display: inline-block; border: 1px solid #343E19; background: #FAF4E8;
+        padding: 4px 14px; font-family: 'Cormorant Garamond', serif; font-weight: 700;
+        font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: #343E19;
       }
       .hm-btn-dark {
-        width: 100%;
-        background: #343E19;
-        color: #D9B868;
-        border: 1px solid #D9B868;
-        padding: 10px 14px;
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 700;
-        font-size: 14px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        cursor: pointer;
+        width: 100%; background: #343E19; color: #D9B868; border: 1px solid #D9B868;
+        padding: 10px 14px; font-family: 'Cormorant Garamond', serif; font-weight: 700;
+        font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
         transition: background-color 0.2s ease, color 0.2s ease;
       }
-      .hm-btn-dark:hover {
-        background: #1E251B;
-        color: #FAF4E8;
-      }
+      .hm-btn-dark:hover { background: #1E251B; color: #FAF4E8; }
       .hm-menu-item {
-        width: 100%;
-        background: #FAF4E8;
-        border: 1px solid #343E19;
-        padding: 8px 10px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-align: left;
-        font-size: 13px;
-        font-weight: 600;
-        color: #343E19;
-        cursor: pointer;
+        width: 100%; background: #FAF4E8; border: 1px solid #343E19; padding: 8px 10px;
+        display: flex; align-items: center; gap: 10px; text-align: left;
+        font-size: 13px; font-weight: 600; color: #343E19; cursor: pointer;
         transition: background-color 0.15s ease;
       }
-      .hm-menu-item:hover {
-        background: #E8DEC7;
-      }
+      .hm-menu-item:hover { background: #E8DEC7; }
       .hm-menu-num {
-        width: 22px;
-        height: 22px;
-        border-radius: 9999px;
-        border: 1px solid #343E19;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 11px;
-        font-weight: 700;
-        flex-shrink: 0;
+        width: 22px; height: 22px; border-radius: 9999px; border: 1px solid #343E19;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 11px; font-weight: 700; flex-shrink: 0;
       }
-      .hm-meter-box {
-        background: #FAF4E8;
-        border: 1px solid #D9B868;
-        padding: 10px 12px;
-        text-align: center;
-      }
+      .hm-meter-box { background: #FAF4E8; border: 1px solid #D9B868; padding: 10px 12px; text-align: center; }
       .hm-nav-arrow {
-        flex: 1;
-        background: #FAF4E8;
-        border: 1px solid #343E19;
-        color: #343E19;
-        padding: 6px 10px;
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 700;
-        font-size: 12px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        cursor: pointer;
+        flex: 1; background: #FAF4E8; border: 1px solid #343E19; color: #343E19;
+        padding: 6px 10px; font-family: 'Cormorant Garamond', serif; font-weight: 700;
+        font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
       }
-      .hm-nav-arrow:hover {
-        background: #D9B868;
+      .hm-nav-arrow:hover { background: #D9B868; }
+      .hm-track-zone {
+        width: 100%; min-height: 92px; background: #FAF4E8; border: 2px dashed #343E19;
+        color: #343E19; padding: 10px; text-align: center; cursor: pointer;
+        display: flex; flex-direction: column; justify-content: center; gap: 4px;
+        user-select: none; transition: background-color 0.15s ease;
       }
+      .hm-track-zone:hover { background: #E8DEC7; }
+      .hm-track-zone.hm-tracking { background: #E3EDCF; border-style: solid; border-color: #2F6B2F; }
+      .hm-track-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 14px; letter-spacing: 0.06em; }
+      .hm-track-dx { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 18px; }
+      .hm-track-hint { font-size: 10px; color: #6E6658; line-height: 1.3; }
     `;
     document.head.appendChild(style);
 
@@ -318,49 +351,35 @@
         <div class="flex items-center justify-between pb-2 mb-3 border-b border-[#343E19]/30">
           <span class="text-xs font-bold uppercase tracking-wider text-[#343E19]">
             <i class="fas fa-compass-drafting mr-1 text-[#D9B868]" aria-hidden="true"></i>
-            Нитковимірювач • Крок ${STEPS.indexOf(state.step) + 1}/${STEPS.length}
+            Нитковимірювач • Крок <span id="hm-step-label"></span>
           </span>
-          <button type="button" id="hm-close-btn" class="text-[#343E19] hover:text-black px-1.5 py-0.5 text-base font-bold" aria-label="Закрити віджет">
-            ×
-          </button>
+          <button type="button" id="hm-close-btn" class="text-[#343E19] hover:text-black px-1.5 py-0.5 text-base font-bold" aria-label="Закрити віджет">×</button>
         </div>
 
         <div id="hm-feedback" class="hidden"></div>
         <div id="hm-body"></div>
 
-        <!-- Стрілочки перемикання кроків (як на схемі переходів) -->
         <div class="flex items-center gap-2 mt-4 pt-3 border-t border-[#343E19]/25">
-          <button type="button" id="hm-prev-btn" class="hm-nav-arrow" aria-label="Попередній крок">
-            < НАЗАД
-          </button>
-          <button type="button" id="hm-next-btn" class="hm-nav-arrow" aria-label="Наступний крок">
-            ДАЛІ >
-          </button>
+          <button type="button" id="hm-prev-btn" class="hm-nav-arrow" aria-label="Попередній крок">&lt; НАЗАД</button>
+          <button type="button" id="hm-next-btn" class="hm-nav-arrow" aria-label="Наступний крок">ДАЛІ &gt;</button>
         </div>
       </aside>
     `;
     document.body.appendChild(root);
 
     document.getElementById('hachok-measurer-fab')?.addEventListener('click', () => {
-      if (state.isOpen) {
-        closeWidget();
-      } else {
-        openWidget({ step: state.step || 'splash' });
-      }
+      if (state.isOpen) closeWidget();
+      else openWidget({ step: state.step || 'splash' });
     });
-
     document.getElementById('hm-close-btn')?.addEventListener('click', closeWidget);
 
     document.getElementById('hm-prev-btn')?.addEventListener('click', () => {
       const idx = STEPS.indexOf(state.step);
-      const prevIdx = idx > 0 ? idx - 1 : STEPS.length - 1;
-      goToStep(STEPS[prevIdx]);
+      goToStep(STEPS[idx > 0 ? idx - 1 : STEPS.length - 1]);
     });
-
     document.getElementById('hm-next-btn')?.addEventListener('click', () => {
       const idx = STEPS.indexOf(state.step);
-      const nextIdx = idx < STEPS.length - 1 ? idx + 1 : 0;
-      goToStep(STEPS[nextIdx]);
+      goToStep(STEPS[idx < STEPS.length - 1 ? idx + 1 : 0]);
     });
   }
 
@@ -368,21 +387,40 @@
     const meterVal = document.getElementById('hm-live-meter');
     if (meterVal) meterVal.textContent = formatMetersCm(state.measuredCm);
 
+    const dxEl = document.getElementById('hm-track-dx');
+    if (dxEl) {
+      const d = state.lastDeltaX;
+      const arrow = d > 0 ? '→ X+' : d < 0 ? '← X−' : 'X';
+      dxEl.textContent = `${arrow} ${d > 0 ? '+' : ''}${Math.round(d)} px`;
+    }
+
     const usedEl = document.getElementById('hm-used-val');
     const remEl = document.getElementById('hm-rem-val');
     const usedMeters = Number((state.usedMeters + state.measuredCm / 100).toFixed(2));
-    const remMeters = Math.max(
-      0,
-      Number((state.calculatedMeters - usedMeters).toFixed(2))
-    );
+    const remMeters = Math.max(0, Number((state.calculatedMeters - usedMeters).toFixed(2)));
     if (usedEl) usedEl.textContent = `${usedMeters} m`;
     if (remEl) remEl.textContent = `${remMeters} m`;
   }
+
+  function meterBoxHtml() {
+    return `
+      <div class="hm-meter-box">
+        <div class="text-[10px] font-bold tracking-widest uppercase text-[#6E6658]">METRAGE</div>
+        <div id="hm-live-meter" class="font-heading font-bold text-xl text-[#343E19]">${formatMetersCm(state.measuredCm)}</div>
+        <div class="text-[10px] text-emerald-700 font-bold">• Live</div>
+      </div>
+    `;
+  }
+
+  // ───────────────────────── РЕНДЕР КРОКІВ ─────────────────────────
 
   function renderStep() {
     injectStylesAndDom();
     const body = document.getElementById('hm-body');
     if (!body) return;
+
+    const stepLabel = document.getElementById('hm-step-label');
+    if (stepLabel) stepLabel.textContent = `${STEPS.indexOf(state.step) + 1}/${STEPS.length}`;
 
     setFeedback(state.statusMessage, state.statusType);
 
@@ -393,26 +431,17 @@
             <i class="fas fa-hat-wizard text-2xl text-[#343E19]" aria-hidden="true"></i>
             <span class="text-[10px] font-bold tracking-widest mt-1">ГЕНЕРАЛ</span>
           </div>
-          <h3 class="font-heading font-bold text-2xl tracking-widest uppercase text-[#343E19]">
-            НИТКОВИМІРЮВАЧ
-          </h3>
+          <h3 class="font-heading font-bold text-2xl tracking-widest uppercase text-[#343E19]">НИТКОВИМІРЮВАЧ</h3>
           <button type="button" id="hm-how-project-btn" class="px-3 py-1 bg-[#FAF4E8] border border-[#343E19] text-[11px] font-bold uppercase text-[#343E19]">
-            < ЯК ЗАПУСТИТИ ПРОЄКТ?
+            &lt; ЯК ЗАПУСТИТИ ПРОЄКТ?
           </button>
           <div class="pt-2">
-            <button type="button" id="hm-start-cal-btn" class="hm-btn-dark">
-              ПОЧАТИ КАЛІБРУВАННЯ
-            </button>
+            <button type="button" id="hm-start-cal-btn" class="hm-btn-dark">ПОЧАТИ КАЛІБРУВАННЯ</button>
           </div>
         </div>
       `;
-
-      document.getElementById('hm-how-project-btn')?.addEventListener('click', () => {
-        goToStep('calc');
-      });
-      document.getElementById('hm-start-cal-btn')?.addEventListener('click', () => {
-        goToStep('menu');
-      });
+      document.getElementById('hm-how-project-btn')?.addEventListener('click', () => goToStep('calc'));
+      document.getElementById('hm-start-cal-btn')?.addEventListener('click', () => goToStep('menu'));
       return;
     }
 
@@ -422,25 +451,13 @@
           <div class="text-center"><span class="hm-ornament-title">НИТКОВИМІРЮВАЧ</span></div>
           <p class="text-xs text-center font-semibold text-[#343E19]">Оберіть, що ви хочете зробити</p>
           <div class="space-y-2">
-            <button type="button" data-menu-jump="check" class="hm-menu-item">
-              <span class="hm-menu-num">1</span><span>Перевірити підключення мишки</span>
-            </button>
-            <button type="button" data-menu-jump="yarn" class="hm-menu-item">
-              <span class="hm-menu-num">2</span><span>Калібрування пряжі</span>
-            </button>
-            <button type="button" data-menu-jump="stitch" class="hm-menu-item">
-              <span class="hm-menu-num">3</span><span>Калібрування стібка (10×2)</span>
-            </button>
-            <button type="button" data-menu-jump="calc" class="hm-menu-item">
-              <span class="hm-menu-num">4</span><span>Розрахунок пряжі</span>
-            </button>
-            <button type="button" data-menu-jump="actual" class="hm-menu-item">
-              <span class="hm-menu-num">5</span><span>Відслідковування фактичної довжини</span>
-            </button>
+            <button type="button" data-menu-jump="check" class="hm-menu-item"><span class="hm-menu-num">1</span><span>Перевірити підключення мишки</span></button>
+            <button type="button" data-menu-jump="yarn" class="hm-menu-item"><span class="hm-menu-num">2</span><span>Калібрування пряжі</span></button>
+            <button type="button" data-menu-jump="stitch" class="hm-menu-item"><span class="hm-menu-num">3</span><span>Калібрування стібка (10×2)</span></button>
+            <button type="button" data-menu-jump="calc" class="hm-menu-item"><span class="hm-menu-num">4</span><span>Розрахунок пряжі</span></button>
+            <button type="button" data-menu-jump="actual" class="hm-menu-item"><span class="hm-menu-num">5</span><span>Відслідковування фактичної довжини</span></button>
           </div>
-          <button type="button" id="hm-create-proj-btn" class="hm-btn-dark mt-1">
-            СТВОРИТИ ПРОЄКТ
-          </button>
+          <button type="button" id="hm-create-proj-btn" class="hm-btn-dark mt-1">СТВОРИТИ ПРОЄКТ</button>
         </div>
       `;
 
@@ -448,22 +465,18 @@
         btn.addEventListener('click', () => {
           const target = btn.dataset.menuJump;
           if (target === 'check') {
-            applySensorDeltaCm(25);
             setFeedback(
               state.mouseConnected
-                ? 'Сенсор (PS/2 deltaX > 0) активний! Тестовий імпульс +25 см зараховано.'
-                : 'Сенсор не виявлено — перевірте підключення.',
-              'success'
+                ? 'Мишку виявлено: події руху надходять. Перейдіть до калібрування та натисніть зону запису.'
+                : 'Рух мишки ще не виявлено — порухайте мишкою і натисніть ще раз.',
+              state.mouseConnected ? 'success' : 'error'
             );
             return;
           }
           goToStep(target);
         });
       });
-
-      document.getElementById('hm-create-proj-btn')?.addEventListener('click', () => {
-        goToStep('calc');
-      });
+      document.getElementById('hm-create-proj-btn')?.addEventListener('click', () => goToStep('calc'));
       return;
     }
 
@@ -478,27 +491,17 @@
             <input id="hm-yarn-name" type="text" value="${escapeText(state.yarnName)}" placeholder="Назва/тип пряжі..." class="p-2 text-xs bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">
             <input id="hm-skein-len" type="number" min="1" max="${LIMITS.maxSkeinLength}" value="${state.skeinMeters}" placeholder="Метрів у мотку" class="p-2 text-xs bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">
           </div>
-          <div class="flex gap-2">
-            <button type="button" id="hm-sim-100cm" class="flex-1 py-1.5 px-2 text-xs font-bold bg-[#FAF4E8] border border-[#343E19] text-[#343E19] hover:bg-[#D9B868]">
-              Протягнути 100 см (x>0)
-            </button>
-            <button type="button" id="hm-reset-cm" class="py-1.5 px-2.5 text-xs font-bold bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">
-              Скинути
-            </button>
-          </div>
-          <div class="hm-meter-box">
-            <div class="text-[10px] font-bold tracking-widest uppercase text-[#6E6658]">METRAGE</div>
-            <div id="hm-live-meter" class="font-heading font-bold text-xl text-[#343E19]">${formatMetersCm(state.measuredCm)}</div>
-            <div class="text-[10px] text-emerald-700 font-bold">• Live</div>
-          </div>
+          ${trackerZoneHtml()}
+          <button type="button" id="hm-reset-cm" class="w-full py-1.5 px-2.5 text-xs font-bold bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">Скинути</button>
+          ${meterBoxHtml()}
           <div class="p-2 bg-[#FAF4E8] border border-[#343E19] text-[11px] text-center text-[#343E19]">
-            Зафіксуйте нитку та натисніть кнопку щоб запротоколювати калібрування
+            Зупиніть запис та натисніть кнопку, щоб запротоколювати калібрування
           </div>
           <button type="button" id="hm-save-yarn-btn" class="hm-btn-dark">ЗБЕРЕГТИ ПРЯЖУ</button>
         </div>
       `;
 
-      document.getElementById('hm-sim-100cm')?.addEventListener('click', () => applySensorDeltaCm(100));
+      bindTracker();
       document.getElementById('hm-reset-cm')?.addEventListener('click', resetSensorCm);
       document.getElementById('hm-save-yarn-btn')?.addEventListener('click', () => {
         const rawName = (document.getElementById('hm-yarn-name')?.value || '').trim();
@@ -508,6 +511,7 @@
           setFeedback(`Вкажіть коректну довжину мотка (від 1 до ${LIMITS.maxSkeinLength} м).`, 'error');
           return;
         }
+        stopTracking();
         state.yarnName = rawName || 'Калібрована пряжа';
         state.skeinMeters = rawLen;
         setFeedback(
@@ -521,23 +525,13 @@
     if (state.step === 'stitch') {
       const stitchOptions = state.stitches.length
         ? state.stitches
-            .map(
-              (s) =>
-                `<option value="${s.id_stitch}" ${
-                  String(s.id_stitch) === String(state.selectedStitchId) ? 'selected' : ''
-                }>${escapeText(s.name_stitch)}</option>`
-            )
+            .map((s) => `<option value="${s.id_stitch}" ${String(s.id_stitch) === String(state.selectedStitchId) ? 'selected' : ''}>${escapeText(s.name_stitch)}</option>`)
             .join('')
         : `<option value="">Стібок (10×2)</option>`;
 
       const yarnOptions = state.yarns.length
         ? state.yarns
-            .map(
-              (y) =>
-                `<option value="${y.id_yarn}" ${
-                  String(y.id_yarn) === String(state.selectedYarnId) ? 'selected' : ''
-                }>${escapeText(y.name_yarn)}</option>`
-            )
+            .map((y) => `<option value="${y.id_yarn}" ${String(y.id_yarn) === String(state.selectedYarnId) ? 'selected' : ''}>${escapeText(y.name_yarn)}</option>`)
             .join('')
         : `<option value="">Пряжа за замовчуванням</option>`;
 
@@ -551,33 +545,29 @@
             <select id="hm-stitch-select" class="p-2 text-xs bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">${stitchOptions}</select>
             <select id="hm-stitch-yarn-select" class="p-2 text-xs bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">${yarnOptions}</select>
           </div>
-          <div class="flex gap-2">
-            <button type="button" id="hm-sim-stitch-sample" class="flex-1 py-1.5 px-2 text-xs font-bold bg-[#FAF4E8] border border-[#343E19] text-[#343E19] hover:bg-[#D9B868]">
-              Зв'язати зразок (+60 см)
-            </button>
-            <button type="button" id="hm-reset-stitch-cm" class="py-1.5 px-2.5 text-xs font-bold bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">
-              0
-            </button>
-          </div>
-          <div class="hm-meter-box">
-            <div class="text-[10px] font-bold tracking-widest uppercase text-[#6E6658]">METRAGE</div>
-            <div id="hm-live-meter" class="font-heading font-bold text-xl text-[#343E19]">${formatMetersCm(state.measuredCm)}</div>
-            <div class="text-[10px] text-emerald-700 font-bold">• Live</div>
-          </div>
+          ${trackerZoneHtml()}
+          <button type="button" id="hm-reset-stitch-cm" class="w-full py-1.5 px-2.5 text-xs font-bold bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">Скинути (0)</button>
+          ${meterBoxHtml()}
           <div class="p-2 bg-[#FAF4E8] border border-[#343E19] text-[11px] text-center text-[#343E19]">
-            Зафіксуйте нитку та натисніть кнопку щоб запротоколювати калібрування
+            Зупиніть запис та натисніть кнопку, щоб запротоколювати калібрування
           </div>
           <button type="button" id="hm-save-stitch-btn" class="hm-btn-dark">ЗБЕРЕГТИ СТІБОК</button>
         </div>
       `;
 
-      document.getElementById('hm-sim-stitch-sample')?.addEventListener('click', () => applySensorDeltaCm(60));
+      bindTracker();
       document.getElementById('hm-reset-stitch-cm')?.addEventListener('click', resetSensorCm);
       document.getElementById('hm-save-stitch-btn')?.addEventListener('click', async () => {
+        stopTracking();
         const stitchId = Number(document.getElementById('hm-stitch-select')?.value);
         const yarnId = Number(document.getElementById('hm-stitch-yarn-select')?.value);
-        const sampleCm = state.measuredCm > 0 ? state.measuredCm : 60;
-        const metersPerStitch = Number(((sampleCm / 100) / state.stitchSampleCount).toFixed(4));
+
+        if (state.measuredCm <= 0) {
+          setFeedback('Спочатку виміряйте зразок: увімкніть запис і порухайте мишкою вправо.', 'error');
+          return;
+        }
+        const sampleCm = state.measuredCm;
+        const metersPerStitch = Number((sampleCm / 100 / state.stitchSampleCount).toFixed(4));
 
         if (!db || !stitchId || !yarnId) {
           setFeedback(`Калібрування стібка збережено локально (~${metersPerStitch} м/стібок).`, 'success');
@@ -598,7 +588,6 @@
           setFeedback(`Помилка запису в БД: ${error.message}`, 'error');
           return;
         }
-
         setFeedback(`Калібрування стібка записано в БД (${metersPerStitch} м/стібок)!`, 'success');
       });
       return;
@@ -607,12 +596,7 @@
     if (state.step === 'calc') {
       const yarnOptions = state.yarns.length
         ? state.yarns
-            .map(
-              (y) =>
-                `<option value="${y.id_yarn}" ${
-                  String(y.id_yarn) === String(state.calcYarnId) ? 'selected' : ''
-                }>${escapeText(y.name_yarn)} (${y.skein_length || 100} м)</option>`
-            )
+            .map((y) => `<option value="${y.id_yarn}" ${String(y.id_yarn) === String(state.calcYarnId) ? 'selected' : ''}>${escapeText(y.name_yarn)} (${y.skein_length || 100} м)</option>`)
             .join('')
         : `<option value="">Оберіть пряжу</option>`;
 
@@ -622,22 +606,14 @@
           <p class="text-xs text-center text-[#343E19] leading-relaxed">
             Вимірювач зараз порахує скільки потрібно буде пряжі на проєкт «${escapeText(state.patternName)}»
           </p>
-          <select id="hm-calc-yarn-select" class="w-full p-2 text-xs bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">
-            ${yarnOptions}
-          </select>
-          <button type="button" id="hm-calc-run-btn" class="hm-btn-dark">
-            РОЗРАХУВАТИ ПРЯЖУ ДЛЯ «СХЕМИ»
-          </button>
+          <select id="hm-calc-yarn-select" class="w-full p-2 text-xs bg-[#FAF4E8] border border-[#343E19] text-[#343E19]">${yarnOptions}</select>
+          <button type="button" id="hm-calc-run-btn" class="hm-btn-dark">РОЗРАХУВАТИ ПРЯЖУ ДЛЯ «СХЕМИ»</button>
           <div class="hm-meter-box">
             <div class="text-[10px] font-bold tracking-widest uppercase text-[#6E6658]">ПРЯЖІ ПОТРІБНО</div>
-            <div id="hm-calc-result" class="font-heading font-bold text-2xl text-[#343E19]">
-              ${state.calculatedMeters} m / ${state.calculatedSkeins} моток
-            </div>
+            <div id="hm-calc-result" class="font-heading font-bold text-2xl text-[#343E19]">${state.calculatedMeters} m / ${state.calculatedSkeins} моток</div>
             <div id="hm-calc-status" class="text-xs font-bold text-emerald-700">${escapeText(state.calcStatusText)}</div>
           </div>
-          <button type="button" id="hm-save-calc-btn" class="hm-btn-dark">
-            ЗБЕРЕГТИ РОЗРАХУНОК У ПРОЄКТ
-          </button>
+          <button type="button" id="hm-save-calc-btn" class="hm-btn-dark">ЗБЕРЕГТИ РОЗРАХУНОК У ПРОЄКТ</button>
         </div>
       `;
 
@@ -676,14 +652,8 @@
           <p class="text-xs text-center text-[#343E19] leading-relaxed">
             Вимірювач може помилятися, тому тут ми показуємо фактичну витрату пряжі
           </p>
-          <div class="hm-meter-box">
-            <div class="text-[10px] font-bold tracking-widest uppercase text-[#6E6658]">METRAGE</div>
-            <div id="hm-live-meter" class="font-heading font-bold text-xl text-[#343E19]">${formatMetersCm(state.measuredCm)}</div>
-            <div class="text-[10px] text-emerald-700 font-bold">• Live</div>
-          </div>
-          <button type="button" id="hm-sim-actual-btn" class="w-full p-2 bg-[#FAF4E8] border border-[#343E19] text-[11px] text-[#343E19] font-semibold hover:bg-[#D9B868]">
-            Зафіксуйте нитку та натисніть щоб запротоколювати вимірювання (+50 см)
-          </button>
+          ${meterBoxHtml()}
+          ${trackerZoneHtml()}
           <div class="grid grid-cols-2 gap-2 text-center">
             <div class="bg-[#FAF4E8] border border-[#D9B868] p-2">
               <div class="text-[10px] font-bold uppercase text-[#6E6658]">ВИКОРИСТАНО</div>
@@ -696,15 +666,13 @@
               <div class="text-[11px] font-bold text-[#343E19]">0 мотків</div>
             </div>
           </div>
-          <button type="button" id="hm-save-actual-btn" class="hm-btn-dark">
-            ЗБЕРЕГТИ ВИТРАТУ У ПРОЄКТ
-          </button>
+          <button type="button" id="hm-save-actual-btn" class="hm-btn-dark">ЗБЕРЕГТИ ВИТРАТУ У ПРОЄКТ</button>
         </div>
       `;
 
-      updateLiveReadouts();
-      document.getElementById('hm-sim-actual-btn')?.addEventListener('click', () => applySensorDeltaCm(50));
+      bindTracker();
       document.getElementById('hm-save-actual-btn')?.addEventListener('click', () => {
+        stopTracking();
         setFeedback('Фактичну витрату зафіксовано у проєкті.', 'success');
       });
     }
@@ -712,15 +680,14 @@
 
   function goToStep(stepName) {
     if (!STEPS.includes(stepName)) return;
+    stopTracking();
     state.step = stepName;
     state.statusMessage = '';
     renderStep();
   }
 
   async function openWidget(options = {}) {
-    if (options.patternId) {
-      state.patternId = Number(options.patternId);
-    }
+    if (options.patternId) state.patternId = Number(options.patternId);
     if (options.step && STEPS.includes(options.step)) {
       state.step = options.step;
     } else if (options.step === 'project') {
@@ -732,22 +699,17 @@
     document.getElementById('hachok-measurer-drawer')?.classList.remove('hidden');
     document.getElementById('hachok-measurer-fab')?.setAttribute('aria-expanded', 'true');
 
+    renderStep(); // одразу показуємо UI, дані з БД підтягнуться далі
     await loadReferenceData();
     renderStep();
   }
 
   function closeWidget() {
+    stopTracking();
     state.isOpen = false;
     document.getElementById('hachok-measurer-drawer')?.classList.add('hidden');
     document.getElementById('hachok-measurer-fab')?.setAttribute('aria-expanded', 'false');
   }
-
-  // Періодичний цикл опитування сенсора (аналог loop з millis() ~10ms, у браузері м'який 250ms тік для UI)
-  setInterval(() => {
-    if (state.isOpen && state.mouseConnected) {
-      updateLiveReadouts();
-    }
-  }, 250);
 
   window.addEventListener('hachok:open-measurer', (e) => {
     openWidget(e.detail || {});
@@ -757,10 +719,14 @@
     open: openWidget,
     close: closeWidget,
     goToStep,
-    simulatePulse: applySensorDeltaCm,
+    simulatePulse: applySensorDeltaCm, // знак зберігається: + вправо, - вліво
+    startTracking,
+    stopTracking,
+    reset: resetSensorCm,
+    setPxToCm(v) {
+      state.pxToCm = safeNum(v, state.pxToCm, 0.0001, 1);
+    },
   };
 
-  document.addEventListener('DOMContentLoaded', () => {
-    injectStylesAndDom();
-  });
+  document.addEventListener('DOMContentLoaded', injectStylesAndDom);
 })();
