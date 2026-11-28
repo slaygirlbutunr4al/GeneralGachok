@@ -114,7 +114,6 @@ function renderStitchesList(sections, currentUser, calibratedStitchIds) {
   const listEl = document.getElementById('pattern-stitches-list');
   if (!listEl) return;
 
-  // Збираємо унікальні стібки з усіх секцій схеми
   const stitchMap = new Map();
   sections.forEach((sec) => {
     (sec.section_stitch || []).forEach((ss) => {
@@ -137,21 +136,18 @@ function renderStitchesList(sections, currentUser, calibratedStitchIds) {
       let statusBadgeHtml = '';
 
       if (!currentUser) {
-        // Незареєстрований користувач -> напис "Потрібна реєстрація"
         statusBadgeHtml = `
           <a href="auth.html" class="badge-status badge-warning hover:underline">
             <i class="fas fa-lock" aria-hidden="true"></i> Потрібна реєстрація
           </a>
         `;
       } else if (calibratedStitchIds.has(st.id_stitch)) {
-        // Зареєстрований + калібрування виконано
         statusBadgeHtml = `
           <span class="badge-status badge-success">
             <i class="fas fa-check-circle" aria-hidden="true"></i> Калібрування виконано
           </span>
         `;
       } else {
-        // Зареєстрований + калібрування невиконано
         statusBadgeHtml = `
           <span class="badge-status badge-warning">
             <i class="fas fa-exclamation-circle" aria-hidden="true"></i> Калібрування невиконано
@@ -176,9 +172,7 @@ function renderMaterialsList(sections, currentUser, userYarns) {
   const listEl = document.getElementById('pattern-materials-list');
   if (!listEl) return;
 
-  // Унікальні категорії товщини пряжі з секцій
   const thicknessSet = new Set();
-  // Унікальні рекомендовані розміри гачків з секцій
   const hookSet = new Set();
 
   sections.forEach((sec) => {
@@ -193,7 +187,6 @@ function renderMaterialsList(sections, currentUser, userYarns) {
   const itemsHtml = [];
   let itemIndex = 1;
 
-  // 1) Пряжа (червона зона: для авторизованих — наявність, для гостей — "Потрібна реєстрація")
   thicknessSet.forEach((catId) => {
     const yarnLabel = THICKNESS_LABELS[catId] || `Пряжа (категорія ${catId})`;
     let badgeHtml = '';
@@ -234,7 +227,6 @@ function renderMaterialsList(sections, currentUser, userYarns) {
     `);
   });
 
-  // 2) Гачки (синя зона: завжди пише ТІЛЬКИ "Рекомендовано")
   Array.from(hookSet)
     .sort((a, b) => a - b)
     .forEach((hookSize) => {
@@ -272,7 +264,6 @@ function renderSectionsGrid(sections) {
     return;
   }
 
-  // Розбиваємо секції на пари по 2 картки в ряд: [ [1, 2], [3, 4], ... ]
   const pairs = [];
   for (let i = 0; i < sections.length; i += 2) {
     pairs.push(sections.slice(i, i + 2));
@@ -314,8 +305,6 @@ function renderSectionsGrid(sections) {
         })
         .join('');
 
-      // Якщо в схемі 3 і більше секцій — перед кожним новим рядом ставимо чіткий роздільник,
-      // щоб 3-тя і 4-та (5-та і 6-та) секції завжди починалися на одному рівні
       const dividerHtml =
         rowIndex > 0
           ? `
@@ -375,10 +364,10 @@ function getCompletedProjectsBadge(count) {
   return `
     <span
       class="inline-flex items-center gap-1.5 text-xs font-bold text-green-800 bg-green-100 border border-green-700/40 px-2 py-0.5"
-      title="${text}"
+      title="${escapeHtml(text)}"
     >
       <i class="fas fa-check-circle text-green-700" aria-hidden="true"></i>
-      <span>${text}</span>
+      <span>${escapeHtml(text)}</span>
     </span>
   `;
 }
@@ -428,7 +417,6 @@ async function loadAndRenderReviews(patternId) {
 
   if (!wrapperEl) return;
 
-  // 1. Завантажуємо відгуки для поточної схеми разом з ім'ям автора
   const { data: reviews, error } = await supabaseClient
     .from('pattern_review')
     .select(`
@@ -438,7 +426,8 @@ async function loadAndRenderReviews(patternId) {
       rating,
       created_at,
       id_user,
-      user_ ( id_user, name_user )
+      id_project,
+      user_ ( id_user, nickname )
     `)
     .eq('id_pattern', patternId)
     .order('created_at', { ascending: false });
@@ -460,33 +449,43 @@ async function loadAndRenderReviews(patternId) {
   emptyEl?.classList.add('hidden');
   wrapEl?.classList.remove('hidden');
 
-  // 2. Рахуємо завершені проєкти авторів відгуків по цій схемі
+  // Рахуємо завершені проєкти авторів відгуків по цій схемі через yarn(id_user)
   const userIds = [...new Set(list.map((r) => r.id_user).filter(Boolean))];
   const completedCountByUser = {};
 
   if (userIds.length > 0) {
-    const { data: completedProjects, error: projErr } = await supabaseClient
+    const { data: userProjects, error: projErr } = await supabaseClient
       .from('project')
-      .select('id_user')
+      .select(`
+        id_project,
+        project_status,
+        yarn!inner ( id_user )
+      `)
       .eq('id_pattern', patternId)
-      .eq('status', 'completed')
-      .in('id_user', userIds);
+      .in('yarn.id_user', userIds);
 
-    if (!projErr && completedProjects) {
-      completedProjects.forEach((p) => {
-        completedCountByUser[p.id_user] = (completedCountByUser[p.id_user] || 0) + 1;
+    if (!projErr && userProjects) {
+      userProjects.forEach((p) => {
+        const uid = p.yarn?.id_user;
+        // Вважаємо завершеним, якщо project_status >= 2 (або налаштуй свій код статусу)
+        const isCompleted = Number(p.project_status) >= 2;
+        if (uid && isCompleted) {
+          completedCountByUser[uid] = (completedCountByUser[uid] || 0) + 1;
+        }
       });
     }
   }
 
-  // 3. Рендеримо слайди у стилі картки з фото, зірочками та бейджем галочки
   wrapperEl.innerHTML = list
     .map((rev) => {
       const authorName = rev.id_user
-        ? rev.user_?.name_user || 'Майстер'
+        ? rev.user_?.nickname || 'Майстер'
         : 'Гість';
       const completedCount = rev.id_user ? completedCountByUser[rev.id_user] || 0 : 0;
       const badgeHtml = getCompletedProjectsBadge(completedCount);
+      const projectTagHtml = rev.id_project
+        ? `<span class="inline-flex items-center gap-1 text-xs text-hachok-muted bg-parchment-bg border border-hachok-gold/60 px-2 py-0.5 mb-2"><i class="fas fa-link" aria-hidden="true"></i> Проєкт #${escapeHtml(rev.id_project)}</span>`
+        : '';
       const dateText = rev.created_at
         ? new Date(rev.created_at).toLocaleDateString('uk-UA')
         : '';
@@ -516,7 +515,8 @@ async function loadAndRenderReviews(patternId) {
                 </div>
               </div>
 
-              ${badgeHtml ? `<div class="mb-3">${badgeHtml}</div>` : ''}
+              ${badgeHtml ? `<div class="mb-2">${badgeHtml}</div>` : ''}
+              ${projectTagHtml}
 
               <p class="text-sm text-hachok-dark leading-relaxed break-words">
                 ${escapeHtml(rev.review_text)}
@@ -571,7 +571,7 @@ function initReviewModal(patternId, currentUser, projectId = null) {
 
   function openModal() {
     userNote.textContent = currentUser
-      ? `Ви залишаєте відгук як ${currentUser.name_user || 'авторизований майстер'}.`
+      ? `Ви залишаєте відгук як ${currentUser.nickname || 'авторизований майстер'}.`
       : 'Ви залишаєте відгук як Гість. Увійдіть в акаунт, щоб відображався бейдж завершеного проєкту.';
 
     statusEl.classList.add('hidden');
@@ -596,19 +596,16 @@ function initReviewModal(patternId, currentUser, projectId = null) {
   closeBtn?.addEventListener('click', closeModal);
   cancelBtn?.addEventListener('click', closeModal);
 
-  // Закриття по кліку на затемнений фон
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
   });
 
-  // Закриття по Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
       closeModal();
     }
   });
 
-  // Вибір зірочок 1–5 та 0
   starsPicker.addEventListener('click', (e) => {
     const btn = e.target.closest('.star-btn');
     if (!btn) return;
@@ -617,7 +614,6 @@ function initReviewModal(patternId, currentUser, projectId = null) {
 
   zeroBtn?.addEventListener('click', () => updateStarsUI(0));
 
-  // Відправка форми в Supabase
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -653,10 +649,10 @@ function initReviewModal(patternId, currentUser, projectId = null) {
     submitBtn.textContent = 'Надсилання...';
 
     const payload = {
-      id_pattern: patternId,
-      id_user: currentUser?.id_user || null,
-      id_project: projectId,
-      rating,
+      id_pattern: Number(patternId),
+      id_user: currentUser?.id_user ? Number(currentUser.id_user) : null,
+      id_project: projectId ? Number(projectId) : null,
+      rating: Number(rating),
       review_text: reviewText,
       photo_url: photoUrl || null,
     };
@@ -668,8 +664,9 @@ function initReviewModal(patternId, currentUser, projectId = null) {
 
     if (error) {
       console.error('Помилка додавання відгуку:', error);
-      statusEl.textContent = 'Не вдалося зберегти відгук. Спробуйте ще раз.';
+      statusEl.textContent = `Помилка (${error.code || 'DB'}): ${error.message || 'Не вдалося зберегти відгук.'}`;
       statusEl.className = 'text-sm font-medium p-2.5 border border-red-700 bg-red-50 text-red-800';
+      statusEl.classList.remove('hidden');
       return;
     }
 
@@ -677,6 +674,7 @@ function initReviewModal(patternId, currentUser, projectId = null) {
     updateStarsUI(5);
     statusEl.textContent = 'Дякуємо! Ваш відгук успішно опубліковано.';
     statusEl.className = 'text-sm font-medium p-2.5 border border-green-700 bg-green-50 text-green-800';
+    statusEl.classList.remove('hidden');
 
     await loadAndRenderReviews(patternId);
 
@@ -694,7 +692,6 @@ async function initPatternPage() {
   const patternIdParam = params.get('id');
   const currentUser = getLoggedInUser();
 
-  // 1. Завантажуємо схему разом із секціями, стібками та рядками
   let query = supabaseClient.from('pattern').select(`
     id_pattern,
     name_pattern,
@@ -748,7 +745,6 @@ async function initPatternPage() {
   const pattern = patterns[0];
   const sortedSections = (pattern.section || []).slice().sort((a, b) => a.section_order - b.section_order);
 
-  // 2. Якщо користувач увійшов в акаунт — підтягуємо його пряжу та калібрування
   let userYarns = [];
   const calibratedStitchIds = new Set();
 
@@ -765,13 +761,11 @@ async function initPatternPage() {
     (calRes.data || []).forEach((c) => calibratedStitchIds.add(c.id_stitch));
   }
 
-  // 3. Рендеримо всі блоки сторінки
   renderPatternHeader(pattern);
   renderStitchesList(sortedSections, currentUser, calibratedStitchIds);
   renderMaterialsList(sortedSections, currentUser, userYarns);
   renderSectionsGrid(sortedSections);
 
-  // 4. Кнопка "Створити проєкт з цією схемою"
   const createBtn = document.getElementById('create-project-from-pattern-btn');
   createBtn?.addEventListener('click', () => {
     if (!currentUser) {
@@ -780,7 +774,7 @@ async function initPatternPage() {
     }
     window.openMeasurerWidget({ step: 'project', patternId: pattern.id_pattern });
   });
-  // 5. Завантаження каруселі відгуків та ініціалізація модального вікна
+
   await loadAndRenderReviews(pattern.id_pattern);
   initReviewModal(pattern.id_pattern, currentUser);
 }
